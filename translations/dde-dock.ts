@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="en">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="en" version="2.1">
 <context>
     <name>AbstractPluginsController</name>
     <message>
@@ -12,29 +10,29 @@
     <name>BluetoothApplet</name>
     <message>
         <source>Bluetooth</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth</translation>
     </message>
 </context>
 <context>
     <name>BluetoothItem</name>
     <message>
         <source>Turn off</source>
-        <translation type="unfinished"></translation>
+        <translation>Turn off</translation>
     </message>
     <message>
         <source>Turn on</source>
-        <translation type="unfinished"></translation>
+        <translation>Turn on</translation>
     </message>
     <message>
         <source>Bluetooth settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth settings</translation>
     </message>
 </context>
 <context>
     <name>BluetoothPlugin</name>
     <message>
         <source>Bluetooth</source>
-        <translation type="unfinished"></translation>
+        <translation>Bluetooth</translation>
     </message>
 </context>
 <context>
@@ -212,67 +210,67 @@
     <name>NetworkItem</name>
     <message>
         <source>Wireless connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Wireless connection</translation>
     </message>
     <message>
         <source>Wired connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Wired connection</translation>
     </message>
     <message>
         <source>Disable wired connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Disable wired connection</translation>
     </message>
     <message>
         <source>Enable wired connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Enable wired connection</translation>
     </message>
     <message>
         <source>Disable wireless connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Disable wireless connection</translation>
     </message>
     <message>
         <source>Enable wireless connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Enable wireless connection</translation>
     </message>
     <message>
         <source>Disable network</source>
-        <translation type="unfinished">Disable network</translation>
+        <translation>Disable network</translation>
     </message>
     <message>
         <source>Enable network</source>
-        <translation type="unfinished">Enable network</translation>
+        <translation>Enable network</translation>
     </message>
     <message>
         <source>Network settings</source>
-        <translation type="unfinished">Network settings</translation>
+        <translation>Network settings</translation>
     </message>
     <message>
         <source>Device disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Device disabled</translation>
     </message>
     <message>
         <source>Wireless connection: %1</source>
-        <translation type="unfinished">Wireless connection: %1</translation>
+        <translation>Wireless connection: %1</translation>
     </message>
     <message>
         <source>Wired connection: %1</source>
-        <translation type="unfinished">Wired connection: %1</translation>
+        <translation>Wired connection: %1</translation>
     </message>
     <message>
         <source>Not connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Not connected</translation>
     </message>
     <message>
         <source>Connecting</source>
-        <translation type="unfinished"></translation>
+        <translation>Connecting</translation>
     </message>
     <message>
         <source>Connected but not Internet access</source>
-        <translation type="unfinished"></translation>
+        <translation>Connected but not Internet access</translation>
     </message>
     <message>
         <source>Network cable unplugged</source>
-        <translation type="unfinished"></translation>
+        <translation>Network cable unplugged</translation>
     </message>
 </context>
 <context>
@@ -333,7 +331,7 @@
     </message>
     <message>
         <source>Capacity %1 ....</source>
-        <translation type="unfinished"></translation>
+        <translation>Capacity %1 ....</translation>
     </message>
 </context>
 <context>
