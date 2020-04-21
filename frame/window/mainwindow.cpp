@@ -23,6 +23,7 @@
 #include "panel/mainpanelcontrol.h"
 #include "controller/dockitemmanager.h"
 #include "util/utils.h"
+#include "util/docksettings.h"
 
 #include <QDebug>
 #include <QEvent>
@@ -134,7 +135,7 @@ MainWindow::MainWindow(QWidget *parent)
 
       m_platformWindowHandle(this),
       m_wmHelper(DWindowManagerHelper::instance()),
-      m_regionMonitor(new DRegionMonitor(this)),
+      m_eventInter(new XEventMonitor("com.deepin.api.XEventMonitor", "/com/deepin/api/XEventMonitor", QDBusConnection::sessionBus())),
 
       m_positionUpdateTimer(new QTimer(this)),
       m_expandDelayTimer(new QTimer(this)),
@@ -551,7 +552,7 @@ void MainWindow::initConnections()
     connect(m_dragWidget, &DragWidget::dragPointOffset, this, &MainWindow::onMainWindowSizeChanged);
     connect(m_dragWidget, &DragWidget::dragFinished, this, &MainWindow::onDragFinished);
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::themeTypeChanged);
-    connect(m_regionMonitor, &DRegionMonitor::cursorMove, this, &MainWindow::onRegionMonitorChanged);
+    connect(m_eventInter, &XEventMonitor::CursorMove, this, &MainWindow::onRegionMonitorChanged);
 }
 
 const QPoint MainWindow::x11GetWindowPos()
@@ -674,7 +675,7 @@ void MainWindow::setStrutPartial()
     const Position side = m_curDockPos;
     const QPoint &p = rawXPosition(m_settings->windowRect(m_curDockPos).topLeft());
     const QSize &s = m_settings->windowSize();
-    const QRect &primaryRawRect = m_settings->primaryRawRect();
+    const QRect &primaryRawRect = m_settings->currentRawRect();
 
     XcbMisc::Orientation orientation = XcbMisc::OrientationTop;
     uint strut = 0;
@@ -1029,13 +1030,18 @@ void MainWindow::themeTypeChanged(DGuiApplicationHelper::ColorType themeType)
     }
 }
 
-void MainWindow::onRegionMonitorChanged()
+void MainWindow::onRegionMonitorChanged(int x, int y, const QString &key)
 {
+//    if (m_registerKey != key)
+//        return;
+
     if (m_settings->hideMode() == KeepShowing)
         return;
 
     if (!isVisible())
         setVisible(true);
+
+//    QScreen *screen = Utils::screenAtByScaled(QPoint(x, y));
 }
 
 void MainWindow::updateRegionMonitorWatch()
@@ -1043,21 +1049,56 @@ void MainWindow::updateRegionMonitorWatch()
     if (m_settings->hideMode() == KeepShowing)
         return;
 
+//    if (!m_registerKey.isEmpty()) {
+//        m_eventInter->UnregisterArea(m_registerKey);
+//        m_registerKey.clear();
+//    }
+
+    const int flags = Motion | Button | Key;
+//    QList<QRect> screensRect = m_settings->monitorsRect();
+//    QList<QRect> monitorAreas;
     int val = 2;
     const int margin = m_settings->dockMargin();
-    if (Dock::Top == m_curDockPos) {
-        m_regionMonitor->setWatchedRegion(QRegion(margin, 0, m_settings->primaryRect().width() - margin * 2, val));
-    } else if (Dock::Bottom == m_curDockPos) {
-        m_regionMonitor->setWatchedRegion(QRegion(margin, m_settings->primaryRect().height() - val, m_settings->primaryRect().width() - margin * 2, val));
-    } else if (Dock::Left == m_curDockPos) {
-        m_regionMonitor->setWatchedRegion(QRegion(0, margin, val, m_settings->primaryRect().height() - margin * 2));
-    } else {
-        m_regionMonitor->setWatchedRegion(QRegion(m_settings->primaryRect().width() - val, margin, val, m_settings->primaryRect().height() - margin * 2));
-    }
 
-    if (!m_regionMonitor->registered()) {
-        m_regionMonitor->registerRegion();
-    }
+//    if (screensRect.size()) {
+        switch (m_curDockPos) {
+        case Dock::Top: {
+            m_eventInter->RegisterArea(margin, 0, m_settings->currentRect().width() - margin * 2, val, flags);
+//            for (QRect rect : screensRect) {
+//                monitorAreas << QRect(rect.x() + margin, rect.y(), rect.width() - margin * 2, val);
+//            }
+        }
+            break;
+        case Dock::Bottom: {
+            m_eventInter->RegisterArea(margin, m_settings->currentRect().height() - val, m_settings->currentRect().width() - margin * 2, val, flags);
+//            for (QRect rect : screensRect) {
+//                monitorAreas << QRect(rect.x() + margin, rect.y() + rect.height() - val, rect.width() - margin * 2, val);
+//            }
+        }
+            break;
+        case Dock::Left: {
+            m_eventInter->RegisterArea(0, margin, val, m_settings->currentRect().height() - margin * 2, flags);
+//            for (QRect rect : screensRect) {
+//                monitorAreas << QRect(rect.x(), rect.y() + margin, val, rect.height() - margin * 2);
+//            }
+        }
+            break;
+        case Dock::Right: {
+            m_eventInter->RegisterArea(m_settings->currentRect().width() - val, margin, val, m_settings->currentRect().height() - margin * 2, flags);
+//            for (QRect rect : screensRect) {
+//                monitorAreas << QRect(rect.x() + rect.width() - val, rect.y() + margin, val, rect.height() - margin * 2);
+//            }
+        }
+            break;
+        }
+//        m_registerKey = m_eventInter->RegisterAreas(monitorAreas , flags);
+//    } else {
+//        m_registerKey = m_eventInter->RegisterFullScreen();
+//    }
+
+//    if (!m_regionMonitor->registered()) {
+//        m_regionMonitor->registerRegion();
+//    }
 }
 
 
