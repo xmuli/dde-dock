@@ -266,7 +266,7 @@
     </message>
     <message>
         <source>Connected but not Internet access</source>
-        <translation>Connected but not Internet access</translation>
+        <translation>Connected but no Internet access</translation>
     </message>
     <message>
         <source>Network cable unplugged</source>
