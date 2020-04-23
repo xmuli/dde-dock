@@ -267,12 +267,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Connected but not Internet access</source>
+        <source>Network cable unplugged</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Network cable unplugged</source>
-        <translation type="unfinished"></translation>
+        <source>Connected but no Internet access</source>
+        <translation type="unfinished">Connected but no Internet access</translation>
     </message>
 </context>
 <context>
@@ -280,6 +280,14 @@
     <message>
         <source>Network</source>
         <translation>Network</translation>
+    </message>
+    <message>
+        <source>Wired Network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wired Network %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -473,6 +481,10 @@
     <message>
         <source>Wired connection: %1</source>
         <translation type="vanished">Wired connection: %1</translation>
+    </message>
+    <message>
+        <source>Wired Connection</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

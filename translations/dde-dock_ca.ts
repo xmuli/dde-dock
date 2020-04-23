@@ -7,6 +7,35 @@
     </message>
 </context>
 <context>
+    <name>BluetoothApplet</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+</context>
+<context>
+    <name>BluetoothItem</name>
+    <message>
+        <source>Turn off</source>
+        <translation>Atura</translation>
+    </message>
+    <message>
+        <source>Turn on</source>
+        <translation>Engega</translation>
+    </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Configuració del Bluetooth</translation>
+    </message>
+</context>
+<context>
+    <name>BluetoothPlugin</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+</context>
+<context>
     <name>DBusAdaptors</name>
     <message>
         <source>Add keyboard layout</source>
@@ -178,10 +207,85 @@
     </message>
 </context>
 <context>
+    <name>NetworkItem</name>
+    <message>
+        <source>Wireless connection</source>
+        <translation>Connexió sense fil</translation>
+    </message>
+    <message>
+        <source>Wired connection</source>
+        <translation>Connexió amb fil</translation>
+    </message>
+    <message>
+        <source>Disable wired connection</source>
+        <translation>Inhabilita la connexió amb fil</translation>
+    </message>
+    <message>
+        <source>Enable wired connection</source>
+        <translation>Habilita la connexió amb fil</translation>
+    </message>
+    <message>
+        <source>Disable wireless connection</source>
+        <translation>Inhabilita la connexió sense fil</translation>
+    </message>
+    <message>
+        <source>Enable wireless connection</source>
+        <translation>Habilita la connexió sense fil</translation>
+    </message>
+    <message>
+        <source>Disable network</source>
+        <translation>Inhabilita la xarxa</translation>
+    </message>
+    <message>
+        <source>Enable network</source>
+        <translation>Habilita la xarxa</translation>
+    </message>
+    <message>
+        <source>Network settings</source>
+        <translation>Configuració de la xarxa</translation>
+    </message>
+    <message>
+        <source>Device disabled</source>
+        <translation>Dispositiu inhabilitat</translation>
+    </message>
+    <message>
+        <source>Wireless connection: %1</source>
+        <translation>Connexió sense fil: %1</translation>
+    </message>
+    <message>
+        <source>Wired connection: %1</source>
+        <translation>Connexió amb fil: %1</translation>
+    </message>
+    <message>
+        <source>Not connected</source>
+        <translation>No connectat</translation>
+    </message>
+    <message>
+        <source>Connecting</source>
+        <translation>Es connecta</translation>
+    </message>
+    <message>
+        <source>Network cable unplugged</source>
+        <translation>El cable de xarxa està desendollat.</translation>
+    </message>
+    <message>
+        <source>Connected but no Internet access</source>
+        <translation>Connectat però sense accés a Internet</translation>
+    </message>
+</context>
+<context>
     <name>NetworkPlugin</name>
     <message>
         <source>Network</source>
         <translation>Xarxa</translation>
+    </message>
+    <message>
+        <source>Wired Network</source>
+        <translation>Xarxa amb fil</translation>
+    </message>
+    <message>
+        <source>Wired Network %1</source>
+        <translation>Xarxa amb fil: %1</translation>
     </message>
 </context>
 <context>
@@ -370,18 +474,22 @@
     <name>WiredItem</name>
     <message>
         <source>Unknown</source>
-        <translation>Desconegut</translation>
+        <translation type="vanished">Desconegut</translation>
     </message>
     <message>
         <source>Wired connection: %1</source>
-        <translation>Connexió amb fil: %1</translation>
+        <translation type="vanished">Connexió amb fil: %1</translation>
+    </message>
+    <message>
+        <source>Wired Connection</source>
+        <translation>Connexió amb fil</translation>
     </message>
 </context>
 <context>
     <name>WirelessItem</name>
     <message>
         <source>No Network</source>
-        <translation>Sense xarxa</translation>
+        <translation type="vanished">Sense xarxa</translation>
     </message>
     <message>
         <source>Wireless Connection: %1</source>
@@ -389,11 +497,11 @@
     </message>
     <message>
         <source>Connected but no Internet access</source>
-        <translation>Connectat però sense accés a Internet</translation>
+        <translation type="vanished">Connectat però sense accés a Internet</translation>
     </message>
     <message>
         <source>Wireless connection: %1</source>
-        <translation>Connexió sense fil: %1</translation>
+        <translation type="vanished">Connexió sense fil: %1</translation>
     </message>
 </context>
 <context>

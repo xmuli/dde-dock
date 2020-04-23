@@ -3,14 +3,43 @@
     <name>AbstractPluginsController</name>
     <message>
         <source>The plugin %1 is not compatible with the system.</source>
-        <translation type="unfinished"/>
+        <translation>Tiện ích %1 không tương thích với hệ thống</translation>
+    </message>
+</context>
+<context>
+    <name>BluetoothApplet</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+</context>
+<context>
+    <name>BluetoothItem</name>
+    <message>
+        <source>Turn off</source>
+        <translation>Tắt</translation>
+    </message>
+    <message>
+        <source>Turn on</source>
+        <translation>Mở</translation>
+    </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Cài đặt Blurtooth</translation>
+    </message>
+</context>
+<context>
+    <name>BluetoothPlugin</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
     </message>
 </context>
 <context>
     <name>DBusAdaptors</name>
     <message>
         <source>Add keyboard layout</source>
-        <translation type="unfinished"/>
+        <translation>Thêm bố cục bàn phím</translation>
     </message>
 </context>
 <context>
@@ -33,15 +62,15 @@
     </message>
     <message>
         <source>12-hour time</source>
-        <translation type="unfinished"/>
+        <translation>Chế độ 12 giờ</translation>
     </message>
     <message>
         <source>24-hour time</source>
-        <translation type="unfinished"/>
+        <translation>Chế độ 24 giờ</translation>
     </message>
     <message>
         <source>Time settings</source>
-        <translation type="unfinished"/>
+        <translation>Cài đặt thời gian</translation>
     </message>
 </context>
 <context>
@@ -63,7 +92,7 @@
     <name>DialogManager</name>
     <message>
         <source>Are you sure you want to empty %1 items?</source>
-        <translation type="unfinished"/>
+        <translation>Bạn có chắc chắn muốn làm trống mục %1 không?</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -170,11 +199,78 @@
     <name>MultitaskingPlugin</name>
     <message>
         <source>Multitasking View</source>
-        <translation type="unfinished"/>
+        <translation>Chế độ xem đa nhiệm</translation>
     </message>
     <message>
         <source>Undock</source>
+        <translation>Gỡ khỏi dock</translation>
+    </message>
+</context>
+<context>
+    <name>NetworkItem</name>
+    <message>
+        <source>Wireless connection</source>
         <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Wired connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disable wired connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Enable wired connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disable wireless connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Enable wireless connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disable network</source>
+        <translation>Vô hiệu hóa mạng</translation>
+    </message>
+    <message>
+        <source>Enable network</source>
+        <translation>Cho phép mạng</translation>
+    </message>
+    <message>
+        <source>Network settings</source>
+        <translation>Thiết lập mạng</translation>
+    </message>
+    <message>
+        <source>Device disabled</source>
+        <translation>Thiết bị bị vô hiệu hóa</translation>
+    </message>
+    <message>
+        <source>Wireless connection: %1</source>
+        <translation>Kết nối không dây: %1</translation>
+    </message>
+    <message>
+        <source>Wired connection: %1</source>
+        <translation>Kết nối Có dây: %1</translation>
+    </message>
+    <message>
+        <source>Not connected</source>
+        <translation>Không được kết nối</translation>
+    </message>
+    <message>
+        <source>Connecting</source>
+        <translation>Đang kết nối</translation>
+    </message>
+    <message>
+        <source>Network cable unplugged</source>
+        <translation>Mạng dây đã ngắt</translation>
+    </message>
+    <message>
+        <source>Connected but no Internet access</source>
+        <translation>Đã kết nối nhưng không có truy cập Internet</translation>
     </message>
 </context>
 <context>
@@ -183,12 +279,20 @@
         <source>Network</source>
         <translation>Mạng</translation>
     </message>
+    <message>
+        <source>Wired Network</source>
+        <translation>Mạng kết nối dây</translation>
+    </message>
+    <message>
+        <source>Wired Network %1</source>
+        <translation>Mạng kết nối dây %1</translation>
+    </message>
 </context>
 <context>
     <name>OnboardPlugin</name>
     <message>
         <source>Onboard</source>
-        <translation type="unfinished"/>
+        <translation>Onboard</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -207,11 +311,11 @@
     </message>
     <message>
         <source>Capacity %1, %2 min remaining</source>
-        <translation type="unfinished"/>
+        <translation>Năng lượng %1, %2 còn lại</translation>
     </message>
     <message>
         <source>Capacity %1, %2 hr %3 min remaining</source>
-        <translation type="unfinished"/>
+        <translation>Năng lượng %1, %2 giờ %3 phút còn lại</translation>
     </message>
     <message>
         <source>Charged %1</source>
@@ -219,19 +323,19 @@
     </message>
     <message>
         <source>Charging %1, %2 min until full</source>
-        <translation type="unfinished"/>
+        <translation>Đang sạc %1, %2 phút sẽ đầy</translation>
     </message>
     <message>
         <source>Charging %1, %2 hr %3 min until full</source>
-        <translation type="unfinished"/>
+        <translation>Đang sạc %1, %2 giờ %3 phút sẽ đầy</translation>
     </message>
     <message>
         <source>Charging %1 ....</source>
-        <translation type="unfinished"/>
+        <translation>Đang sạc %1 ...</translation>
     </message>
     <message>
         <source>%1 charged</source>
-        <translation type="unfinished"/>
+        <translation>%1 đã sạc</translation>
     </message>
 </context>
 <context>
@@ -242,7 +346,7 @@
     </message>
     <message>
         <source>Undock</source>
-        <translation type="unfinished"/>
+        <translation>Gỡ khỏi dock</translation>
     </message>
 </context>
 <context>
@@ -265,7 +369,7 @@
     </message>
     <message>
         <source>Hibernate</source>
-        <translation type="unfinished"/>
+        <translation>Ngủ đông</translation>
     </message>
     <message>
         <source>Lock</source>
@@ -319,11 +423,11 @@
     </message>
     <message>
         <source>Sound settings</source>
-        <translation type="unfinished"/>
+        <translation>Cài đặt âm thanh</translation>
     </message>
     <message>
         <source>Volume %1</source>
-        <translation type="unfinished"/>
+        <translation>Âm lượng %1</translation>
     </message>
 </context>
 <context>
@@ -370,18 +474,22 @@
     <name>WiredItem</name>
     <message>
         <source>Unknown</source>
-        <translation>Không rõ</translation>
+        <translation type="vanished">Không rõ</translation>
     </message>
     <message>
         <source>Wired connection: %1</source>
-        <translation>Kết nối Có dây: %1</translation>
+        <translation type="vanished">Kết nối Có dây: %1</translation>
+    </message>
+    <message>
+        <source>Wired Connection</source>
+        <translation>Kết nối Có dây</translation>
     </message>
 </context>
 <context>
     <name>WirelessItem</name>
     <message>
         <source>No Network</source>
-        <translation>Không có Mạng</translation>
+        <translation type="vanished">Không có Mạng</translation>
     </message>
     <message>
         <source>Wireless Connection: %1</source>
@@ -389,11 +497,11 @@
     </message>
     <message>
         <source>Connected but no Internet access</source>
-        <translation type="unfinished"/>
+        <translation type="vanished">Đã kết nối nhưng không có truy cập Internet</translation>
     </message>
     <message>
         <source>Wireless connection: %1</source>
-        <translation type="unfinished"/>
+        <translation type="vanished">Kết nối không dây: %1</translation>
     </message>
 </context>
 <context>

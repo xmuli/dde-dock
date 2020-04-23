@@ -7,6 +7,35 @@
     </message>
 </context>
 <context>
+    <name>BluetoothApplet</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+</context>
+<context>
+    <name>BluetoothItem</name>
+    <message>
+        <source>Turn off</source>
+        <translation>Ausschalten</translation>
+    </message>
+    <message>
+        <source>Turn on</source>
+        <translation>Einschalten</translation>
+    </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Bluetooth-Einstellungen</translation>
+    </message>
+</context>
+<context>
+    <name>BluetoothPlugin</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+</context>
+<context>
     <name>DBusAdaptors</name>
     <message>
         <source>Add keyboard layout</source>
@@ -178,10 +207,85 @@
     </message>
 </context>
 <context>
+    <name>NetworkItem</name>
+    <message>
+        <source>Wireless connection</source>
+        <translation>Drahtlosverbindung</translation>
+    </message>
+    <message>
+        <source>Wired connection</source>
+        <translation>Kabelgebundene Verbindung</translation>
+    </message>
+    <message>
+        <source>Disable wired connection</source>
+        <translation>Kabelgebundene Verbindung deaktivieren</translation>
+    </message>
+    <message>
+        <source>Enable wired connection</source>
+        <translation>Kabelgebundene Verbindung aktivieren</translation>
+    </message>
+    <message>
+        <source>Disable wireless connection</source>
+        <translation>Drahtlosverbindung deaktivieren</translation>
+    </message>
+    <message>
+        <source>Enable wireless connection</source>
+        <translation>Drahtlosverbindung aktivieren</translation>
+    </message>
+    <message>
+        <source>Disable network</source>
+        <translation>Netzwerk deaktivieren</translation>
+    </message>
+    <message>
+        <source>Enable network</source>
+        <translation>Netzwerk aktivieren</translation>
+    </message>
+    <message>
+        <source>Network settings</source>
+        <translation>Netzwerkeinstellungen</translation>
+    </message>
+    <message>
+        <source>Device disabled</source>
+        <translation>Gerät deaktiviert</translation>
+    </message>
+    <message>
+        <source>Wireless connection: %1</source>
+        <translation>Drahtlosverbindung: %1</translation>
+    </message>
+    <message>
+        <source>Wired connection: %1</source>
+        <translation>Kabelgebundene Verbindung: %1</translation>
+    </message>
+    <message>
+        <source>Not connected</source>
+        <translation>Nicht verbunden</translation>
+    </message>
+    <message>
+        <source>Connecting</source>
+        <translation>Verbindungsaufbau</translation>
+    </message>
+    <message>
+        <source>Network cable unplugged</source>
+        <translation>Netzwerkkabel abgezogen</translation>
+    </message>
+    <message>
+        <source>Connected but no Internet access</source>
+        <translation>Verbunden, aber kein Internetzugang</translation>
+    </message>
+</context>
+<context>
     <name>NetworkPlugin</name>
     <message>
         <source>Network</source>
         <translation>Netzwerk</translation>
+    </message>
+    <message>
+        <source>Wired Network</source>
+        <translation>Kabelgebundenes Netzwerk</translation>
+    </message>
+    <message>
+        <source>Wired Network %1</source>
+        <translation>Kabelgebundenes Netzwerk %1</translation>
     </message>
 </context>
 <context>
@@ -370,18 +474,22 @@
     <name>WiredItem</name>
     <message>
         <source>Unknown</source>
-        <translation>Unbekannt</translation>
+        <translation type="vanished">Unbekannt</translation>
     </message>
     <message>
         <source>Wired connection: %1</source>
-        <translation>Kabelgebundene Verbindung: %1</translation>
+        <translation type="vanished">Kabelgebundene Verbindung: %1</translation>
+    </message>
+    <message>
+        <source>Wired Connection</source>
+        <translation>Kabelgebundene Verbindung</translation>
     </message>
 </context>
 <context>
     <name>WirelessItem</name>
     <message>
         <source>No Network</source>
-        <translation>Kein Netzwerk</translation>
+        <translation type="vanished">Kein Netzwerk</translation>
     </message>
     <message>
         <source>Wireless Connection: %1</source>
@@ -389,11 +497,11 @@
     </message>
     <message>
         <source>Connected but no Internet access</source>
-        <translation>Verbunden, aber kein Internetzugang</translation>
+        <translation type="vanished">Verbunden, aber kein Internetzugang</translation>
     </message>
     <message>
         <source>Wireless connection: %1</source>
-        <translation>Drahtlosverbindung: %1</translation>
+        <translation type="vanished">Drahtlosverbindung: %1</translation>
     </message>
 </context>
 <context>

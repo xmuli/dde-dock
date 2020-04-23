@@ -7,6 +7,35 @@
     </message>
 </context>
 <context>
+    <name>BluetoothApplet</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+</context>
+<context>
+    <name>BluetoothItem</name>
+    <message>
+        <source>Turn off</source>
+        <translation>Virta poikki</translation>
+    </message>
+    <message>
+        <source>Turn on</source>
+        <translation>Virta päälle</translation>
+    </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Bluetooth asetukset</translation>
+    </message>
+</context>
+<context>
+    <name>BluetoothPlugin</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+</context>
+<context>
     <name>DBusAdaptors</name>
     <message>
         <source>Add keyboard layout</source>
@@ -116,11 +145,11 @@
     </message>
     <message>
         <source>Top</source>
-        <translation>Yläosa</translation>
+        <translation>Ylös</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation>Alaosa</translation>
+        <translation>Alas</translation>
     </message>
     <message>
         <source>Left</source>
@@ -132,15 +161,15 @@
     </message>
     <message>
         <source>Keep Shown</source>
-        <translation>Pidä näkyvänä</translation>
+        <translation>Näytä aina</translation>
     </message>
     <message>
         <source>Keep Hidden</source>
-        <translation>Pidä piilotettuna</translation>
+        <translation>Piilotta paneeli</translation>
     </message>
     <message>
         <source>Smart Hide</source>
-        <translation>Älykäs piilotus</translation>
+        <translation>Piilota automaattisesti</translation>
     </message>
     <message>
         <source>Mode</source>
@@ -152,7 +181,7 @@
     </message>
     <message>
         <source>Status</source>
-        <translation>Tila</translation>
+        <translation>Näytä</translation>
     </message>
     <message>
         <source>Plugins</source>
@@ -170,11 +199,78 @@
     <name>MultitaskingPlugin</name>
     <message>
         <source>Multitasking View</source>
-        <translation>Työpöydät</translation>
+        <translation>Työtilan ikkunat</translation>
     </message>
     <message>
         <source>Undock</source>
         <translation>Irrota</translation>
+    </message>
+</context>
+<context>
+    <name>NetworkItem</name>
+    <message>
+        <source>Wireless connection</source>
+        <translation>Langaton yhteys</translation>
+    </message>
+    <message>
+        <source>Wired connection</source>
+        <translation>Yhteys kaapelilla</translation>
+    </message>
+    <message>
+        <source>Disable wired connection</source>
+        <translation>Poista kiinteä yhteys</translation>
+    </message>
+    <message>
+        <source>Enable wired connection</source>
+        <translation>Kytke kiinteä yhteys</translation>
+    </message>
+    <message>
+        <source>Disable wireless connection</source>
+        <translation>Poista langaton käytöstä</translation>
+    </message>
+    <message>
+        <source>Enable wireless connection</source>
+        <translation>Kytke langaton käyttöön</translation>
+    </message>
+    <message>
+        <source>Disable network</source>
+        <translation>Poista verkko käytöstä</translation>
+    </message>
+    <message>
+        <source>Enable network</source>
+        <translation>Kytke verkko käyttöön</translation>
+    </message>
+    <message>
+        <source>Network settings</source>
+        <translation>Verkon asetukset</translation>
+    </message>
+    <message>
+        <source>Device disabled</source>
+        <translation>Laite suljettu</translation>
+    </message>
+    <message>
+        <source>Wireless connection: %1</source>
+        <translation>Langaton yhteys: %1</translation>
+    </message>
+    <message>
+        <source>Wired connection: %1</source>
+        <translation>Kaapeli kytketty: %1</translation>
+    </message>
+    <message>
+        <source>Not connected</source>
+        <translation>Ei yhteyttä</translation>
+    </message>
+    <message>
+        <source>Connecting</source>
+        <translation>Yhdistetään</translation>
+    </message>
+    <message>
+        <source>Network cable unplugged</source>
+        <translation>Verkkokaapeli irrotettu</translation>
+    </message>
+    <message>
+        <source>Connected but no Internet access</source>
+        <translation>Yhdistetty, mutta ei internet osoitetta</translation>
     </message>
 </context>
 <context>
@@ -183,12 +279,20 @@
         <source>Network</source>
         <translation>Verkko</translation>
     </message>
+    <message>
+        <source>Wired Network</source>
+        <translation>Kaapeli</translation>
+    </message>
+    <message>
+        <source>Wired Network %1</source>
+        <translation>Kaapeli %1</translation>
+    </message>
 </context>
 <context>
     <name>OnboardPlugin</name>
     <message>
         <source>Onboard</source>
-        <translation>Näppäimistö</translation>
+        <translation>Näyttönäppäimistö</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -311,7 +415,7 @@
     </message>
     <message>
         <source>Audio Settings</source>
-        <translation type="vanished">Äänen asetukset</translation>
+        <translation type="vanished">Ääniasetukset</translation>
     </message>
     <message>
         <source>Current Volume %1</source>
@@ -370,18 +474,22 @@
     <name>WiredItem</name>
     <message>
         <source>Unknown</source>
-        <translation>Tuntematon</translation>
+        <translation type="vanished">Tuntematon</translation>
     </message>
     <message>
         <source>Wired connection: %1</source>
-        <translation>Kaapeli kytketty: %1</translation>
+        <translation type="vanished">Kaapeli kytketty: %1</translation>
+    </message>
+    <message>
+        <source>Wired Connection</source>
+        <translation>Yhteys kaapelilla</translation>
     </message>
 </context>
 <context>
     <name>WirelessItem</name>
     <message>
         <source>No Network</source>
-        <translation>Ei verkkoa</translation>
+        <translation type="vanished">Ei verkkoa</translation>
     </message>
     <message>
         <source>Wireless Connection: %1</source>
@@ -389,11 +497,11 @@
     </message>
     <message>
         <source>Connected but no Internet access</source>
-        <translation>Yhdistetty, mutta ei internet osoitetta</translation>
+        <translation type="vanished">Yhdistetty, mutta ei internet osoitetta</translation>
     </message>
     <message>
         <source>Wireless connection: %1</source>
-        <translation>Langaton yhteys: %1</translation>
+        <translation type="vanished">Langaton yhteys: %1</translation>
     </message>
 </context>
 <context>

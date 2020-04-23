@@ -7,6 +7,35 @@
     </message>
 </context>
 <context>
+    <name>BluetoothApplet</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+</context>
+<context>
+    <name>BluetoothItem</name>
+    <message>
+        <source>Turn off</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Turn on</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>BluetoothPlugin</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+</context>
+<context>
     <name>DBusAdaptors</name>
     <message>
         <source>Add keyboard layout</source>
@@ -178,10 +207,85 @@
     </message>
 </context>
 <context>
+    <name>NetworkItem</name>
+    <message>
+        <source>Wireless connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Wired connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disable wired connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Enable wired connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disable wireless connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Enable wireless connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disable network</source>
+        <translation>ネットワークを無効にする</translation>
+    </message>
+    <message>
+        <source>Enable network</source>
+        <translation>ネットワークを有効にする</translation>
+    </message>
+    <message>
+        <source>Network settings</source>
+        <translation>ネットワーク設定</translation>
+    </message>
+    <message>
+        <source>Device disabled</source>
+        <translation>デバイスが無効</translation>
+    </message>
+    <message>
+        <source>Wireless connection: %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Wired connection: %1</source>
+        <translation>有線接続: %1</translation>
+    </message>
+    <message>
+        <source>Not connected</source>
+        <translation>未接続</translation>
+    </message>
+    <message>
+        <source>Connecting</source>
+        <translation>接続試行中</translation>
+    </message>
+    <message>
+        <source>Network cable unplugged</source>
+        <translation>ネットワークケーブル未接続</translation>
+    </message>
+    <message>
+        <source>Connected but no Internet access</source>
+        <translation>接続済み、インターネットアクセスなし</translation>
+    </message>
+</context>
+<context>
     <name>NetworkPlugin</name>
     <message>
         <source>Network</source>
         <translation>ネットワーク</translation>
+    </message>
+    <message>
+        <source>Wired Network</source>
+        <translation>有線ネットワーク</translation>
+    </message>
+    <message>
+        <source>Wired Network %1</source>
+        <translation>有線ネットワーク %1</translation>
     </message>
 </context>
 <context>
@@ -370,18 +474,22 @@
     <name>WiredItem</name>
     <message>
         <source>Unknown</source>
-        <translation>不明</translation>
+        <translation type="vanished">不明</translation>
     </message>
     <message>
         <source>Wired connection: %1</source>
-        <translation>有線接続: %1</translation>
+        <translation type="vanished">有線接続: %1</translation>
+    </message>
+    <message>
+        <source>Wired Connection</source>
+        <translation>無線接続</translation>
     </message>
 </context>
 <context>
     <name>WirelessItem</name>
     <message>
         <source>No Network</source>
-        <translation>ネットワークなし</translation>
+        <translation type="vanished">ネットワークなし</translation>
     </message>
     <message>
         <source>Wireless Connection: %1</source>
@@ -389,7 +497,7 @@
     </message>
     <message>
         <source>Connected but no Internet access</source>
-        <translation>接続済み、インターネットアクセスなし</translation>
+        <translation type="vanished">接続済み、インターネットアクセスなし</translation>
     </message>
     <message>
         <source>Wireless connection: %1</source>

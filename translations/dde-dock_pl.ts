@@ -7,6 +7,35 @@
     </message>
 </context>
 <context>
+    <name>BluetoothApplet</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+</context>
+<context>
+    <name>BluetoothItem</name>
+    <message>
+        <source>Turn off</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Turn on</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>BluetoothPlugin</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+</context>
+<context>
     <name>DBusAdaptors</name>
     <message>
         <source>Add keyboard layout</source>
@@ -178,10 +207,85 @@
     </message>
 </context>
 <context>
+    <name>NetworkItem</name>
+    <message>
+        <source>Wireless connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Wired connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disable wired connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Enable wired connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disable wireless connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Enable wireless connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disable network</source>
+        <translation>Wyłącz sieć</translation>
+    </message>
+    <message>
+        <source>Enable network</source>
+        <translation>Włącz sieć</translation>
+    </message>
+    <message>
+        <source>Network settings</source>
+        <translation>Ustawienia sieci</translation>
+    </message>
+    <message>
+        <source>Device disabled</source>
+        <translation>Urządzenie jest wyłączone</translation>
+    </message>
+    <message>
+        <source>Wireless connection: %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Wired connection: %1</source>
+        <translation>Połączenie przewodowe: %1</translation>
+    </message>
+    <message>
+        <source>Not connected</source>
+        <translation>Brak połączenia</translation>
+    </message>
+    <message>
+        <source>Connecting</source>
+        <translation>Łączenie</translation>
+    </message>
+    <message>
+        <source>Network cable unplugged</source>
+        <translation>Kabel sieciowy jest odłączony</translation>
+    </message>
+    <message>
+        <source>Connected but no Internet access</source>
+        <translation>Połączono, ale brak dostępu do Internetu</translation>
+    </message>
+</context>
+<context>
     <name>NetworkPlugin</name>
     <message>
         <source>Network</source>
         <translation>Sieć</translation>
+    </message>
+    <message>
+        <source>Wired Network</source>
+        <translation>Sieć przewodowa</translation>
+    </message>
+    <message>
+        <source>Wired Network %1</source>
+        <translation>Sieć przewodowa %1</translation>
     </message>
 </context>
 <context>
@@ -370,18 +474,22 @@
     <name>WiredItem</name>
     <message>
         <source>Unknown</source>
-        <translation>Nieznany</translation>
+        <translation type="vanished">Nieznany</translation>
     </message>
     <message>
         <source>Wired connection: %1</source>
-        <translation>Połączenie przewodowe: %1</translation>
+        <translation type="vanished">Połączenie przewodowe: %1</translation>
+    </message>
+    <message>
+        <source>Wired Connection</source>
+        <translation>Połączenie przewodowe</translation>
     </message>
 </context>
 <context>
     <name>WirelessItem</name>
     <message>
         <source>No Network</source>
-        <translation>Brak sieci</translation>
+        <translation type="vanished">Brak sieci</translation>
     </message>
     <message>
         <source>Wireless Connection: %1</source>
@@ -389,7 +497,7 @@
     </message>
     <message>
         <source>Connected but no Internet access</source>
-        <translation>Połączono, ale brak dostępu do Internetu</translation>
+        <translation type="vanished">Połączono, ale brak dostępu do Internetu</translation>
     </message>
     <message>
         <source>Wireless connection: %1</source>

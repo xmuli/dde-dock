@@ -210,11 +210,11 @@
     <name>NetworkItem</name>
     <message>
         <source>Wireless connection</source>
-        <translation>无线网络</translation>
+        <translation>无线连接</translation>
     </message>
     <message>
         <source>Wired connection</source>
-        <translation>有线网络</translation>
+        <translation>有线连接</translation>
     </message>
     <message>
         <source>Disable wired connection</source>
@@ -265,12 +265,12 @@
         <translation>正在连接</translation>
     </message>
     <message>
-        <source>Connected but no Internet access</source>
-        <translation>已连接网络但无法访问互联网</translation>
-    </message>
-    <message>
         <source>Network cable unplugged</source>
         <translation>未插入网线</translation>
+    </message>
+    <message>
+        <source>Connected but no Internet access</source>
+        <translation>已连接网络但无法访问互联网</translation>
     </message>
 </context>
 <context>
@@ -285,7 +285,7 @@
     </message>
     <message>
         <source>Wired Network %1</source>
-        <translation>有线网络%1</translation>
+        <translation>有线网络 %1</translation>
     </message>
 </context>
 <context>
@@ -474,18 +474,22 @@
     <name>WiredItem</name>
     <message>
         <source>Unknown</source>
-        <translation>未知</translation>
+        <translation type="vanished">未知</translation>
     </message>
     <message>
         <source>Wired connection: %1</source>
-        <translation>有线连接：%1</translation>
+        <translation type="vanished">有线连接：%1</translation>
+    </message>
+    <message>
+        <source>Wired Connection</source>
+        <translation>有线连接</translation>
     </message>
 </context>
 <context>
     <name>WirelessItem</name>
     <message>
         <source>No Network</source>
-        <translation>无网络访问</translation>
+        <translation type="vanished">无网络访问</translation>
     </message>
     <message>
         <source>Wireless Connection: %1</source>
@@ -493,11 +497,11 @@
     </message>
     <message>
         <source>Connected but no Internet access</source>
-        <translation>已连接网络但无法访问互联网</translation>
+        <translation type="vanished">已连接网络但无法访问互联网</translation>
     </message>
     <message>
         <source>Wireless connection: %1</source>
-        <translation>无线连接：%1</translation>
+        <translation type="vanished">无线连接：%1</translation>
     </message>
 </context>
 <context>

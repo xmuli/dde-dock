@@ -7,6 +7,35 @@
     </message>
 </context>
 <context>
+    <name>BluetoothApplet</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+</context>
+<context>
+    <name>BluetoothItem</name>
+    <message>
+        <source>Turn off</source>
+        <translation>Выключить</translation>
+    </message>
+    <message>
+        <source>Turn on</source>
+        <translation>Включить</translation>
+    </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Настройки Bluetooth</translation>
+    </message>
+</context>
+<context>
+    <name>BluetoothPlugin</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+</context>
+<context>
     <name>DBusAdaptors</name>
     <message>
         <source>Add keyboard layout</source>
@@ -33,15 +62,15 @@
     </message>
     <message>
         <source>12-hour time</source>
-        <translation type="unfinished"/>
+        <translation>12-часовой формат времени</translation>
     </message>
     <message>
         <source>24-hour time</source>
-        <translation type="unfinished"/>
+        <translation>24-часовой формат времени</translation>
     </message>
     <message>
         <source>Time settings</source>
-        <translation type="unfinished"/>
+        <translation>Настройки времени</translation>
     </message>
 </context>
 <context>
@@ -178,10 +207,85 @@
     </message>
 </context>
 <context>
+    <name>NetworkItem</name>
+    <message>
+        <source>Wireless connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Wired connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disable wired connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Enable wired connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disable wireless connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Enable wireless connection</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disable network</source>
+        <translation>Отключить сеть</translation>
+    </message>
+    <message>
+        <source>Enable network</source>
+        <translation>Включить сеть</translation>
+    </message>
+    <message>
+        <source>Network settings</source>
+        <translation>Настройки сети</translation>
+    </message>
+    <message>
+        <source>Device disabled</source>
+        <translation>Устройство отключено</translation>
+    </message>
+    <message>
+        <source>Wireless connection: %1</source>
+        <translation>Беспроводное соединение: %1</translation>
+    </message>
+    <message>
+        <source>Wired connection: %1</source>
+        <translation>Проводное подключение к: %1</translation>
+    </message>
+    <message>
+        <source>Not connected</source>
+        <translation>Не подключено</translation>
+    </message>
+    <message>
+        <source>Connecting</source>
+        <translation>Соединение</translation>
+    </message>
+    <message>
+        <source>Network cable unplugged</source>
+        <translation>Сетевой кабель отключен</translation>
+    </message>
+    <message>
+        <source>Connected but no Internet access</source>
+        <translation>Подключено, без доступа к Интернету</translation>
+    </message>
+</context>
+<context>
     <name>NetworkPlugin</name>
     <message>
         <source>Network</source>
         <translation>Сеть</translation>
+    </message>
+    <message>
+        <source>Wired Network</source>
+        <translation>Проводная Сеть</translation>
+    </message>
+    <message>
+        <source>Wired Network %1</source>
+        <translation>Проводная Сеть %1</translation>
     </message>
 </context>
 <context>
@@ -231,7 +335,7 @@
     </message>
     <message>
         <source>%1 charged</source>
-        <translation type="unfinished"/>
+        <translation>Заряжено на %1 процентов</translation>
     </message>
 </context>
 <context>
@@ -319,11 +423,11 @@
     </message>
     <message>
         <source>Sound settings</source>
-        <translation type="unfinished"/>
+        <translation>Настройки звука</translation>
     </message>
     <message>
         <source>Volume %1</source>
-        <translation type="unfinished"/>
+        <translation>Том %1</translation>
     </message>
 </context>
 <context>
@@ -370,18 +474,22 @@
     <name>WiredItem</name>
     <message>
         <source>Unknown</source>
-        <translation>Неизвестный</translation>
+        <translation type="vanished">Неизвестный</translation>
     </message>
     <message>
         <source>Wired connection: %1</source>
-        <translation>Проводное подключение к: %1</translation>
+        <translation type="vanished">Проводное подключение к: %1</translation>
+    </message>
+    <message>
+        <source>Wired Connection</source>
+        <translation>Проводное Соединение</translation>
     </message>
 </context>
 <context>
     <name>WirelessItem</name>
     <message>
         <source>No Network</source>
-        <translation>Нет Сети</translation>
+        <translation type="vanished">Нет Сети</translation>
     </message>
     <message>
         <source>Wireless Connection: %1</source>
@@ -389,11 +497,11 @@
     </message>
     <message>
         <source>Connected but no Internet access</source>
-        <translation>Подключено без доступа к Интернет</translation>
+        <translation type="vanished">Подключено, без доступа к Интернету</translation>
     </message>
     <message>
         <source>Wireless connection: %1</source>
-        <translation type="unfinished"/>
+        <translation type="vanished">Беспроводное соединение: %1</translation>
     </message>
 </context>
 <context>
