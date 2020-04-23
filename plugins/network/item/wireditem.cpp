@@ -227,7 +227,14 @@ void WiredItem::changedActiveWiredConnectionInfo(const QJsonObject &connInfo)
     if (strTitle.isEmpty())
         m_connectedName->setText(m_deviceName);
     else
-        m_connectedName->setText(strTitle);
+    {
+        //以下四行代码为了解决盘古的一个bug,在控制中心也有修改,任务详情可以参照
+        // https://shimo.im/docs/W8qRVYaENgIjFBqX  ,后期可能删除,让后端去修改这个值
+        if(strTitle == "Wired Connection" || strTitle == "有线连接")
+            m_connectedName->setText(tr("Wired Connection"));
+        else
+            m_connectedName->setText(strTitle);
+    }
 }
 
 void WiredItem::buttonEnter()
