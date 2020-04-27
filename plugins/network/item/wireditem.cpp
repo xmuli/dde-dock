@@ -237,6 +237,8 @@ void WiredItem::changedActiveWiredConnectionInfo(const QJsonObject &connInfo)
         else
             m_connectedName->setText(strTitle);
     }
+
+    emit activeConnectionChanged();
 }
 
 void WiredItem::buttonEnter()
