@@ -22,21 +22,21 @@
 #ifndef DEVICECONTROLWIDGET_H
 #define DEVICECONTROLWIDGET_H
 
-#include "horizontalseperator.h"
-
 #include <QWidget>
-#include <QLabel>
 #include <dloadingindicator.h>
 #include <dswitchbutton.h>
 
 DWIDGET_USE_NAMESPACE
+
+class HorizontalSeperator;
+class QLabel;
 class TipsWidget;
 class DeviceControlWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit DeviceControlWidget(QWidget *parent = 0);
+    explicit DeviceControlWidget(QWidget *parent = nullptr);
 
     void setDeviceName(const QString &name);
     void setDeviceEnabled(const bool enable);
@@ -55,7 +55,7 @@ private slots:
 
 private:
     QLabel *m_deviceName;
-    Dtk::Widget::DSwitchButton *m_switchBtn;
+    DSwitchButton *m_switchBtn;
 //    HorizontalSeperator *m_seperator;
     DLoadingIndicator *m_loadingIndicator;
 };

@@ -23,12 +23,15 @@
 #include "networkplugin.h"
 #include "../frame/util/imageutil.h"
 #include "../widgets/tipswidget.h"
+#include "applet/wirelesslist.h"
+
 #include <DGuiApplicationHelper>
 
 #include <QPainter>
 #include <QMouseEvent>
 #include <QApplication>
 #include <QIcon>
+#include <QLayout>
 
 using namespace dde::network;
 DGUI_USE_NAMESPACE
@@ -141,8 +144,8 @@ QJsonObject WirelessItem::getActiveWirelessConnectionInfo()
 
 void WirelessItem::setControlPanelVisible(bool visible)
 {
-    auto layout = m_wirelessApplet->layout();
-    auto controlPanel = m_APList->controlPanel();
+    QLayout *layout = m_wirelessApplet->layout();
+    QWidget *controlPanel = m_APList->controlPanel();
     if (layout && controlPanel) {
         if (visible) {
             layout->removeWidget(controlPanel);
@@ -164,11 +167,11 @@ void WirelessItem::setDeviceInfo(const int index)
     m_index = index;
 }
 
-bool WirelessItem::eventFilter(QObject *o, QEvent *e)
+bool WirelessItem::eventFilter(QObject *obj, QEvent *event)
 {
-    if (o == m_APList && e->type() == QEvent::Resize)
+    if (obj == m_APList && event->type() == QEvent::Resize)
         QMetaObject::invokeMethod(this, "adjustHeight", Qt::QueuedConnection);
-    if (o == m_APList && e->type() == QEvent::Show)
+    if (obj == m_APList && event->type() == QEvent::Show)
         Q_EMIT requestWirelessScan();
 
     return false;
@@ -198,13 +201,13 @@ void WirelessItem::init()
     });
 }
 
-void WirelessItem::adjustHeight(bool visibel)
+void WirelessItem::adjustHeight(bool visible)
 {
-    auto controlPanel = m_APList->controlPanel();
+    QWidget *controlPanel = m_APList->controlPanel();
     if (!controlPanel)
         return;
 
-    auto height = visibel ? (m_APList->height() + controlPanel->height())
+    int height = visible ? (m_APList->height() + controlPanel->height())
                           : m_APList->height();
     m_wirelessApplet->setFixedHeight(height);
 }

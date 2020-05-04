@@ -34,7 +34,7 @@ public:
     void setColor(const QColor color);
 
 protected:
-    void paintEvent(QPaintEvent *e);
+    void paintEvent(QPaintEvent *event);
 
 private:
     QColor m_color;

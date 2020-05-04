@@ -3,22 +3,19 @@
 #include "item/wirelessitem.h"
 #include "../../widgets/tipswidget.h"
 #include "../frame/util/imageutil.h"
-
+#include "constants.h"
+#include "item/applet/networkconstants.h"
 
 #include <DApplicationHelper>
 #include <DDBusSender>
 
 #include <QVBoxLayout>
 #include <QJsonDocument>
-
-extern const int ItemWidth;
-extern const int ItemMargin;
-extern const int ItemHeight;
-const int ControlItemHeight = 35;
-const QString MenueEnable = "enable";
-const QString MenueWiredEnable = "wireEnable";
-const QString MenueWirelessEnable = "wirelessEnable";
-const QString MenueSettings = "settings";
+#include <QScrollArea>
+#include <QTimer>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QPainter>
 
 extern void initFontColor(QWidget *widget)
 {
@@ -51,7 +48,7 @@ NetworkItem::NetworkItem(QWidget *parent)
 
     m_tipsWidget->setVisible(false);
 
-    auto defaultFont = font();
+    QFont defaultFont = font();
     auto titlefont = QFont(defaultFont.family(), defaultFont.pointSize() + 2);
 
     m_wirelessControlPanel = new QWidget(this);
@@ -73,7 +70,7 @@ NetworkItem::NetworkItem(QWidget *parent)
     switchWirelessLayout->addWidget(m_switchWirelessBtn);
     switchWirelessLayout->addSpacing(2);
     m_wirelessControlPanel->setLayout(switchWirelessLayout);
-    m_wirelessControlPanel->setFixedHeight(ControlItemHeight);
+    m_wirelessControlPanel->setFixedHeight(CONTROLITEMHEIGHT);
 
     m_wiredControlPanel = new QWidget(this);
 
@@ -95,21 +92,21 @@ NetworkItem::NetworkItem(QWidget *parent)
     switchWiredLayout->addWidget(m_switchWiredBtn);
     switchWiredLayout->addSpacing(2);
     m_wiredControlPanel->setLayout(switchWiredLayout);
-    m_wiredControlPanel->setFixedHeight(ControlItemHeight);
+    m_wiredControlPanel->setFixedHeight(CONTROLITEMHEIGHT);
 
     auto centralWidget = new QWidget(m_applet);
     auto centralLayout = new QVBoxLayout;
-    centralLayout->setContentsMargins(QMargins(ItemMargin, 0, ItemMargin, 0));
+    centralLayout->setContentsMargins(QMargins(ITEMMARGIN, 0, ITEMMARGIN, 0));
     centralLayout->setSpacing(0);
     centralLayout->addWidget(m_wirelessControlPanel);
     centralLayout->addLayout(m_wirelessLayout);
     centralLayout->addWidget(m_wiredControlPanel);
     centralLayout->addLayout(m_wiredLayout);
     centralWidget->setLayout(centralLayout);
-    centralWidget->setFixedWidth(ItemWidth);
+    centralWidget->setFixedWidth(ITEMWIDTH);
     centralWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
 
-    m_applet->setFixedWidth(ItemWidth);
+    m_applet->setFixedWidth(ITEMWIDTH);
     m_applet->setWidget(centralWidget);
     m_applet->setFrameShape(QFrame::NoFrame);
     m_applet->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -141,12 +138,12 @@ QWidget *NetworkItem::itemTips()
 void NetworkItem::updateDeviceItems(QMap<QString, WiredItem *> &wiredItems, QMap<QString, WirelessItem *> &wirelessItems)
 {
     // 已有设备不重复进行增删操作
-    auto tempWiredItems = m_wiredItems;
-    auto tempWirelessItems = m_wirelessItems;
+    QMap<QString, WiredItem *> tempWiredItems = m_wiredItems;
+    QMap<QString, WirelessItem *> tempWirelessItems = m_wirelessItems;
 
-    for (auto wirelessItem : wirelessItems) {
+    for (WirelessItem *wirelessItem : wirelessItems) {
         if (wirelessItem) {
-            auto path = wirelessItem->path();
+            QString path = wirelessItem->path();
             if (m_wirelessItems.contains(path)) {
                 m_wirelessItems.value(path)->setDeviceInfo(wirelessItem->deviceInfo());
                 tempWirelessItems.remove(path);
@@ -158,9 +155,9 @@ void NetworkItem::updateDeviceItems(QMap<QString, WiredItem *> &wiredItems, QMap
         }
     }
 
-    for (auto wiredItem : wiredItems) {
+    for (WiredItem *wiredItem : wiredItems) {
         if (wiredItem) {
-            auto path = wiredItem->path();
+            QString path = wiredItem->path();
             if (m_wiredItems.contains(path)) {
                 m_wiredItems.value(path)->setTitle(wiredItem->deviceName());
                 tempWiredItems.remove(path);
@@ -174,9 +171,9 @@ void NetworkItem::updateDeviceItems(QMap<QString, WiredItem *> &wiredItems, QMap
         }
     }
 
-    for (auto wirelessItem : tempWirelessItems) {
+    for (WirelessItem *wirelessItem : tempWirelessItems) {
         if (wirelessItem) {
-            auto path = wirelessItem->device()->path();
+            QString path = wirelessItem->device()->path();
             m_wirelessItems.remove(path);
             m_connectedWirelessDevice.remove(path);
             wirelessItem->itemApplet()->setVisible(false);
@@ -184,9 +181,9 @@ void NetworkItem::updateDeviceItems(QMap<QString, WiredItem *> &wiredItems, QMap
             delete wirelessItem;
         }
     }
-    for (auto wiredItem : tempWiredItems) {
+    for (WiredItem *wiredItem : tempWiredItems) {
         if (wiredItem) {
-            auto path = wiredItem->device()->path();
+            QString path = wiredItem->device()->path();
             m_wiredItems.remove(path);
             m_connectedWiredDevice.remove(path);
             wiredItem->setVisible(false);
@@ -205,7 +202,7 @@ const QString NetworkItem::contextMenu() const
     if (m_wirelessItems.size() && m_wiredItems.size()) {
         items.reserve(3);
         QMap<QString, QVariant> wireEnable;
-        wireEnable["itemId"] = MenueWiredEnable;
+        wireEnable["itemId"] = MENUEWIREDENABLE;
         if (m_switchWiredBtnState)
             wireEnable["itemText"] = tr("Disable wired connection");
         else
@@ -214,7 +211,7 @@ const QString NetworkItem::contextMenu() const
         items.push_back(wireEnable);
 
         QMap<QString, QVariant> wirelessEnable;
-        wirelessEnable["itemId"] = MenueWirelessEnable;
+        wirelessEnable["itemId"] = MENUEWIRELESSENABLE;
         if (m_switchWirelessBtnState)
             wirelessEnable["itemText"] = tr("Disable wireless connection");
         else
@@ -224,7 +221,7 @@ const QString NetworkItem::contextMenu() const
     } else {
         items.reserve(2);
         QMap<QString, QVariant> enable;
-        enable["itemId"] = MenueEnable;
+        enable["itemId"] = MENUEENABLE;
         if (m_switchWiredBtnState || m_switchWirelessBtnState)
             enable["itemText"] = tr("Disable network");
         else
@@ -234,7 +231,7 @@ const QString NetworkItem::contextMenu() const
     }
 
     QMap<QString, QVariant> settings;
-    settings["itemId"] = MenueSettings;
+    settings["itemId"] = MENUESETTINGS;
     settings["itemText"] = tr("Network settings");
     settings["isActive"] = true;
     items.push_back(settings);
@@ -251,14 +248,14 @@ void NetworkItem::invokeMenuItem(const QString &menuId, const bool checked)
 {
     Q_UNUSED(checked);
 
-    if (menuId == MenueEnable) {
+    if (menuId == MENUEENABLE) {
         wiredsEnable(!m_switchWiredBtnState);
         wirelessEnable(!m_switchWirelessBtnState);
-    } else if (menuId == MenueWiredEnable)
+    } else if (menuId == MENUEWIREDENABLE)
         wiredsEnable(!m_switchWiredBtnState);
-    else if (menuId == MenueWirelessEnable)
+    else if (menuId == MENUEWIRELESSENABLE)
         wirelessEnable(!m_switchWirelessBtnState);
-    else if (menuId == MenueSettings)
+    else if (menuId == MENUESETTINGS)
         DDBusSender()
         .service("com.deepin.dde.ControlCenter")
         .interface("com.deepin.dde.ControlCenter")
@@ -272,7 +269,7 @@ void NetworkItem::refreshIcon()
 {
     QString stateString;
     QString iconString;
-    const auto ratio = devicePixelRatioF();
+    const qreal ratio = devicePixelRatioF();
     int iconSize = PLUGIN_ICON_MAX_SIZE;
     int strength = 0;
 
@@ -403,9 +400,9 @@ void NetworkItem::refreshIcon()
     update();
 }
 
-void NetworkItem::resizeEvent(QResizeEvent *e)
+void NetworkItem::resizeEvent(QResizeEvent *event)
 {
-    QWidget::resizeEvent(e);
+    QWidget::resizeEvent(event);
 
     const Dock::Position position = qApp->property(PROP_POSITION).value<Dock::Position>();
     // 保持横纵比
@@ -420,9 +417,9 @@ void NetworkItem::resizeEvent(QResizeEvent *e)
     refreshIcon();
 }
 
-void NetworkItem::paintEvent(QPaintEvent *e)
+void NetworkItem::paintEvent(QPaintEvent *event)
 {
-    QWidget::paintEvent(e);
+    QWidget::paintEvent(event);
 
     QPainter painter(this);
     const QRectF &rf = rect();
@@ -433,7 +430,7 @@ void NetworkItem::paintEvent(QPaintEvent *e)
 
 void NetworkItem::wiredsEnable(bool enable)
 {
-    for (auto wiredItem : m_wiredItems) {
+    for (WiredItem *wiredItem : m_wiredItems) {
         if (wiredItem) {
             wiredItem->setDeviceEnabled(enable);
         }
@@ -443,7 +440,7 @@ void NetworkItem::wiredsEnable(bool enable)
 
 void NetworkItem::wirelessEnable(bool enable)
 {
-    for (auto wirelessItem : m_wirelessItems) {
+    for (WirelessItem *wirelessItem : m_wirelessItems) {
         if (wirelessItem) {
             wirelessItem->setDeviceEnabled(enable);
             enable ? m_wirelessLayout->addWidget(wirelessItem->itemApplet())
@@ -456,7 +453,7 @@ void NetworkItem::wirelessEnable(bool enable)
 
 void NetworkItem::onThemeTypeChanged(DGuiApplicationHelper::ColorType themeType)
 {
-    for (auto wiredItem : m_wiredItems) {
+    for (WiredItem *wiredItem : m_wiredItems) {
         wiredItem->setThemeType(themeType);
     }
     refreshIcon();
@@ -472,7 +469,7 @@ void NetworkItem::getPluginState()
     QMapIterator<QString, WirelessItem *> iwireless(m_wirelessItems);
     while (iwireless.hasNext()) {
         iwireless.next();
-        auto wirelessItem = iwireless.value();
+        WirelessItem *wirelessItem = iwireless.value();
         if (wirelessItem) {
             temp = wirelessItem->getDeviceState();
             state |= temp;
@@ -507,7 +504,7 @@ void NetworkItem::getPluginState()
     QMapIterator<QString, WiredItem *> iwired(m_wiredItems);
     while (iwired.hasNext()) {
         iwired.next();
-        auto wiredItem = iwired.value();
+        WiredItem *wiredItem = iwired.value();
         if (wiredItem) {
             temp = wiredItem->getDeviceState();
             state |= temp;
@@ -972,9 +969,9 @@ void NetworkItem::updateView()
     int contentHeight = 0;
     int itemCount = 0;
 
-    auto wirelessCnt = m_wirelessItems.size();
+    int wirelessCnt = m_wirelessItems.size();
     if (m_switchWirelessBtnState) {
-        for (auto wirelessItem : m_wirelessItems) {
+        for (WirelessItem *wirelessItem : m_wirelessItems) {
             if (wirelessItem) {
                 if (wirelessItem->device()->enabled())
                     itemCount += wirelessItem->APcount();
@@ -990,12 +987,12 @@ void NetworkItem::updateView()
         }
     }
     // 设备总控开关只与是否有设备相关
-    auto wirelessDeviceCnt = m_wirelessItems.size();
+    int wirelessDeviceCnt = m_wirelessItems.size();
     if (wirelessDeviceCnt)
         contentHeight += m_wirelessControlPanel->height();
     m_wirelessControlPanel->setVisible(wirelessDeviceCnt);
 
-    auto wiredDeviceCnt = m_wiredItems.size();
+    int wiredDeviceCnt = m_wiredItems.size();
     if (wiredDeviceCnt)
         contentHeight += m_wiredControlPanel->height();
     m_wiredControlPanel->setVisible(wiredDeviceCnt);
@@ -1006,17 +1003,17 @@ void NetworkItem::updateView()
 //    auto hasDevice = wirelessDeviceCnt && wiredDeviceCnt;
 //    m_line->setVisible(hasDevice);
 
-    auto centralWidget = m_applet->widget();
+    QWidget *centralWidget = m_applet->widget();
     if (itemCount <= constDisplayItemCnt) {
-        contentHeight += (itemCount - wiredDeviceCnt) * ItemHeight;
-        contentHeight += wiredDeviceCnt * ItemHeight;
+        contentHeight += (itemCount - wiredDeviceCnt) * ITEMHEIGHT;
+        contentHeight += wiredDeviceCnt * ITEMHEIGHT;
         centralWidget->setFixedHeight(contentHeight);
         m_applet->setFixedHeight(contentHeight);
     } else {
-        contentHeight += (itemCount - wiredDeviceCnt) * ItemHeight;
-        contentHeight += wiredDeviceCnt * ItemHeight;
+        contentHeight += (itemCount - wiredDeviceCnt) * ITEMHEIGHT;
+        contentHeight += wiredDeviceCnt * ITEMHEIGHT;
         centralWidget->setFixedHeight(contentHeight);
-        m_applet->setFixedHeight(constDisplayItemCnt * ItemHeight);
+        m_applet->setFixedHeight(constDisplayItemCnt * ITEMHEIGHT);
         m_applet->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     }
 }
@@ -1033,11 +1030,11 @@ void NetworkItem::updateSelf()
 int NetworkItem::getStrongestAp()
 {
     int retStrength = -1;
-    for (auto wirelessItem : m_connectedWirelessDevice) {
-        auto apInfo = wirelessItem->getConnectedApInfo();
+    for (WirelessItem *wirelessItem : m_connectedWirelessDevice) {
+        QJsonObject apInfo = wirelessItem->getConnectedApInfo();
         if (apInfo.isEmpty())
             continue;
-        auto strength = apInfo.value("Strength").toInt();
+        int strength = apInfo.value("Strength").toInt();
         if (retStrength < strength)
             retStrength = strength;
     }
@@ -1047,7 +1044,7 @@ int NetworkItem::getStrongestAp()
 void NetworkItem::updateMasterControlSwitch()
 {
     bool deviceState = false;
-    for (auto wirelessItem : m_wirelessItems) {
+    for (WirelessItem *wirelessItem : m_wirelessItems) {
         if (wirelessItem)
             if (wirelessItem->deviceEanbled()) {
                 deviceState = true;
@@ -1058,14 +1055,14 @@ void NetworkItem::updateMasterControlSwitch()
     m_switchWirelessBtn->setChecked(deviceState);
     m_switchWirelessBtn->blockSignals(false);
     if (deviceState) {
-        for (auto wirelessItem : m_wirelessItems) {
+        for (WirelessItem *wirelessItem : m_wirelessItems) {
             if (wirelessItem) {
                 m_wirelessLayout->addWidget(wirelessItem->itemApplet());
                 wirelessItem->itemApplet()->setVisible(true);
             }
         }
     } else {
-        for (auto wirelessItem : m_wirelessItems) {
+        for (WirelessItem *wirelessItem : m_wirelessItems) {
             if (wirelessItem) {
                 m_wirelessLayout->removeWidget(wirelessItem->itemApplet());
                 wirelessItem->itemApplet()->setVisible(false);
@@ -1075,7 +1072,7 @@ void NetworkItem::updateMasterControlSwitch()
     m_switchWirelessBtnState = deviceState;
 
     deviceState = false;
-    for (auto wiredItem : m_wiredItems) {
+    for (WiredItem *wiredItem : m_wiredItems) {
         if (wiredItem)
             if (wiredItem->deviceEabled()) {
                 deviceState = true;
@@ -1098,9 +1095,9 @@ void NetworkItem::refreshTips()
         break;
     case Connected: {
         QString strTips;
-        for (auto wirelessItem : m_connectedWirelessDevice) {
+        for (WirelessItem *wirelessItem : m_connectedWirelessDevice) {
             if (wirelessItem) {
-                auto info = wirelessItem->getActiveWirelessConnectionInfo();
+                QJsonObject info = wirelessItem->getActiveWirelessConnectionInfo();
                 if (!info.contains("Ip4"))
                     break;
                 const QJsonObject ipv4 = info.value("Ip4").toObject();
@@ -1109,9 +1106,9 @@ void NetworkItem::refreshTips()
                 strTips = tr("Wireless connection: %1").arg(ipv4.value("Address").toString()) + '\n';
             }
         }
-        for (auto wiredItem : m_connectedWiredDevice) {
+        for (WiredItem *wiredItem : m_connectedWiredDevice) {
             if (wiredItem) {
-                auto info = wiredItem->getActiveWiredConnectionInfo();
+                QJsonObject info = wiredItem->getActiveWiredConnectionInfo();
                 if (!info.contains("Ip4"))
                     break;
                 const QJsonObject ipv4 = info.value("Ip4").toObject();
@@ -1126,9 +1123,9 @@ void NetworkItem::refreshTips()
     break;
     case Aconnected: {
         QString strTips;
-        for (auto wirelessItem : m_connectedWirelessDevice) {
+        for (WirelessItem *wirelessItem : m_connectedWirelessDevice) {
             if (wirelessItem) {
-                auto info = wirelessItem->getActiveWirelessConnectionInfo();
+                QJsonObject info = wirelessItem->getActiveWirelessConnectionInfo();
                 if (!info.contains("Ip4"))
                     break;
                 const QJsonObject ipv4 = info.value("Ip4").toObject();
@@ -1143,9 +1140,9 @@ void NetworkItem::refreshTips()
     break;
     case Bconnected: {
         QString strTips;
-        for (auto wiredItem : m_connectedWiredDevice) {
+        for (WiredItem *wiredItem : m_connectedWiredDevice) {
             if (wiredItem) {
-                auto info = wiredItem->getActiveWiredConnectionInfo();
+                QJsonObject info = wiredItem->getActiveWiredConnectionInfo();
                 if (!info.contains("Ip4"))
                     break;
                 const QJsonObject ipv4 = info.value("Ip4").toObject();

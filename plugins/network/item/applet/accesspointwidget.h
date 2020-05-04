@@ -24,13 +24,10 @@
 
 #include "accesspoint.h"
 
-#include <DImageButton>
 #include <NetworkDevice>
 
-#include <QWidget>
+#include <QFrame>
 #include <QLabel>
-#include <QPushButton>
-#include <QDBusObjectPath>
 
 class StateLabel;
 class SsidButton : public QLabel
@@ -38,7 +35,6 @@ class SsidButton : public QLabel
     Q_OBJECT
 public:
     SsidButton(QWidget *parent = nullptr) : QLabel(parent){}
-    virtual ~SsidButton() {}
 
 signals:
     void clicked();
@@ -71,8 +67,6 @@ signals:
     void clicked() const;
 
 private:
-    void enterEvent(QEvent *e);
-    void leaveEvent(QEvent *e);
     void setStrengthIcon(const int strength);
 
 private slots:
@@ -87,7 +81,6 @@ private:
 
     AccessPoint m_ap;
     SsidButton *m_ssidBtn;
-//    Dtk::Widget::DImageButton *m_disconnectBtn;
     QLabel *m_securityLabel;
     QLabel *m_strengthLabel;
     StateLabel *m_stateButton;

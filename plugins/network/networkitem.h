@@ -4,14 +4,13 @@
 #include <DGuiApplicationHelper>
 #include <DSwitchButton>
 
-#include <QScrollArea>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QTimer>
-
 DGUI_USE_NAMESPACE
 DWIDGET_USE_NAMESPACE
 
+class QScrollArea;
+class QTimer;
+class QLabel;
+class QVBoxLayout;
 class PluginState;
 class TipsWidget;
 class WiredItem;
@@ -64,8 +63,8 @@ public slots:
     void refreshIcon();
 
 protected:
-    void resizeEvent(QResizeEvent *e);
-    void paintEvent(QPaintEvent *e);
+    void resizeEvent(QResizeEvent *event);
+    void paintEvent(QPaintEvent *event);
 
 private slots:
     void wiredsEnable(bool enable);

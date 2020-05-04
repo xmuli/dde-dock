@@ -25,14 +25,15 @@
 #include "applet/horizontalseperator.h"
 #include "../widgets/tipswidget.h"
 #include "util/utils.h"
+#include "applet/networkconstants.h"
 
 #include <DGuiApplicationHelper>
 #include <NetworkModel>
 
+#include <QVBoxLayout>
+
 DGUI_USE_NAMESPACE
-const int ItemHeight = 30;
-extern const QString DarkType = "_dark.svg";
-extern const QString LightType = ".svg";
+
 extern void initFontColor(QWidget *widget);
 
 WiredItem::WiredItem(WiredDevice *device, const QString &deviceName, QWidget *parent)
@@ -44,18 +45,18 @@ WiredItem::WiredItem(WiredDevice *device, const QString &deviceName, QWidget *pa
     , m_loadingStat(new DSpinner(this))
 //    , m_line(new HorizontalSeperator(this))
 {
-    setFixedHeight(ItemHeight);
+    setFixedHeight(ITEMHEIGHT);
 
 //    m_connectedName->setVisible(false);
     bool isLight = (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType);
 
     auto pixpath = QString(":/wired/resources/wired/network-wired-symbolic");
-    pixpath = isLight ? pixpath + "-dark.svg" : pixpath + LightType;
-    auto iconPix = Utils::renderSVG(pixpath, QSize(PLUGIN_ICON_MAX_SIZE, PLUGIN_ICON_MAX_SIZE), devicePixelRatioF());
+    pixpath = isLight ? pixpath + "-dark.svg" : pixpath + LIGHTTYPE;
+    QPixmap iconPix = Utils::renderSVG(pixpath, QSize(PLUGIN_ICON_MAX_SIZE, PLUGIN_ICON_MAX_SIZE), devicePixelRatioF());
     m_wiredIcon->setPixmap(iconPix);
     m_wiredIcon->setVisible(false);
     pixpath = QString(":/wireless/resources/wireless/select");
-    pixpath = isLight ? pixpath + DarkType : pixpath + LightType;
+    pixpath = isLight ? pixpath + DARKTYPE : pixpath + LIGHTTYPE;
     iconPix = Utils::renderSVG(pixpath, QSize(PLUGIN_ICON_MAX_SIZE, PLUGIN_ICON_MAX_SIZE), devicePixelRatioF());
     m_stateButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     m_stateButton->setPixmap(iconPix);
@@ -68,7 +69,7 @@ WiredItem::WiredItem(WiredDevice *device, const QString &deviceName, QWidget *pa
     m_connectedName->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
     initFontColor(m_connectedName);
 
-    auto connectionLayout = new QVBoxLayout(this);
+    auto connectionLayout = new QVBoxLayout;
     connectionLayout->setMargin(0);
     connectionLayout->setSpacing(0);
 //    connectionLayout->addWidget(m_line);
@@ -93,7 +94,7 @@ WiredItem::WiredItem(WiredDevice *device, const QString &deviceName, QWidget *pa
             this, &WiredItem::changedActiveWiredConnectionInfo);
 
     connect(m_stateButton, &StateLabel::click, this, [&]{
-        auto enableState = m_device->enabled();
+        bool enableState = m_device->enabled();
         emit requestSetDeviceEnable(path(), !enableState);
     });
     connect(m_stateButton, &StateLabel::enter, this , &WiredItem::buttonEnter);
@@ -159,21 +160,21 @@ void WiredItem::setThemeType(DGuiApplicationHelper::ColorType themeType)
     bool isLight = (themeType == DGuiApplicationHelper::LightType);
 
     auto pixpath = QString(":/wired/resources/wired/network-wired-symbolic");
-    pixpath = isLight ? pixpath + "-dark.svg" : pixpath +  LightType;
-    auto iconPix = Utils::renderSVG(pixpath, QSize(PLUGIN_ICON_MAX_SIZE, PLUGIN_ICON_MAX_SIZE), devicePixelRatioF());
+    pixpath = isLight ? pixpath + "-dark.svg" : pixpath +  LIGHTTYPE;
+    QPixmap iconPix = Utils::renderSVG(pixpath, QSize(PLUGIN_ICON_MAX_SIZE, PLUGIN_ICON_MAX_SIZE), devicePixelRatioF());
     m_wiredIcon->setPixmap(iconPix);
 
     if (m_device) {
         if (NetworkDevice::Activated == m_device->status()) {
             pixpath = QString(":/wireless/resources/wireless/select");
-            pixpath = isLight ? pixpath + DarkType : pixpath + LightType;
-            auto iconPix = Utils::renderSVG(pixpath, QSize(PLUGIN_ICON_MAX_SIZE, PLUGIN_ICON_MAX_SIZE), devicePixelRatioF());
+            pixpath = isLight ? pixpath + DARKTYPE : pixpath + LIGHTTYPE;
+            QPixmap iconPix = Utils::renderSVG(pixpath, QSize(PLUGIN_ICON_MAX_SIZE, PLUGIN_ICON_MAX_SIZE), devicePixelRatioF());
             m_stateButton->setPixmap(iconPix);
         }
     }
 }
 
-void WiredItem::deviceStateChanged(NetworkDevice::DeviceStatus state)
+void WiredItem::deviceStateChanged(const NetworkDevice::DeviceStatus state)
 {
     QPixmap iconPix;
     switch (state) {
@@ -219,7 +220,7 @@ void WiredItem::changedActiveWiredConnectionInfo(const QJsonObject &connInfo)
     if (connInfo.isEmpty())
         m_stateButton->setVisible(false);
 
-    auto strTitle = connInfo.value("ConnectionName").toString();
+    QString strTitle = connInfo.value("ConnectionName").toString();
     m_connectedName->setText(strTitle);
     QFontMetrics fontMetrics(m_connectedName->font());
     if(fontMetrics.width(strTitle) > m_connectedName->width()) {
@@ -247,8 +248,8 @@ void WiredItem::buttonEnter()
         bool isLight = (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType);
         if (NetworkDevice::Activated == m_device->status()) {
             auto pixpath = QString(":/wireless/resources/wireless/disconnect");
-            pixpath = isLight ? pixpath + DarkType : pixpath + LightType;
-            auto iconPix = Utils::renderSVG(pixpath, QSize(PLUGIN_ICON_MAX_SIZE, PLUGIN_ICON_MAX_SIZE), devicePixelRatioF());
+            pixpath = isLight ? pixpath + DARKTYPE : pixpath + LIGHTTYPE;
+            QPixmap iconPix = Utils::renderSVG(pixpath, QSize(PLUGIN_ICON_MAX_SIZE, PLUGIN_ICON_MAX_SIZE), devicePixelRatioF());
             m_stateButton->setPixmap(iconPix);
         }
     }
@@ -260,8 +261,8 @@ void WiredItem::buttonLeave()
         bool isLight = (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType);
         if (NetworkDevice::Activated == m_device->status()) {
             auto pixpath = QString(":/wireless/resources/wireless/select");
-            pixpath = isLight ? pixpath + DarkType : pixpath + LightType;
-            auto iconPix = Utils::renderSVG(pixpath, QSize(PLUGIN_ICON_MAX_SIZE, PLUGIN_ICON_MAX_SIZE), devicePixelRatioF());
+            pixpath = isLight ? pixpath + DARKTYPE : pixpath + LIGHTTYPE;
+            QPixmap iconPix = Utils::renderSVG(pixpath, QSize(PLUGIN_ICON_MAX_SIZE, PLUGIN_ICON_MAX_SIZE), devicePixelRatioF());
             m_stateButton->setPixmap(iconPix);
         }
     }

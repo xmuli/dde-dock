@@ -22,17 +22,12 @@
 #ifndef WIRELESSITEM_H
 #define WIRELESSITEM_H
 
-#include "constants.h"
-
 #include "deviceitem.h"
-#include "applet/wirelesslist.h"
-
-#include <QHash>
-#include <QLabel>
 
 #include <WirelessDevice>
 
 class TipsWidget;
+class WirelessList;
 class WirelessItem : public DeviceItem
 {
     Q_OBJECT
@@ -85,11 +80,11 @@ Q_SIGNALS:
     void deviceStateChanged();
 
 protected:
-    bool eventFilter(QObject *o, QEvent *e);
+    bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
     void init();
-    void adjustHeight(bool visibel);
+    void adjustHeight(bool visible);
 
 private:
     int m_index;

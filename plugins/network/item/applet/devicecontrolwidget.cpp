@@ -22,18 +22,21 @@
 #include "devicecontrolwidget.h"
 #include "horizontalseperator.h"
 #include "../widgets/tipswidget.h"
+#include "horizontalseperator.h"
+#include "networkconstants.h"
 
+#include <DGuiApplicationHelper>
 #include <DHiDPIHelper>
+
 #include <QTimer>
 #include <QHBoxLayout>
 #include <QDebug>
 #include <QEvent>
-#include <DGuiApplicationHelper>
+#include <QLabel>
 
 DWIDGET_USE_NAMESPACE
 DGUI_USE_NAMESPACE
 
-extern const int ItemHeight = 30;
 extern void initFontColor(QWidget *widget);
 
 DeviceControlWidget::DeviceControlWidget(QWidget *parent)
@@ -82,7 +85,7 @@ DeviceControlWidget::DeviceControlWidget(QWidget *parent)
     centralLayout->setSpacing(0);
 
     setLayout(centralLayout);
-    setFixedHeight(ItemHeight);
+    setFixedHeight(ITEMHEIGHT);
 
     connect(m_switchBtn, &DSwitchButton::clicked, this, &DeviceControlWidget::enableButtonToggled);
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &DeviceControlWidget::refreshIcon);

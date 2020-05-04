@@ -35,9 +35,9 @@ void HorizontalSeperator::setColor(const QColor color)
     m_color = color;
 }
 
-void HorizontalSeperator::paintEvent(QPaintEvent *e)
+void HorizontalSeperator::paintEvent(QPaintEvent *event)
 {
-    QWidget::paintEvent(e);
+    QWidget::paintEvent(event);
 
     QPainter painter(this);
     painter.fillRect(rect(), m_color);

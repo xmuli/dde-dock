@@ -22,6 +22,7 @@
 #include "deviceitem.h"
 
 #include <DDBusSender>
+
 #include <QJsonDocument>
 
 using namespace dde::network;

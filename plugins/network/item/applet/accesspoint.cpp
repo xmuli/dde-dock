@@ -23,6 +23,7 @@
 
 #include <QDebug>
 #include <QJsonDocument>
+#include <QJsonObject>
 
 AccessPoint::AccessPoint(const QJsonObject &apInfo)
     : QObject(nullptr)
@@ -36,9 +37,9 @@ AccessPoint::AccessPoint(const AccessPoint &ap)
     *this = ap;
 }
 
-AccessPoint::AccessPoint(const QString &info)
+AccessPoint::AccessPoint(const QString &apInfo)
 {
-    const QJsonDocument doc = QJsonDocument::fromJson(info.toUtf8());
+    const QJsonDocument doc = QJsonDocument::fromJson(apInfo.toUtf8());
     Q_ASSERT(doc.isObject());
     loadApInfo(doc.object());
 }

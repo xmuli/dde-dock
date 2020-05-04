@@ -28,7 +28,7 @@
 
 using namespace dde::network;
 
-#define STATE_KEY       "enabled"
+#define STATE_KEY   "enabled"
 
 NetworkPlugin::NetworkPlugin(QObject *parent)
     : QObject(parent)
@@ -166,7 +166,7 @@ void NetworkPlugin::onDeviceListChanged(const QList<NetworkDevice *> devices)
 
     int wiredDeviceCnt = 0;
     int wirelessDeviceCnt = 0;
-    for (auto device : devices) {
+    for (NetworkDevice *device : devices) {
         if (device && device->type() == NetworkDevice::Wired)
             wiredDeviceCnt++;
         else
@@ -178,7 +178,7 @@ void NetworkPlugin::onDeviceListChanged(const QList<NetworkDevice *> devices)
     int wirelessNum = 0;
     QString text;
 
-    for (auto device : devices) {
+    for (NetworkDevice *device : devices) {
         const QString &path = device->path();
         // new device
         DeviceItem *item = nullptr;

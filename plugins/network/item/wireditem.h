@@ -29,13 +29,13 @@
 #include <DSpinner>
 
 #include <QLabel>
-#include <QVBoxLayout>
 
 using namespace dde::network;
 DGUI_USE_NAMESPACE
 DWIDGET_USE_NAMESPACE
 
 class TipsWidget;
+class QVBoxLayout;
 class HorizontalSeperator;
 class StateLabel;
 class WiredItem : public DeviceItem
@@ -77,7 +77,7 @@ signals:
     void activeConnectionChanged();
 
 private slots:
-    void deviceStateChanged(NetworkDevice::DeviceStatus state);
+    void deviceStateChanged(const NetworkDevice::DeviceStatus state);
     void changedActiveWiredConnectionInfo(const QJsonObject &connInfo);
     void buttonEnter();
     void buttonLeave();

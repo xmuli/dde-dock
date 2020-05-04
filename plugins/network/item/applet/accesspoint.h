@@ -23,15 +23,15 @@
 #define ACCESSPOINT_H
 
 #include <QObject>
-#include <QJsonObject>
 
+class QJsonObject;
 class AccessPoint : public QObject
 {
     Q_OBJECT
 
 public:
     explicit AccessPoint(const QJsonObject &apInfo);
-    explicit AccessPoint(const QString &info);
+    explicit AccessPoint(const QString &apInfo);
     explicit AccessPoint();
     AccessPoint(const AccessPoint &ap);
     bool operator==(const AccessPoint &ap) const;
