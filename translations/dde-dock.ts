@@ -358,6 +358,10 @@
         <source>%1 charged</source>
         <translation>%1 charged</translation>
     </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ShowDesktopPlugin</name>
