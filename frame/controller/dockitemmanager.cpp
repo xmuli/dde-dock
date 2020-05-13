@@ -25,6 +25,7 @@
 #include "item/pluginsitem.h"
 #include "item/traypluginitem.h"
 #include "util/docksettings.h"
+#include "cmdcontrol/cmdcontrol.h"
 
 #include <QDebug>
 #include <QGSettings>
@@ -37,19 +38,23 @@ DockItemManager::DockItemManager(QObject *parent)
     , m_appInter(new DBusDock("com.deepin.dde.daemon.Dock", "/com/deepin/dde/daemon/Dock", QDBusConnection::sessionBus(), this))
     , m_pluginsInter(new DockPluginsController(this))
 {
-    //固定区域：启动器
-    m_itemList.append(new LauncherItem);
+    if (CmdControl :: getInstance()->m_luancherEnable){
+        //固定区域：启动器
+        m_itemList.append(new LauncherItem);
+    }
 
-    // 应用区域
-    for (auto entry : m_appInter->entries()) {
-        AppItem *it = new AppItem(entry);
-        manageItem(it);
+    if (CmdControl::getInstance()->m_appEnable){
+        // 应用区域
+        for (auto entry : m_appInter->entries()) {
+            AppItem *it = new AppItem(entry);
+            manageItem(it);
 
-        connect(it, &AppItem::requestActivateWindow, m_appInter, &DBusDock::ActivateWindow, Qt::QueuedConnection);
-        connect(it, &AppItem::requestPreviewWindow, m_appInter, &DBusDock::PreviewWindow);
-        connect(it, &AppItem::requestCancelPreview, m_appInter, &DBusDock::CancelPreviewWindow);
+            connect(it, &AppItem::requestActivateWindow, m_appInter, &DBusDock::ActivateWindow, Qt::QueuedConnection);
+            connect(it, &AppItem::requestPreviewWindow, m_appInter, &DBusDock::PreviewWindow);
+            connect(it, &AppItem::requestCancelPreview, m_appInter, &DBusDock::CancelPreviewWindow);
 
-        m_itemList.append(it);
+            m_itemList.append(it);
+        }
     }
 
     // 托盘区域和插件区域 由DockPluginsController获取
@@ -59,10 +64,12 @@ DockItemManager::DockItemManager(QObject *parent)
     m_updatePluginsOrderTimer->setInterval(1000);
     connect(m_updatePluginsOrderTimer, &QTimer::timeout, this, &DockItemManager::updatePluginsItemOrderKey);
 
-    // 应用信号
-    connect(m_appInter, &DBusDock::EntryAdded, this, &DockItemManager::appItemAdded);
-    connect(m_appInter, &DBusDock::EntryRemoved, this, static_cast<void (DockItemManager::*)(const QString &)>(&DockItemManager::appItemRemoved), Qt::QueuedConnection);
-    connect(m_appInter, &DBusDock::ServiceRestarted, this, &DockItemManager::reloadAppItems);
+    if (CmdControl::getInstance()->m_appEnable){
+        // 应用信号
+        connect(m_appInter, &DBusDock::EntryAdded, this, &DockItemManager::appItemAdded);
+        connect(m_appInter, &DBusDock::EntryRemoved, this, static_cast<void (DockItemManager::*)(const QString &)>(&DockItemManager::appItemRemoved), Qt::QueuedConnection);
+        connect(m_appInter, &DBusDock::ServiceRestarted, this, &DockItemManager::reloadAppItems);
+    }
 
     // 插件信号
     connect(m_pluginsInter, &DockPluginsController::pluginItemInserted, this, &DockItemManager::pluginItemInserted, Qt::QueuedConnection);
@@ -215,6 +222,7 @@ void DockItemManager::appItemRemoved(const QString &appId)
         }
         if (!app->isValid() || app->appId() == appId) {
             appItemRemoved(app);
+            break;
         }
     }
 }

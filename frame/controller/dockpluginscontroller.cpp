@@ -22,6 +22,7 @@
 #include "dockpluginscontroller.h"
 #include "pluginsiteminterface.h"
 #include "item/traypluginitem.h"
+#include "cmdcontrol/cmdcontrol.h"
 
 #include <QDebug>
 #include <QDir>
@@ -44,6 +45,9 @@ void DockPluginsController::itemAdded(PluginsItemInterface *const itemInter, con
 
     PluginsItem *item = nullptr;
     if (itemInter->pluginName() == "tray") {
+        if (!CmdControl::getInstance() -> m_trayPluginEnable)
+            return;
+
         item = new TrayPluginItem(itemInter, itemKey);
         if (item->graphicsEffect()) {
             item->graphicsEffect()->setEnabled(false);
@@ -51,11 +55,28 @@ void DockPluginsController::itemAdded(PluginsItemInterface *const itemInter, con
         connect(static_cast<TrayPluginItem *>(item), &TrayPluginItem::trayVisableCountChanged,
                 this, &DockPluginsController::trayVisableCountChanged, Qt::UniqueConnection);
     } else {
-        item = new PluginsItem(itemInter, itemKey);
+        if (!CmdControl::getInstance()->m_pluginEnable)
+            return;
+
+       //控制每一个插件构造
+        if ((itemInter->pluginName() == "AiAssistant" && !(CmdControl::getInstance() -> m_aiassistantEnable))
+           || (itemInter->pluginName() == "datetime" && !(CmdControl::getInstance() -> m_datetimeEnable))
+           || (itemInter->pluginName() == "onboard" && !(CmdControl::getInstance() -> m_keyboardEnable))
+           || (itemInter->pluginName() == "multitasking" && !(CmdControl::getInstance() -> m_multitaskingEnable))
+           || (itemInter->pluginName() == "show-desktop" && !(CmdControl::getInstance() -> m_showdesktopEnable))
+           || (itemInter->pluginName() == "shutdown" && !(CmdControl::getInstance() -> m_shutdownEnable))
+           || (itemInter->pluginName() == "trash" && !(CmdControl::getInstance() -> m_trashEnable))
+           || (itemInter->pluginName() == "overlay=warning" && !(CmdControl::getInstance() -> m_overlaywarning))) {
+            return;
+        }  else {
+             item = new PluginsItem(itemInter, itemKey);
+        }
     }
 
     mPluginsMap[itemInter][itemKey] = item;
 
+    if (item == nullptr)
+        return;
     emit pluginItemInserted(item);
 }
 

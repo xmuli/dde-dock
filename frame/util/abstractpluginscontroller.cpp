@@ -22,6 +22,7 @@
 #include "abstractpluginscontroller.h"
 #include "pluginsiteminterface.h"
 #include "DNotifySender"
+#include "cmdcontrol/cmdcontrol.h"
 
 #include <DSysInfo>
 #include <QDebug>
@@ -171,6 +172,27 @@ void AbstractPluginsController::loadPlugin(const QString &pluginFile)
                    << ", the plugin file is:" << pluginFile;
 
         pluginIsValid = false;
+    }
+
+    if (pluginFile.contains("libnetwork.so")){
+         static QGSettings settings("com.deepin.dde.dock.module.network");
+         if (!(settings.keys().contains("enable") &&settings.get("enable").toBool())){
+             return;
+         }
+    }
+
+    if (pluginFile.contains("libpower.so")){
+         static QGSettings settings("com.deepin.dde.dock.module.power");
+         if (!(settings.keys().contains("enable") &&settings.get("enable").toBool())){
+             return;
+         }
+    }
+
+    if (pluginFile.contains("libsound.so")){
+         static QGSettings settings("com.deepin.dde.dock.module.sound");
+         if (!(settings.keys().contains("enable") &&settings.get("enable").toBool())){
+             return;
+         }
     }
 
     PluginsItemInterface *interface = qobject_cast<PluginsItemInterface *>(pluginLoader->instance());
