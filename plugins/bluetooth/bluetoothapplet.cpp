@@ -193,6 +193,10 @@ void BluetoothApplet::addAdapter(Adapter *adapter)
     }
 
     QString adapterId = adapter->id();
+    //检测列表中是否存在适配器，防止一个适配器创建两个对象
+    if (m_adapterItems.contains(adapterId))
+        return;
+
     auto adatpterItem = new AdapterItem(m_adaptersManager, adapter, this);
     m_adapterItems[adapterId] = adatpterItem;
     m_adapterLayout->addWidget(adatpterItem);
