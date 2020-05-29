@@ -223,8 +223,6 @@ MainWindow::MainWindow(QWidget *parent)
             QWidget::setFixedWidth(val);
         }
 
-        m_mainPanel->setFixedSize(windowRect.width(), windowRect.height());
-
     });
 
     connect(m_panelHideAni, &QVariantAnimation::valueChanged, [ this ](const QVariant & value) {
@@ -1103,6 +1101,5 @@ void MainWindow::updateRegionMonitorWatch()
     //        m_regionMonitor->registerRegion();
     //    }
 }
-
 
 #include "mainwindow.moc"
