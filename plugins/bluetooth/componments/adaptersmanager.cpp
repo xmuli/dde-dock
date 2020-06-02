@@ -106,6 +106,16 @@ void AdaptersManager::setAdapterPowered(const Adapter *adapter, const bool &powe
                     m_bluetoothInter->SetAdapterDiscoverableTimeout(dPath, 60 * 5);
                     m_bluetoothInter->SetAdapterDiscoverable(dPath, true);
                     m_bluetoothInter->RequestDiscovery(dPath);
+                    Q_EMIT poweredCallback();
+                } else {
+                    qWarning() << call.error().message();
+                }
+            });
+        } else {
+            QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(call, this);
+            connect(watcher, &QDBusPendingCallWatcher::finished, [this, call] {
+                if (!call.isError()) {
+                    Q_EMIT poweredCallback();
                 } else {
                     qWarning() << call.error().message();
                 }

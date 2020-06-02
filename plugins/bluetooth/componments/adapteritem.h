@@ -46,6 +46,7 @@ public:
     inline Device::State initDeviceState() { return  m_initDeviceState; }
     inline Device::State currentDeviceState() { return m_currentDeviceState; }
     QStringList connectedDevsName();
+    void setSwitchBtnEnable();
 
 signals:
     void deviceStateChanged(const Device::State state);

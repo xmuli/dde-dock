@@ -39,6 +39,7 @@ public:
 
     inline bool isdefault() { return m_default; }
     inline void setDefault(bool def) { m_default = def; }
+    void setSwitchBtnEnaled(bool enable);
 
 signals:
     void checkedChanged(bool checked);
@@ -46,9 +47,9 @@ signals:
 
 private:
     QLabel *m_title;
-    DSwitchButton *m_switchBtn;
     bool m_default;
     bool m_checkState;
+    DSwitchButton *m_switchBtn;
 };
 
 #endif // SWITCHITEM_H

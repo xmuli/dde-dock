@@ -205,6 +205,9 @@ void BluetoothApplet::addAdapter(Adapter *adapter)
     connect(adatpterItem, &AdapterItem::deviceStateChanged, this, &BluetoothApplet::onDeviceStateChanged);
     connect(adatpterItem, &AdapterItem::powerChanged, this, &BluetoothApplet::onPowerChanged);
     connect(adatpterItem, &AdapterItem::sizeChange, this, &BluetoothApplet::updateView);
+    connect(m_adaptersManager, &AdaptersManager::poweredCallback, this, [=] {
+        adatpterItem->setSwitchBtnEnable();
+    });
 
     updateView();
 }
