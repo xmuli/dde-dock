@@ -83,3 +83,8 @@ void SwitchItem::setTitle(const QString &title)
 //    emit clicked(m_adapterId);
 //    QWidget::mousePressEvent(event);
 //}
+
+void SwitchItem::setSwitchBtnEnaled(bool enable)
+{
+    m_switchBtn->setDisabled(enable);
+}
