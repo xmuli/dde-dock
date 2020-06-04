@@ -178,7 +178,6 @@ void AdapterItem::showAndConnect(bool change)
     m_adaptersManager->setAdapterPowered(m_adapter, change);
     showDevices(change);
     emit powerChanged(change);
-    m_switchItem->setSwitchBtnEnaled(true);
 }
 
 void AdapterItem::addDeviceItem(const Device *constDevice)
@@ -299,9 +298,4 @@ void AdapterItem::showDevices(bool powered)
 
     m_line->setVisible(powered);
     updateView();
-}
-
-void AdapterItem::setSwitchBtnEnable()
-{
-    m_switchItem->setSwitchBtnEnaled(false);
 }
