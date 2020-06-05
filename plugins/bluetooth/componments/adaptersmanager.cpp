@@ -162,13 +162,10 @@ void AdaptersManager::onAdapterPropertiesChanged(const QString &json)
     const QJsonDocument doc = QJsonDocument::fromJson(json.toUtf8());
     const QJsonObject obj = doc.object();
     const QString id = obj["Path"].toString();
-    const bool isDiscovering = obj["Discovering"].toBool();
     QDBusObjectPath dPath(id);
 
     Adapter *adapter = const_cast<Adapter *>(m_adapters[id]);
     if (adapter) {
-        if (!isDiscovering)
-            m_bluetoothInter->SetAdapterDiscovering(dPath, true);
         inflateAdapter(adapter, obj);
     }
 }
