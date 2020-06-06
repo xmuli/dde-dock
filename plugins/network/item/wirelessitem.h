@@ -62,6 +62,7 @@ public:
     QJsonObject getActiveWirelessConnectionInfo();
     inline int deviceInfo() { return m_index; }
     void setControlPanelVisible(bool visible);
+    void updateAp();
 
 public Q_SLOTS:
     // set the device name displayed

@@ -161,6 +161,11 @@ void WirelessItem::setControlPanelVisible(bool visible)
     }
 }
 
+void WirelessItem::updateAp()
+{
+    m_APList->updateAp();
+}
+
 void WirelessItem::setDeviceInfo(const int index)
 {
     m_APList->setDeviceInfo(index);

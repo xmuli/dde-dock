@@ -40,16 +40,14 @@ DWIDGET_USE_NAMESPACE
 using namespace dde::network;
 
 WirelessList::WirelessList(WirelessDevice *deviceIter, QWidget *parent)
-    : QScrollArea(parent),
-
-      m_device(deviceIter),
-      m_activeAP(),
-
-      m_updateAPTimer(new QTimer(this)),
-
-      m_centralLayout(new QVBoxLayout),
-      m_centralWidget(new QWidget),
-      m_controlPanel(new DeviceControlWidget)
+    : QScrollArea(parent)
+    , m_device(deviceIter)
+    , m_activeAP()
+    , m_updateAPTimer(new QTimer(this))
+    , m_loadingStat(new SpinnerButton(this))
+    , m_centralLayout(new QVBoxLayout)
+    , m_centralWidget(new QWidget)
+    , m_controlPanel(new DeviceControlWidget)
 {
     setFixedHeight(ITEMHEIGHT);
 
@@ -72,10 +70,11 @@ WirelessList::WirelessList(WirelessDevice *deviceIter, QWidget *parent)
     m_centralWidget->setAutoFillBackground(false);
     viewport()->setAutoFillBackground(false);
 
-    m_loadingStat = new DSpinner(this);
     m_loadingStat->setFixedSize(PLUGIN_ICON_MAX_SIZE, PLUGIN_ICON_MAX_SIZE);
     m_loadingStat->setVisible(false);
     m_isHotposActive = false;
+
+    connect(m_loadingStat, &SpinnerButton::pressed, this, &WirelessList::updateAp);
 
     connect(m_device, &WirelessDevice::apAdded, this, &WirelessList::APAdded);
     connect(m_device, &WirelessDevice::apRemoved, this, &WirelessList::APRemoved);
@@ -117,6 +116,10 @@ int WirelessList::APcount()
     return m_apList.size();
 }
 
+void WirelessList::updateAp()
+{
+    m_device->updateWirlessAp();
+}
 
 void WirelessList::APAdded(const QJsonObject &apInfo)
 {
