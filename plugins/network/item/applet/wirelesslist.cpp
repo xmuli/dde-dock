@@ -128,8 +128,7 @@ void WirelessList::APAdded(const QJsonObject &apInfo)
         m_apList.append(ap);
     }
 
-    updateAPList();
-//    m_updateAPTimer->start();
+    m_updateAPTimer->start();
 }
 
 void WirelessList::APRemoved(const QJsonObject &apInfo)
@@ -139,8 +138,7 @@ void WirelessList::APRemoved(const QJsonObject &apInfo)
     if (mIndex != -1) {
         if (ap.path() == m_apList.at(mIndex).path()) {
             m_apList.removeAt(mIndex);
-            updateAPList();
-//            m_updateAPTimer->start();
+            m_updateAPTimer->start();
         }
     }
 }
@@ -188,8 +186,7 @@ void WirelessList::APPropertiesChanged(const QJsonObject &apInfo)
     const int mIndex = m_apList.indexOf(ap);
     if (mIndex != -1) {
         m_apList.replace(mIndex, ap);
-        loadAPList();
-//        m_updateAPTimer->start();
+        m_updateAPTimer->start();
     }
 }
 
@@ -242,7 +239,7 @@ void WirelessList::updateAPList()
             }
         }
 
-        std::sort(m_apList.begin(), m_apList.end(), [this] (const AccessPoint &ap1, const AccessPoint &ap2) {
+        std::sort(m_apList.begin(), m_apList.end(), [&] (const AccessPoint &ap1, const AccessPoint &ap2) {
             if (ap1 == m_activeAP)
                 return true;
 
@@ -296,15 +293,13 @@ void WirelessList::onEnableButtonToggle(const bool enable)
     }
 
     Q_EMIT requestSetDeviceEnable(m_device->path(), enable);
-    updateAPList();
-//    m_updateAPTimer->start();
+    m_updateAPTimer->start();
 }
 
 void WirelessList::onDeviceEnableChanged(const bool enable)
 {
     m_controlPanel->setDeviceEnabled(enable);
-    updateAPList();
-//    m_updateAPTimer->start();
+    m_updateAPTimer->start();
 }
 
 void WirelessList::activateAP(const QString &apPath, const QString &ssid)
@@ -387,8 +382,7 @@ void WirelessList::onActiveConnectionInfoChanged()
     for (int i = 0; i < m_apList.size(); ++i) {
         if (m_apList.at(i).ssid() == m_device->activeApSsid()) {
             m_activeAP = m_apList.at(i);
-            updateAPList();
-//            m_updateAPTimer->start();
+            m_updateAPTimer->start();
             break;
         }
     }
@@ -410,8 +404,7 @@ void WirelessList::onActivateApFailed(const QString &apPath, const QString &uuid
         qDebug() << "wireless connect failed and may require more configuration,"
             << "path:" << clickedAP.path() << "ssid" << clickedAP.ssid()
             << "secret:" << clickedAP.secured() << "strength" << clickedAP.strength();
-        updateAPList();
-//        m_updateAPTimer->start();
+        m_updateAPTimer->start();
 
         DDBusSender()
                 .service("com.deepin.dde.ControlCenter")
@@ -430,8 +423,7 @@ void WirelessList::onHotspotEnabledChanged(const bool enabled)
     m_activeHotspotAP = enabled ? AccessPoint(m_device->activeHotspotInfo().value("Hotspot").toObject())
                                 : AccessPoint();
     m_isHotposActive = enabled;
-    updateAPList();
-//    m_updateAPTimer->start();
+    m_updateAPTimer->start();
 }
 
 AccessPoint WirelessList::accessPointBySsid(const QString &ssid)
