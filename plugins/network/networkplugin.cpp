@@ -214,8 +214,8 @@ void NetworkPlugin::onDeviceListChanged(const QList<NetworkDevice *> devices)
                     m_networkWorker, &NetworkWorker::feedSecret);
             connect(static_cast<WirelessItem *>(item), &WirelessItem::cancelSecret,
                     m_networkWorker, &NetworkWorker::cancelSecret);
-            connect(static_cast<WirelessItem *>(item), &WirelessItem::requestWirelessScan,
-                    m_networkWorker, &NetworkWorker::requestWirelessScan);
+//            connect(static_cast<WirelessItem *>(item), &WirelessItem::requestWirelessScan,
+//                    m_networkWorker, &NetworkWorker::requestWirelessScan);
             connect(static_cast<WirelessItem *>(item), &WirelessItem::createApConfig,
                     m_networkWorker, &NetworkWorker::createApConfig);
             connect(static_cast<WirelessItem *>(item), &WirelessItem::queryConnectionSession,
@@ -225,7 +225,7 @@ void NetworkPlugin::onDeviceListChanged(const QList<NetworkDevice *> devices)
                     m_networkItem, &NetworkItem::updateSelf);
 
             m_networkWorker->queryAccessPoints(path);
-            m_networkWorker->requestWirelessScan();
+            //m_networkWorker->requestWirelessScan();
             break;
         default:
             Q_UNREACHABLE();

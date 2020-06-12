@@ -198,7 +198,7 @@ void WirelessList::APPropertiesChanged(const QJsonObject &apInfo)
 
 void WirelessList::updateAPList()
 {
-    Q_ASSERT(sender() == m_updateAPTimer);
+    //Q_ASSERT(sender() == m_updateAPTimer);
 
     if (m_device.isNull()) {
         return;
