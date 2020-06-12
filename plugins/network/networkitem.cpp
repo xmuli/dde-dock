@@ -127,6 +127,9 @@ NetworkItem::NetworkItem(QWidget *parent)
 QWidget *NetworkItem::itemApplet()
 {
     m_applet->setVisible(true);
+    for (WirelessItem *item : m_wirelessItems) {
+        item->updateAp();
+    }
     return m_applet;
 }
 

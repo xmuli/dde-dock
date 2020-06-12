@@ -33,6 +33,7 @@
 
 DWIDGET_USE_NAMESPACE
 
+class SpinnerButton;
 class QVBoxLayout;
 class QTimer;
 class AccessPointWidget;
@@ -47,6 +48,7 @@ public:
 
     QWidget *controlPanel();
     int APcount();
+    void updateAp();
 
 public Q_SLOTS:
     void setDeviceInfo(const int index);
@@ -87,7 +89,7 @@ private:
     QList<AccessPointWidget *> m_apwList;
 
     QTimer *m_updateAPTimer;
-    DSpinner *m_loadingStat;
+    SpinnerButton *m_loadingStat;
 
     QVBoxLayout *m_centralLayout;
     QWidget *m_centralWidget;
@@ -98,6 +100,23 @@ private:
 public:
     bool m_isHotposActive;
 
+};
+
+class SpinnerButton : public DSpinner
+{
+    Q_OBJECT
+public:
+    explicit SpinnerButton(QWidget *parent = nullptr)
+        : DSpinner(parent) {}
+signals:
+    void pressed();
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override
+    {
+        DSpinner::mousePressEvent(event);
+        emit pressed();
+    }
 };
 
 #endif // WIRELESSAPPLET_H
