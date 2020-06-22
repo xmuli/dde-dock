@@ -190,7 +190,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     connect(m_panelShowAni, &QVariantAnimation::valueChanged, [ this ](const QVariant & value) {
-return;
+        return;
         if (m_panelShowAni->state() != QPropertyAnimation::Running)
             return;
 
@@ -227,7 +227,7 @@ return;
     });
 
     connect(m_panelHideAni, &QVariantAnimation::valueChanged, [ this ](const QVariant & value) {
-return;
+        return;
         if (m_panelHideAni->state() != QPropertyAnimation::Running)
             return;
 
@@ -296,15 +296,16 @@ return;
 
     //　通知窗管
     connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateLayout, this,[=](const QString &screenName){
-        qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__ << screenName;
-
         DockItem::setDockPosition(m_multiScreenWorker->position());
         qApp->setProperty(PROP_POSITION, QVariant::fromValue(m_multiScreenWorker->position()));
         DockItem::setDockDisplayMode(m_multiScreenWorker->displayMode());
         qApp->setProperty(PROP_DISPLAY_MODE, QVariant::fromValue(m_multiScreenWorker->displayMode()));
 
-        QWidget::setFixedSize(m_multiScreenWorker->dockRect(screenName).size());
-        QWidget::move(m_multiScreenWorker->dockRect(screenName).topLeft());
+        if(m_multiScreenWorker->hideMode() == HideMode::KeepShowing)
+        {
+            QWidget::setFixedSize(m_multiScreenWorker->dockRect(screenName).size());
+            QWidget::move(m_multiScreenWorker->dockRect(screenName).topLeft());
+        }
 
         m_mainPanel->setFixedSize(m_multiScreenWorker->contentSize(screenName));
         m_mainPanel->setDisplayMode(m_multiScreenWorker->displayMode());
@@ -337,6 +338,7 @@ void MainWindow::initShow()
     //    resetPanelEnvironment();
 
     m_multiScreenWorker->initShow();
+//    m_multiScreenWorker->updateDockVisible(false);
 
     m_shadowMaskOptimizeTimer->start();
 }
@@ -413,11 +415,13 @@ void MainWindow::mouseMoveEvent(QMouseEvent *e)
 void MainWindow::leaveEvent(QEvent *e)
 {
     QWidget::leaveEvent(e);
-    if (m_panelHideAni->state() == QPropertyAnimation::Running)
-        return;
+    return m_multiScreenWorker->handleLeaveEvent(e);
 
-    m_expandDelayTimer->stop();
-    m_leaveDelayTimer->start();
+//    if (m_panelHideAni->state() == QPropertyAnimation::Running)
+//        return;
+
+//    m_expandDelayTimer->stop();
+//    m_leaveDelayTimer->start();
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)

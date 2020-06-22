@@ -49,7 +49,7 @@ using XEventMonitor = ::com::deepin::api::XEventMonitor;
 using namespace Dock;
 class QVariantAnimation;
 class QWidget;
-
+class QTimer;
 class MultiScreenWorker : public QObject
 {
     Q_OBJECT
@@ -77,6 +77,8 @@ public:
     inline const DisplayMode &displayMode() {return m_displayMode;}
     inline const HideMode &hideMode() {return m_hideMode;}
     inline const HideState &hideState() {return m_hideState;}
+    inline bool dockVisible() {return m_dockVisible;}
+    void updateDockVisible(bool visible){m_dockVisible = visible;}
 
     // 适用于切换到另外一个位置
     void changeDockPosition(QString fromScreen,QString toScreen,const Position &fromPos,const Position &toPos);
@@ -87,6 +89,8 @@ public:
     QSize contentSize(const QString &screenName);
     // 任务栏正常显示时的区域
     QRect dockRect(const QString &screenName);
+    // 处理任务栏的离开事件
+    void handleLeaveEvent(QEvent *event);
 
 signals:
     // 任务栏四大信号
@@ -127,6 +131,8 @@ private slots:
     void onRequestNotifyWindowManager();
     void onRequestUpdatePosition(const Position &fromPos, const Position &toPos);
 
+    void updateGeometry();
+
 private:
     QWidget *parent();
     // 获取任务栏分别显示和隐藏时对应的位置
@@ -146,6 +152,8 @@ private:
     DBusDock *m_dockInter;
     DisplayInter *m_displayInter;
 
+    QTimer *m_leaveTimer;
+
     QVariantAnimation *m_showAni;
     QVariantAnimation *m_hideAni;
 
@@ -164,6 +172,7 @@ private:
     int m_screenRawHeight;
     int m_screenRawWidth;
     QString m_registerKey;
+    bool m_dockVisible;             //任务栏当前是否可见
 };
 
 #endif // MULTISCREENWORKER_H
