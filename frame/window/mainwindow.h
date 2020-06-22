@@ -26,6 +26,7 @@
 #include "xcb/xcb_misc.h"
 #include "dbus/sni/statusnotifierwatcher_interface.h"
 #include "panel/mainpanelcontrol.h"
+#include "util/multiscreenworker.h"
 
 #include <com_deepin_api_xeventmonitor.h>
 
@@ -64,8 +65,12 @@ public:
     friend class MainPanel;
     friend class MainPanelControl;
 
+    QWidget *panel(){return m_mainPanel;}
+
 public slots:
     void launch();
+    // 第一次显示
+    void initShow();
 
 private:
     using QWidget::show;
@@ -107,6 +112,9 @@ private slots:
 
     void expand();
     void narrow();
+
+    void showAni();
+    void hideAni();
     void resetPanelEnvironment();
     void updatePanelVisible();
 
@@ -121,11 +129,13 @@ private slots:
     void newPositionExpand();
 
 private:
+
     bool m_launched;
     MainPanelControl *m_mainPanel;
 
     DPlatformWindowHandle m_platformWindowHandle;
     DWindowManagerHelper *m_wmHelper;
+    MultiScreenWorker *m_multiScreenWorker;
     XEventMonitor *m_eventInter;
     QString m_registerKey;
     QStringList m_registerKeys;
@@ -137,7 +147,10 @@ private:
     QVariantAnimation *m_panelShowAni;
     QVariantAnimation *m_panelHideAni;
 
-    XcbMisc *m_xcbMisc;
+    QPropertyAnimation *m_showAni;
+    QPropertyAnimation *m_hideAni;
+
+//    XcbMisc *m_xcbMisc;
     DockSettings *m_settings;
 
     QDBusConnectionInterface *m_dbusDaemonInterface;
@@ -147,6 +160,10 @@ private:
     DragWidget *m_dragWidget;
     Position m_dockPosition;
     bool m_mouseCauseDock;
+
+    //　任务栏当前所在屏幕
+    QString m_dockCurrentScreen;
+
 };
 
 #endif // MAINWINDOW_H

@@ -83,6 +83,8 @@ public:
     DBusDock *m_dockInter;
     bool m_menuVisible;
 
+    inline const QMap<Monitor *, MonitorInter *> monitorList() {return m_monitors;}
+
 signals:
     void dataChanged() const;
     void positionChanged() const;

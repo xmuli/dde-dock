@@ -490,6 +490,7 @@ void DockSettings::primaryScreenChanged()
 
 void DockSettings::resetFrontendGeometry()
 {
+    return;
     const QRect r = windowRect(m_position);
     const qreal ratio = dockRatio();
     const QPoint p = rawXPosition(r.topLeft());

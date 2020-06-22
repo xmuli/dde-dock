@@ -114,9 +114,9 @@ const QPoint rawXPosition(const QPoint &scaledPos)
     QScreen const *screen = Utils::screenAtByScaled(scaledPos);
 
     return screen ? screen->geometry().topLeft() +
-           (scaledPos - screen->geometry().topLeft()) *
-           screen->devicePixelRatio()
-           : scaledPos;
+                    (scaledPos - screen->geometry().topLeft()) *
+                    screen->devicePixelRatio()
+                  : scaledPos;
 }
 
 const QPoint scaledPos(const QPoint &rawXPos)
@@ -124,9 +124,9 @@ const QPoint scaledPos(const QPoint &rawXPos)
     QScreen const *screen = Utils::screenAt(rawXPos);
 
     return screen
-           ? screen->geometry().topLeft() +
-           (rawXPos - screen->geometry().topLeft()) / screen->devicePixelRatio()
-           : rawXPos;
+            ? screen->geometry().topLeft() +
+              (rawXPos - screen->geometry().topLeft()) / screen->devicePixelRatio()
+            : rawXPos;
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -135,6 +135,7 @@ MainWindow::MainWindow(QWidget *parent)
     , m_mainPanel(new MainPanelControl(this))
     , m_platformWindowHandle(this)
     , m_wmHelper(DWindowManagerHelper::instance())
+    , m_multiScreenWorker(new MultiScreenWorker(this,m_wmHelper))
     , m_eventInter(new XEventMonitor("com.deepin.api.XEventMonitor", "/com/deepin/api/XEventMonitor", QDBusConnection::sessionBus()))
     , m_positionUpdateTimer(new QTimer(this))
     , m_expandDelayTimer(new QTimer(this))
@@ -142,7 +143,9 @@ MainWindow::MainWindow(QWidget *parent)
     , m_shadowMaskOptimizeTimer(new QTimer(this))
     , m_panelShowAni(new QVariantAnimation(this))
     , m_panelHideAni(new QVariantAnimation(this))
-    , m_xcbMisc(XcbMisc::instance())
+    , m_showAni(new QPropertyAnimation(this,"geometry"))
+    , m_hideAni(new QPropertyAnimation(this,"geometry"))
+    //    , m_xcbMisc(XcbMisc::instance())
     , m_dbusDaemonInterface(QDBusConnection::sessionBus().interface())
     , m_sniWatcher(new StatusNotifierWatcher(SNI_WATCHER_SERVICE, SNI_WATCHER_PATH, QDBusConnection::sessionBus(), this))
     , m_dragWidget(new DragWidget(this))
@@ -162,7 +165,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_platformWindowHandle.setShadowColor(QColor(0, 0, 0, 0.3 * 255));
 
     m_settings = &DockSettings::Instance();
-    m_xcbMisc->set_window_type(winId(), XcbMisc::Dock);
+    //    m_xcbMisc->set_window_type(winId(), XcbMisc::Dock);
     m_size = m_settings->m_mainWindowSize;
     m_mainPanel->setDisplayMode(m_settings->displayMode());
     initSNIHost();
@@ -187,7 +190,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     connect(m_panelShowAni, &QVariantAnimation::valueChanged, [ this ](const QVariant & value) {
-
+return;
         if (m_panelShowAni->state() != QPropertyAnimation::Running)
             return;
 
@@ -224,7 +227,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(m_panelHideAni, &QVariantAnimation::valueChanged, [ this ](const QVariant & value) {
-
+return;
         if (m_panelHideAni->state() != QPropertyAnimation::Running)
             return;
 
@@ -263,10 +266,11 @@ MainWindow::MainWindow(QWidget *parent)
         }
     });
 
-//    connect(m_panelShowAni, &QVariantAnimation::finished, [ this ]() {
-//    });
+    //    connect(m_panelShowAni, &QVariantAnimation::finished, [ this ]() {
+    //    });
 
     connect(m_panelHideAni, &QVariantAnimation::finished, [ this ]() {
+        return;
         m_mouseCauseDock = false;
         Position settingPosition = m_settings->position();
         // 位置是否更新
@@ -283,15 +287,36 @@ MainWindow::MainWindow(QWidget *parent)
         const QRect windowRect = m_settings->windowRect(m_dockPosition, true);
         QWidget::move(windowRect.topLeft());
         QWidget::setFixedSize(windowRect.size());
-        m_mainPanel->setFixedSize(windowRect.size());
+        //        m_mainPanel->setFixedSize(windowRect.size());
     });
 
     updateRegionMonitorWatch();
+
+    connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, m_shadowMaskOptimizeTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
+
+    //　通知窗管
+    connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateLayout, this,[=](const QString &screenName){
+        qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__ << screenName;
+
+        DockItem::setDockPosition(m_multiScreenWorker->position());
+        qApp->setProperty(PROP_POSITION, QVariant::fromValue(m_multiScreenWorker->position()));
+        DockItem::setDockDisplayMode(m_multiScreenWorker->displayMode());
+        qApp->setProperty(PROP_DISPLAY_MODE, QVariant::fromValue(m_multiScreenWorker->displayMode()));
+
+        QWidget::setFixedSize(m_multiScreenWorker->dockRect(screenName).size());
+        QWidget::move(m_multiScreenWorker->dockRect(screenName).topLeft());
+
+        m_mainPanel->setFixedSize(m_multiScreenWorker->contentSize(screenName));
+        m_mainPanel->setDisplayMode(m_multiScreenWorker->displayMode());
+        m_mainPanel->setPositonValue(m_multiScreenWorker->position());
+        m_mainPanel->update();
+    });
+    //    connect(m_multiScreenWorker, &MultiScreenWorker::positionChanged, m_positionUpdateTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
 }
 
 MainWindow::~MainWindow()
 {
-    delete m_xcbMisc;
+    //    delete m_xcbMisc;
 }
 
 void MainWindow::launch()
@@ -300,11 +325,20 @@ void MainWindow::launch()
     QTimer::singleShot(400, this, [&] {
         m_launched = true;
         qApp->processEvents();
-        QWidget::move(m_settings->windowRect(m_dockPosition).topLeft());
-        setVisible(true);
-        updatePanelVisible();
-        resetPanelEnvironment();
+        initShow();
     });
+}
+
+void MainWindow::initShow()
+{
+    //    QWidget::move(m_settings->windowRect(m_dockPosition).topLeft());
+    setVisible(true);
+    //    updatePanelVisible();
+    //    resetPanelEnvironment();
+
+    m_multiScreenWorker->initShow();
+
+    m_shadowMaskOptimizeTimer->start();
 }
 
 bool MainWindow::event(QEvent *e)
@@ -324,24 +358,24 @@ void MainWindow::showEvent(QShowEvent *e)
 {
     QWidget::showEvent(e);
 
-//    connect(qGuiApp, &QGuiApplication::primaryScreenChanged,
-//    windowHandle(), [this](QScreen * new_screen) {
-//        QScreen *old_screen = windowHandle()->screen();
-//        windowHandle()->setScreen(new_screen);
-//        // 屏幕变化后可能导致控件缩放比变化，此时应该重设控件位置大小
-//        // 比如：窗口大小为 100 x 100, 显示在缩放比为 1.0 的屏幕上，此时窗口的真实大小 = 100x100
-//        // 随后窗口被移动到了缩放比为 2.0 的屏幕上，应该将真实大小改为 200x200。另外，只能使用
-//        // QPlatformWindow直接设置大小来绕过QWidget和QWindow对新旧geometry的比较。
-//        const qreal scale = devicePixelRatioF();
-//        const QPoint screenPos = new_screen->geometry().topLeft();
-//        const QPoint posInScreen = this->pos() - old_screen->geometry().topLeft();
-//        const QPoint pos = screenPos + posInScreen * scale;
-//        const QSize size = this->size() * scale;
+    //    connect(qGuiApp, &QGuiApplication::primaryScreenChanged,
+    //    windowHandle(), [this](QScreen * new_screen) {
+    //        QScreen *old_screen = windowHandle()->screen();
+    //        windowHandle()->setScreen(new_screen);
+    //        // 屏幕变化后可能导致控件缩放比变化，此时应该重设控件位置大小
+    //        // 比如：窗口大小为 100 x 100, 显示在缩放比为 1.0 的屏幕上，此时窗口的真实大小 = 100x100
+    //        // 随后窗口被移动到了缩放比为 2.0 的屏幕上，应该将真实大小改为 200x200。另外，只能使用
+    //        // QPlatformWindow直接设置大小来绕过QWidget和QWindow对新旧geometry的比较。
+    //        const qreal scale = devicePixelRatioF();
+    //        const QPoint screenPos = new_screen->geometry().topLeft();
+    //        const QPoint posInScreen = this->pos() - old_screen->geometry().topLeft();
+    //        const QPoint pos = screenPos + posInScreen * scale;
+    //        const QSize size = this->size() * scale;
 
-//        windowHandle()->handle()->setGeometry(QRect(pos, size));
-//    }, Qt::UniqueConnection);
+    //        windowHandle()->handle()->setGeometry(QRect(pos, size));
+    //    }, Qt::UniqueConnection);
 
-//    windowHandle()->setScreen(qGuiApp->primaryScreen());
+    //    windowHandle()->setScreen(qGuiApp->primaryScreen());
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *e)
@@ -427,6 +461,8 @@ void MainWindow::initComponents()
 
     m_panelShowAni->setEasingCurve(QEasingCurve::InOutCubic);
     m_panelHideAni->setEasingCurve(QEasingCurve::InOutCubic);
+    m_showAni->setEasingCurve(QEasingCurve::InOutCubic);
+    m_hideAni->setEasingCurve(QEasingCurve::InOutCubic);
 
     QTimer::singleShot(1, this, &MainWindow::compositeChanged);
 
@@ -438,8 +474,8 @@ void MainWindow::compositeChanged()
     const bool composite = m_wmHelper->hasComposite();
     setComposite(composite);
 
-// NOTE(justforlxz): On the sw platform, there is an unstable
-// display position error, disable animation solution
+    // NOTE(justforlxz): On the sw platform, there is an unstable
+    // display position error, disable animation solution
 #ifndef DISABLE_SHOW_ANIMATION
     const int duration = composite ? 300 : 0;
 #else
@@ -448,16 +484,19 @@ void MainWindow::compositeChanged()
 
     m_panelHideAni->setDuration(duration);
     m_panelShowAni->setDuration(duration);
+    m_showAni->setDuration(duration);
+    m_hideAni->setDuration(duration);
 
     m_shadowMaskOptimizeTimer->start();
 }
 
 void MainWindow::internalMove(const QPoint &p)
 {
+    return;
     const bool isHide = m_settings->hideState() == HideState::Hide && !testAttribute(Qt::WA_UnderMouse);
     const bool pos_adjust = m_settings->hideMode() != HideMode::KeepShowing &&
-                            isHide &&
-                            m_panelShowAni->state() == QVariantAnimation::Stopped;
+            isHide &&
+            m_panelShowAni->state() == QVariantAnimation::Stopped;
     if (!pos_adjust) {
         m_mainPanel->move(0, 0);
         return QWidget::move(p);
@@ -540,6 +579,7 @@ void MainWindow::initConnections()
 
 void MainWindow::positionChanged()
 {
+    return;
     // paly hide animation and disable other animation
     clearStrutPartial();
     narrow();
@@ -549,15 +589,16 @@ void MainWindow::positionChanged()
 
 void MainWindow::updatePosition()
 {
+    return;
     // all update operation need pass by timer
     Q_ASSERT(sender() == m_positionUpdateTimer);
 
-    //clearStrutPartial();
     updateGeometry();
 }
 
 void MainWindow::updateGeometry()
 {
+    return;
     // DockDisplayMode and DockPosition MUST be set before invoke setFixedSize method of MainPanel
 
     //为了防止当后端发送错误值，然后发送正确值时，任务栏没有移动在相应的位置
@@ -611,11 +652,13 @@ void MainWindow::newPositionExpand()
 
 void MainWindow::clearStrutPartial()
 {
-    m_xcbMisc->clear_strut_partial(winId());
+    return;
+    //    m_xcbMisc->clear_strut_partial(winId());
 }
 
 void MainWindow::setStrutPartial()
 {
+    return;
     // first, clear old strut partial
     clearStrutPartial();
 
@@ -679,25 +722,7 @@ void MainWindow::setStrutPartial()
         Q_ASSERT(false);
     }
 
-    // pass if strut area is intersect with other screen
-    //优化了文件管理的代码 会导致bug 15351 需要注释一下代码
-    //    int count = 0;
-    //    const QRect pr = m_settings->currentRawRect();
-    //    for (auto *screen : qApp->screens()) {
-    //        const QRect sr = screen->geometry();
-    //        if (sr == pr)
-    //            continue;
-
-    //        if (sr.intersects(strutArea))
-    //            ++count;
-    //    }
-    //    if (count > 0) {
-    //        qWarning() << "strutArea is intersects with another screen.";
-    //        qWarning() << maxScreenHeight << maxScreenWidth << m_dockPosition << p << s;
-    //        return;
-    //    }
-
-    m_xcbMisc->set_strut_partial(winId(), orientation, strut + m_settings->dockMargin() * ratio, strutStart, strutEnd);
+    //    m_xcbMisc->set_strut_partial(winId(), orientation, strut + m_settings->dockMargin() * ratio, strutStart, strutEnd);
 }
 
 void MainWindow::expand()
@@ -741,6 +766,28 @@ void MainWindow::narrow()
     m_panelHideAni->setStartValue(startValue);
     m_panelHideAni->setEndValue(0);
     m_panelHideAni->start();
+}
+
+void MainWindow::showAni()
+{
+    if(m_hideAni->state() == QPropertyAnimation::Running)
+        m_hideAni->stop();
+    QRect startValue = geometry();
+    QRect endValue;//TODO
+    m_showAni->setStartValue(startValue);
+    m_showAni->setEndValue(endValue);
+    m_showAni->start();
+}
+
+void MainWindow::hideAni()
+{
+    if(m_showAni->state() == QPropertyAnimation::Running)
+        m_showAni->stop();
+    QRect startValue = geometry();
+    QRect endValue;//TODO
+    m_hideAni->setStartValue(startValue);
+    m_hideAni->setEndValue(endValue);
+    m_hideAni->start();
 }
 
 void MainWindow::resetPanelEnvironment()
@@ -867,7 +914,7 @@ void MainWindow::resizeMainWindow()
 
 void MainWindow::resizeMainPanelWindow()
 {
-    m_mainPanel->setFixedSize(m_settings->m_mainWindowSize);
+    //    m_mainPanel->setFixedSize(m_settings->m_mainWindowSize);
 
     switch (m_dockPosition) {
     case Dock::Top:
@@ -959,23 +1006,55 @@ void MainWindow::onRegionMonitorChanged(int x, int y, const QString &key)
     if (m_registerKey != key)
         return;
 
-    QScreen *screen = Utils::screenAtByScaled(QPoint(x, y));
+    //判断是否在屏幕边缘
+    auto onScreenEdge = [=](const QPoint &p){
+        QMap<Monitor *, MonitorInter *> list = m_settings->monitorList();
+        for (int i = 0; i < list.values().size(); ++i)
+        {
+            for (QScreen *screen : qApp->screens()) {
+                const QRect r { screen->geometry() };
+                QRect rect { r.topLeft(), r.size() * screen->devicePixelRatio() };
+                if ( p.x() == screen->geometry().x()
+                     || p.x() == screen->geometry().x() + screen->geometry().width()
+                     || p.y() == screen->geometry().y()
+                     || p.y() == screen->geometry().y() + screen->geometry().height()) {
+                    return true;
+                }
+            }
+        }
 
-    if (screen->name() == m_settings->currentDockScreen()) {
-        if (m_settings->hideMode() == KeepShowing)
-            return;
+        return false;
+    };
 
-        if (m_panelShowAni->state() == QPropertyAnimation::Running)
-            return;
-
-        // 一直隐藏模式不用通过时间延迟的方式调用,影响离开动画的响应
-        expand();
-    } else {
-        // 移动Dock至相应屏相应位置
-        m_mouseCauseDock = true;
-        if (m_settings->setDockScreen(screen->name()))
-            positionChanged();
+    if(onScreenEdge(QPoint(x, y)))
+    {
+        return;
     }
+    //　同一块屏幕上
+    //show
+
+    //　另一块屏幕
+
+    //hide
+    //show
+
+    //    QScreen *screen = Utils::screenAtByScaled(QPoint(x, y));
+
+    //    if (screen->name() == m_settings->currentDockScreen()) {
+    //        if (m_settings->hideMode() == KeepShowing)
+    //            return;
+
+    //        if (m_panelShowAni->state() == QPropertyAnimation::Running)
+    //            return;
+
+    //        // 一直隐藏模式不用通过时间延迟的方式调用,影响离开动画的响应
+    //        expand();
+    //    } else {
+    //        // 移动Dock至相应屏相应位置
+    //        m_mouseCauseDock = true;
+    //        if (m_settings->setDockScreen(screen->name()))
+    //            positionChanged();
+    //    }
 }
 
 void MainWindow::updateRegionMonitorWatch()

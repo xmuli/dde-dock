@@ -1,3 +1,5 @@
+#ifndef UTILS_H
+#define UTILS_H
 #include <QPixmap>
 #include <QImageReader>
 #include <QApplication>
@@ -42,3 +44,4 @@ namespace Utils {
         return nullptr;
     }
 }
+#endif // UTILS_H

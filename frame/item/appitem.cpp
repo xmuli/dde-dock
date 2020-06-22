@@ -605,7 +605,7 @@ void AppItem::refershIcon()
     if (m_appIcon.isNull()) {
         if (m_retryTimes < 5) {
             m_retryTimes++;
-            qDebug() << m_itemEntryInter->name() << "obtain app icon(" << icon << ")failed, retry times:" << m_retryTimes;
+//            qDebug() << m_itemEntryInter->name() << "obtain app icon(" << icon << ")failed, retry times:" << m_retryTimes;
             m_retryObtainIconTimer->start();
         }
         return;
