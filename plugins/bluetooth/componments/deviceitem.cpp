@@ -78,7 +78,7 @@ DeviceItem::DeviceItem(const QString &title, QWidget *parent)
     deviceLayout->addLayout(itemLayout);
     setLayout(deviceLayout);
 
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, themeChanged);
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, themeChanged);
 }
 
 bool DeviceItem::operator <(const DeviceItem &item)
