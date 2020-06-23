@@ -85,11 +85,14 @@ public:
     void changeDockPosition(QString fromScreen,QString toScreen,const Position &fromPos,const Position &toPos);
 
     void updateDockScreenName(const QString &screenName);
-
+    /**
+     * @brief updateDockScreenName      找一个可以停靠当前位置任务栏的屏幕当目标屏幕
+     */
+    void updateDockScreenName();
     // 任务栏内容区域大小
     QSize contentSize(const QString &screenName);
-    // 任务栏正常显示时的区域
-    QRect dockRect(const QString &screenName);
+    // 任务栏正常隐藏时的区域
+    QRect dockRect(const QString &screenName, const HideMode &mode);
     // 处理任务栏的离开事件
     void handleLeaveEvent(QEvent *event);
 
@@ -107,7 +110,7 @@ signals:
     void requestUpdatePosition(const Position &fromPos, const Position &toPos);
     void requestUpdateLayout(const QString &screenName);      //界面需要根据任务栏更新布局的方向
 
-    void dockScreenNameChanged(const QString &screenName);
+//    void dockScreenNameChanged(const QString &screenName);
 
 public slots:
     void onAutoHideChanged(bool autoHide);
@@ -138,6 +141,7 @@ private slots:
 
     void updateGeometry();
     void updateInterRect(const QList<Monitor *>monitorList, QList<MonitRect> &list);
+    void updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> &map);
 
 private:
     MainWindow *parent();
@@ -146,10 +150,23 @@ private:
     QRect getDockHideGeometry(const QString &screenName,const Position &pos, const DisplayMode &displaymode);
 
     void updateWindowManagerDock();
+    /**
+     * @brief monitorByName     根据屏幕名获取对应信息
+     * @param screenName        屏幕名
+     * @return                  屏幕信息对应指针
+     */
+    Monitor *monitorByName(const QMap<Monitor *, MonitorInter *> &map,const QString &screenName);
     QScreen *screenByName(const QString &screenName);
     bool onScreenEdge(const QPoint &point);
     bool contains(const MonitRect &rect, const QPoint &pos);
     bool contains(const QList<MonitRect> &rectList, const QPoint &pos);
+    /**
+     * @brief positionDocked    检查任务栏在此屏幕的对应位置是否允许停靠
+     * @param screenName        屏幕名
+     * @param pos               任务栏位置
+     * @return                  true:允许,false:不允许
+     */
+    bool positionDocked(const QString &screenName, const Position &pos);
 
 private:
     QWidget *m_parent;
@@ -173,7 +190,7 @@ private:
     // 任务栏四大属性
     Position m_position;            // 当前任务栏位置
     HideMode m_hideMode;            // 一直显示，一直隐藏，智能隐藏
-    HideState m_hideState;          //
+    HideState m_hideState;          // 智能隐藏设置,按照后端状态直接设置任务栏的显示或隐藏即可
     DisplayMode m_displayMode;      // 时尚，高效
 
     QMap<Monitor *, MonitorInter *> m_monitorInfo; //屏幕信息
@@ -186,7 +203,7 @@ private:
     bool m_dockVisible;             // 任务栏当前是否可见
     bool m_aniStart;                // changeDockPosition正在运行中
     bool m_autoHide;                // 和DockSettings保持一致,可以直接使用其单例进行获取
-    QList<MonitRect> m_monitorRectList;
+    QList<MonitRect> m_monitorRectList;     // 监听唤起任务栏区域
     QList<MonitRect> m_interRectList;       // 离开事件发生在这块区域时,不做处理(一直隐藏的模式下,本来是要隐藏的)
 };
 

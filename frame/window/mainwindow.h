@@ -74,7 +74,6 @@ public slots:
 
 private:
     using QWidget::show;
-    bool event(QEvent *e) override;
     void showEvent(QShowEvent *e) override;
     void mousePressEvent(QMouseEvent *e) override;
     void keyPressEvent(QKeyEvent *e) override;
@@ -82,6 +81,7 @@ private:
     void leaveEvent(QEvent *e) override;
     void dragEnterEvent(QDragEnterEvent *e) override;
     void mouseMoveEvent(QMouseEvent *e) override;
+    void moveEvent(QMoveEvent *event) override;
 
     void initSNIHost();
     void initComponents();
@@ -89,47 +89,26 @@ private:
     void resizeMainWindow();
     void resizeMainPanelWindow();
 
-//    const QPoint x11GetWindowPos();
-//    void x11MoveWindow(const int x, const int y);
-//    void x11MoveResizeWindow(const int x, const int y, const int w, const int h);
     bool appIsOnDock(const QString &appDesktop) override;
-    void onRegionMonitorChanged(int x, int y, const QString &key);
-    void updateRegionMonitorWatch();
+//    void onRegionMonitorChanged(int x, int y, const QString &key);
     void getTrayVisableItemCount();
 
 signals:
     void panelGeometryChanged();
 
 private slots:
-    void positionChanged();
-    void updatePosition();
-    void updateGeometry();
-    void clearStrutPartial();
-    void setStrutPartial();
     void compositeChanged();
     void internalMove(const QPoint &p);
     void updateDisplayMode();
 
-    void expand();
-    void narrow();
-
-    void showAni();
-    void hideAni();
-    void resetPanelEnvironment();
-    void updatePanelVisible();
-
     void adjustShadowMask();
-    void positionCheck();
 
     void onDbusNameOwnerChanged(const QString &name, const QString &oldOwner, const QString &newOwner);
     void onMainWindowSizeChanged(QPoint offset);
     void onDragFinished();
     void themeTypeChanged(DGuiApplicationHelper::ColorType themeType);
 
-    void newPositionExpand();
-
 private:
-
     bool m_launched;
     MainPanelControl *m_mainPanel;
 
