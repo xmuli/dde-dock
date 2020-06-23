@@ -304,7 +304,8 @@ void DockSettings::showDockSettingsMenu()
         onGSettingsChanged("enable");
     });
 
-    m_autoHide = false;
+    setAutoHide(false);
+//    m_autoHide = false;
 
     // create actions
     QList<QAction *> actions;

@@ -50,6 +50,7 @@ using namespace Dock;
 class QVariantAnimation;
 class QWidget;
 class QTimer;
+class MainWindow;
 class MultiScreenWorker : public QObject
 {
     Q_OBJECT
@@ -108,8 +109,12 @@ signals:
 
     void dockScreenNameChanged(const QString &screenName);
 
+public slots:
+    void onAutoHideChanged(bool autoHide);
+
 private slots:
     void onRegionMonitorChanged(int x, int y, const QString &key);
+    void onLeaveMonitorChanged(int x, int y, const QString &key);
     void onMonitorListChanged(const QList<QDBusObjectPath> &mons);
     void monitorAdded(const QString &path);
     void monitorRemoved(const QString &path);
@@ -132,15 +137,18 @@ private slots:
     void onRequestUpdatePosition(const Position &fromPos, const Position &toPos);
 
     void updateGeometry();
+    void updateInterRect(const QList<Monitor *>monitorList, QList<MonitRect> &list);
 
 private:
-    QWidget *parent();
+    MainWindow *parent();
     // 获取任务栏分别显示和隐藏时对应的位置
     QRect getDockShowGeometry(const QString &screenName,const Position &pos, const DisplayMode &displaymode);
     QRect getDockHideGeometry(const QString &screenName,const Position &pos, const DisplayMode &displaymode);
 
     void updateWindowManagerDock();
     QScreen *screenByName(const QString &screenName);
+    bool contains(const MonitRect &rect, const QPoint &pos);
+    bool contains(const QList<MonitRect> &rectList, const QPoint &pos);
 
 private:
     QWidget *m_parent;
@@ -148,6 +156,7 @@ private:
     XcbMisc *m_xcbMisc;
 
     XEventMonitor *m_eventInter;
+    XEventMonitor *m_leaveMonitorInter;
 
     DBusDock *m_dockInter;
     DisplayInter *m_displayInter;
@@ -158,7 +167,7 @@ private:
     QVariantAnimation *m_hideAni;
 
     QString m_fromScreen;           // 上一次的屏幕
-    QString m_toScreen;       // 下一次的屏幕(最新)
+    QString m_toScreen;             // 下一次的屏幕(最新)
 
     // 任务栏四大属性
     Position m_position;            // 当前任务栏位置
@@ -172,7 +181,12 @@ private:
     int m_screenRawHeight;
     int m_screenRawWidth;
     QString m_registerKey;
-    bool m_dockVisible;             //任务栏当前是否可见
+    QString m_leaveRegisterKey;
+    bool m_dockVisible;             // 任务栏当前是否可见
+    bool m_aniStart;                // changeDockPosition正在运行中
+    bool m_autoHide;                // 和DockSettings保持一致,可以直接使用其单例进行获取
+    QList<MonitRect> m_monitorRectList;
+    QList<MonitRect> m_interRectList;       // 离开事件发生在这块区域时,不做处理(一直隐藏的模式下,本来是要隐藏的)
 };
 
 #endif // MULTISCREENWORKER_H
