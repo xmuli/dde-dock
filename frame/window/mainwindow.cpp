@@ -292,6 +292,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     updateRegionMonitorWatch();
 
+    connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, this, [=]{
+        DisplayMode mode = m_multiScreenWorker->displayMode();
+
+
+        qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
+    });
     connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, m_shadowMaskOptimizeTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
 
     //　通知窗管

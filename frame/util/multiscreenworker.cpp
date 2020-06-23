@@ -258,6 +258,7 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
     connect(group, &QVariantAnimation::finished, this, [=]{
         m_aniStart = false;
         emit showAniFinished();
+        emit requestNotifyWindowManager();
     });
 
     m_aniStart = true;
@@ -324,6 +325,10 @@ void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
 
     QScreen *screen = Utils::screenAtByScaled(QPoint(x, y));
     if (!screen)
+        return;
+
+    // 坐标位于屏幕边缘时不处理
+    if (onScreenEdge(QPoint(x,y)))
         return;
 
     // 过滤重复坐标
@@ -537,8 +542,16 @@ void MultiScreenWorker::onDisplayModeChanged()
 
     DockItem::setDockDisplayMode(m_displayMode);
 
+    // 不显示的就不用处理,在显示时会再处理一遍的
+    if (parent()->visibleRegion().boundingRect().isEmpty())
+        return;
+
+    parent()->setFixedSize(dockRect(m_toScreen).size());
+    parent()->move(dockRect(m_toScreen).topLeft());
+
     emit displayModeChanegd();
     emit requestUpdateRegionMonitor();
+    emit requestNotifyWindowManager();
 }
 
 void MultiScreenWorker::hideModeChanged()
@@ -551,6 +564,7 @@ void MultiScreenWorker::hideModeChanged()
     m_hideMode = hideMode;
 
     emit windowHideModeChanged();
+    emit requestNotifyWindowManager();
 }
 
 void MultiScreenWorker::hideStateChanged()
@@ -688,7 +702,6 @@ void MultiScreenWorker::onRequestUpdateFrontendGeometry(const QRect &rect)
 
 void MultiScreenWorker::onRequestNotifyWindowManager()
 {
-    //    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     updateWindowManagerDock();
 }
 
@@ -912,7 +925,7 @@ void MultiScreenWorker::updateWindowManagerDock()
         break;
     }
 
-    //    qDebug() << strut << strutStart << strutEnd;
+        qDebug() << strut << strutStart << strutEnd;
     m_xcbMisc->set_strut_partial(parent()->winId(), orientation, strut + WINDOWMARGIN * ratio, strutStart, strutEnd);
 }
 
@@ -923,6 +936,23 @@ QScreen *MultiScreenWorker::screenByName(const QString &screenName)
             return screen;
     }
     return nullptr;
+}
+
+bool MultiScreenWorker::onScreenEdge(const QPoint &point)
+{
+    bool ret = false;
+    foreach (QScreen *screen, qApp->screens()) {
+        const QRect r { screen->geometry() };
+        const QRect rect { r.topLeft(), r.size() * screen->devicePixelRatio() };
+        if (rect.x() == point.x()
+                || rect.x() + rect.width() == point.x()
+                || rect.y() == point.y()
+                || rect.y() + rect.height() == point.y())
+            ret = true;
+        break;
+    }
+
+    return ret;
 }
 
 bool MultiScreenWorker::contains(const MonitRect &rect, const QPoint &pos)

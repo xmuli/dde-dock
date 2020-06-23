@@ -147,6 +147,7 @@ private:
 
     void updateWindowManagerDock();
     QScreen *screenByName(const QString &screenName);
+    bool onScreenEdge(const QPoint &point);
     bool contains(const MonitRect &rect, const QPoint &pos);
     bool contains(const QList<MonitRect> &rectList, const QPoint &pos);
 
