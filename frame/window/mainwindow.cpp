@@ -482,6 +482,12 @@ void MainWindow::resetDragWindow()
     m_multiScreenWorker->updateDaemonDockSize(m_dockSize);
     m_multiScreenWorker->requestNotifyWindowManager();
 
+    if ((Top == m_multiScreenWorker->position()) || (Bottom == m_multiScreenWorker->position())) {
+        m_dragWidget->setCursor(Qt::SizeVerCursor);
+    } else {
+        m_dragWidget->setCursor(Qt::SizeHorCursor);
+    }
+
 }
 
 void MainWindow::updateDisplayMode()

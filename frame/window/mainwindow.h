@@ -75,7 +75,7 @@ private:
         }
     }
 
-    void mouseMoveEvent(QMouseEvent *event) override
+    void mouseMoveEvent(QMouseEvent *) override
     {
         if (m_dragStatus) {
             QPoint offset = QPoint(QCursor::pos() - m_resizePoint);
@@ -83,7 +83,7 @@ private:
         }
     }
 
-    void mouseReleaseEvent(QMouseEvent *event) override
+    void mouseReleaseEvent(QMouseEvent *) override
     {
         if (!m_dragStatus)
             return;
@@ -95,14 +95,12 @@ private:
 
     void enterEvent(QEvent *) override
     {
-        if (QApplication::overrideCursor() && QApplication::overrideCursor()->shape() != cursor()) {
-            QApplication::setOverrideCursor(cursor());
-        }
+        QApplication::setOverrideCursor(cursor());
     }
 
     void leaveEvent(QEvent *) override
     {
-        QApplication::restoreOverrideCursor();
+        QApplication::setOverrideCursor(Qt::ArrowCursor);
     }
 };
 
@@ -190,16 +188,16 @@ private:
     QPropertyAnimation *m_showAni;
     QPropertyAnimation *m_hideAni;
 
-//    XcbMisc *m_xcbMisc;
+    //    XcbMisc *m_xcbMisc;
     DockSettings *m_settings;
 
     QDBusConnectionInterface *m_dbusDaemonInterface;
     org::kde::StatusNotifierWatcher *m_sniWatcher;
     QString m_sniHostService;
-//    QSize m_size;
+    //    QSize m_size;
     DragWidget *m_dragWidget;
-//    Position m_dockPosition;
-//    bool m_mouseCauseDock;
+    //    Position m_dockPosition;
+    //    bool m_mouseCauseDock;
 
     //　任务栏当前所在屏幕
     QString m_dockCurrentScreen;
