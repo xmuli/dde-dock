@@ -90,7 +90,7 @@ QPixmap PowerStatusWidget::getBatteryIcon()
         percentageStr = "060";
     } else if (percentage <= 70) {
         percentageStr = "070";
-    } else if (percentage < 80) {
+    } else if (percentage <= 80) {
         percentageStr = "080";
     } else if (percentage <= 90) {
         percentageStr = "090";

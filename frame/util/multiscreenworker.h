@@ -38,6 +38,7 @@
 #include <QObject>
 
 #define WINDOWMARGIN ((m_displayMode == Dock::Efficient) ? 0 : 10)
+#define ANIMATIONTIME 300
 
 DGUI_USE_NAMESPACE
 
@@ -108,12 +109,14 @@ signals:
     void requestUpdateFrontendGeometry(const QRect &rect);
     void requestNotifyWindowManager();
     void requestUpdatePosition(const Position &fromPos, const Position &toPos);
-    void requestUpdateLayout(const QString &screenName);      //界面需要根据任务栏更新布局的方向
+    void requestUpdateLayout(const QString &screenName);        //界面需要根据任务栏更新布局的方向
+    void requestUpdateDragArea();                               //更新拖拽区域
 
-//    void dockScreenNameChanged(const QString &screenName);
+    void updatePositionDone();
 
 public slots:
     void onAutoHideChanged(bool autoHide);
+    void updateDaemonDockSize(int dockSize);
 
 private slots:
     void onRegionMonitorChanged(int x, int y, const QString &key);
@@ -138,6 +141,7 @@ private slots:
 
     void onRequestNotifyWindowManager();
     void onRequestUpdatePosition(const Position &fromPos, const Position &toPos);
+    void onRequestUpdateDragArea();
 
     void updateGeometry();
     void updateInterRect(const QList<Monitor *>monitorList, QList<MonitRect> &list);

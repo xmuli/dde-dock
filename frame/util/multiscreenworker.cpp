@@ -96,7 +96,7 @@ void MultiScreenWorker::initMembers()
     const bool composite = m_wmHelper->hasComposite();
 
 #ifndef DISABLE_SHOW_ANIMATION
-    const int duration = composite ? 300 : 0;
+    const int duration = composite ? ANIMATIONTIME : 0;
 #else
     const int duration = 10;
 #endif
@@ -110,9 +110,27 @@ void MultiScreenWorker::initConnection()
     connect(m_displayInter, &DisplayInter::MonitorsChanged, this, &MultiScreenWorker::onMonitorListChanged);
 
     connect(m_showAni, &QVariantAnimation::valueChanged, parent(), [ = ](QVariant value) {
+        //        const int dockSize = int(m_displayMode == DisplayMode::Fashion ? m_dockInter->windowSizeFashion() : m_dockInter->windowSizeEfficient());
+
         QRect rect = value.toRect();
         parent()->setFixedSize(rect.size());
         parent()->setGeometry(rect);
+
+        //        switch (m_dockInter->position()) {
+        //        case Position::Top:
+        //        {
+        //            parent()->panel()->setFixedHeight(dockSize);
+        //            parent()->panel()->move(rect.x(),rect.y() + rect.height() - dockSize);
+        //        }
+        //            break;
+        //        case Position::Bottom:
+        //            parent()->panel()->move(0, 0);
+        //            break;
+        //        case Position::Left:
+        //            break;
+        //        case Position::Right:
+        //            break;
+        //        }
     });
 
     connect(m_hideAni, &QVariantAnimation::valueChanged, parent(), [ = ](QVariant value) {
@@ -138,14 +156,13 @@ void MultiScreenWorker::initConnection()
     connect(this, &MultiScreenWorker::requestUpdateFrontendGeometry, this, &MultiScreenWorker::onRequestUpdateFrontendGeometry);
     connect(this, &MultiScreenWorker::requestUpdatePosition, this, &MultiScreenWorker::onRequestUpdatePosition);
     connect(this, &MultiScreenWorker::requestNotifyWindowManager, this, &MultiScreenWorker::onRequestNotifyWindowManager);
+    connect(this, &MultiScreenWorker::requestUpdateDragArea, this, &MultiScreenWorker::onRequestUpdateDragArea);
 }
 
 void MultiScreenWorker::initShow()
 {
     // 找到一个可以使用的主屏去停靠任务栏
     updateDockScreenName();
-    //    parent()->setGeometry(getDockHideGeometry(toScreen(), position(), displayMode()));
-    //    qDebug() << parent()->geometry();
 
     if (m_hideMode == HideMode::KeepShowing)
         showAni(m_toScreen);
@@ -209,9 +226,9 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
 
     const bool composite = m_wmHelper->hasComposite();
 #ifndef DISABLE_SHOW_ANIMATION
-    const int duration = composite ? 300 : 0;
+    const int duration = composite ? ANIMATIONTIME : 0;
 #else
-    const int duration = 0;
+    const int duration = 10;
 #endif
 
     ani1->setDuration(duration);
@@ -238,10 +255,12 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
         parent()->setFixedSize(value.toRect().size());
         parent()->setGeometry(value.toRect());
     });
+
     connect(ani2, &QVariantAnimation::valueChanged, this, [ = ](QVariant value) {
         parent()->setFixedSize(value.toRect().size());
         parent()->setGeometry(value.toRect());
     });
+
     // 如果更改了显示位置，在显示之前应该更新一下界面布局方向
     if (fromPos != toPos)
         connect(ani1, &QVariantAnimation::finished, this, [ = ] {
@@ -249,12 +268,14 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
             //隐藏后需要通知界面更新布局方向
             emit requestUpdateLayout(fromScreen);
         });
+
     // 通知窗管更新任务栏区域
     connect(group, &QVariantAnimation::finished, this, [ = ] {
         updateDockVisible(true);
         emit requestUpdateFrontendGeometry(dockRect(m_toScreen, m_hideMode));
         emit requestNotifyWindowManager();
     });
+
     //　结束之后需要根据确定需要再隐藏
     connect(group, &QVariantAnimation::finished, this, [ = ] {
         m_aniStart = false;
@@ -274,7 +295,6 @@ void MultiScreenWorker::updateDockScreenName(const QString &screenName)
 
     qDebug() << "dock screen changed: " << screenName;
 
-//    emit dockScreenNameChanged(screenName);
     emit requestUpdateLayout(screenName);
 }
 
@@ -335,6 +355,15 @@ void MultiScreenWorker::handleLeaveEvent(QEvent *event)
 void MultiScreenWorker::onAutoHideChanged(bool autoHide)
 {
     m_autoHide = autoHide;
+}
+
+void MultiScreenWorker::updateDaemonDockSize(int dockSize)
+{
+    m_dockInter->setWindowSize(uint(dockSize));
+    if (m_displayMode == DisplayMode::Fashion )
+        m_dockInter->setWindowSizeFashion(uint(dockSize));
+    else
+        m_dockInter->setWindowSizeEfficient(uint(dockSize));
 }
 
 void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
@@ -498,6 +527,7 @@ void MultiScreenWorker::showAniFinished()
     emit requestUpdateFrontendGeometry(dockRect(m_toScreen, m_hideMode));
     emit requestNotifyWindowManager();
     //    emit requestUpdateLayout(m_toScreen);
+    emit requestUpdateDragArea();
 }
 
 void MultiScreenWorker::hideAniFinished()
@@ -514,6 +544,13 @@ void MultiScreenWorker::onPositionChanged()
     if (m_position == position)
         return;
     m_position = position;
+
+    // 更新鼠标拖拽样式
+    if ((Top == m_position) || (Bottom == m_position)) {
+        parent()->panel()->setCursor(Qt::SizeVerCursor);
+    } else {
+        parent()->panel()->setCursor(Qt::SizeHorCursor);
+    }
 
     DockItem::setDockPosition(position);
     qApp->setProperty(PROP_POSITION, QVariant::fromValue(position));
@@ -683,6 +720,14 @@ void MultiScreenWorker::onRequestUpdatePosition(const Position &fromPos, const P
     updateDockScreenName();
 
     changeDockPosition(fromScreen(), toScreen(), fromPos, toPos);
+
+    //    QWidget *widget = parent()->dragWidget();
+
+}
+
+void MultiScreenWorker::onRequestUpdateDragArea()
+{
+    parent()->resetDragWindow();
 }
 
 void MultiScreenWorker::updateGeometry()
@@ -840,14 +885,14 @@ QRect MultiScreenWorker::getDockShowGeometry(const QString &screenName, const Po
                 rect.setX(inter->x() + WINDOWMARGIN);
                 rect.setY(inter->y() + WINDOWMARGIN);
                 rect.setWidth(dockSize);
-                rect.setHeight(inter->w() - 2 * WINDOWMARGIN);
+                rect.setHeight(inter->h() - 2 * WINDOWMARGIN);
             }
                 break;
             case Right: {
                 rect.setX(inter->x() + inter->w() - WINDOWMARGIN - dockSize);
                 rect.setY(inter->y() + WINDOWMARGIN);
                 rect.setWidth(dockSize);
-                rect.setHeight(inter->w() - 2 * WINDOWMARGIN);
+                rect.setHeight(inter->h() - 2 * WINDOWMARGIN);
             }
             }
             break;

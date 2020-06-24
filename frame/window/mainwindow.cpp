@@ -49,66 +49,6 @@
 
 using org::kde::StatusNotifierWatcher;
 
-class DragWidget : public QWidget
-{
-    Q_OBJECT
-
-private:
-    bool m_dragStatus;
-    QPoint m_resizePoint;
-
-public:
-    explicit DragWidget(QWidget *parent) : QWidget(parent)
-    {
-        setObjectName("DragWidget");
-        m_dragStatus = false;
-    }
-
-signals:
-    void dragPointOffset(QPoint);
-    void dragFinished();
-
-private:
-    void mousePressEvent(QMouseEvent *event) override
-    {
-        if (event->button() == Qt::LeftButton) {
-            m_resizePoint = event->globalPos();
-            m_dragStatus = true;
-            this->grabMouse();
-        }
-    }
-
-    void mouseMoveEvent(QMouseEvent *event) override
-    {
-        if (m_dragStatus) {
-            QPoint offset = QPoint(QCursor::pos() - m_resizePoint);
-            emit dragPointOffset(offset);
-        }
-    }
-
-    void mouseReleaseEvent(QMouseEvent *event) override
-    {
-        if (!m_dragStatus)
-            return;
-
-        m_dragStatus =  false;
-        releaseMouse();
-        emit dragFinished();
-    }
-
-    void enterEvent(QEvent *) override
-    {
-        if (QApplication::overrideCursor() && QApplication::overrideCursor()->shape() != cursor()) {
-            QApplication::setOverrideCursor(cursor());
-        }
-    }
-
-    void leaveEvent(QEvent *) override
-    {
-        QApplication::restoreOverrideCursor();
-    }
-};
-
 const QPoint rawXPosition(const QPoint &scaledPos)
 {
     QScreen const *screen = Utils::screenAtByScaled(scaledPos);
@@ -149,7 +89,7 @@ MainWindow::MainWindow(QWidget *parent)
     , m_dbusDaemonInterface(QDBusConnection::sessionBus().interface())
     , m_sniWatcher(new StatusNotifierWatcher(SNI_WATCHER_SERVICE, SNI_WATCHER_PATH, QDBusConnection::sessionBus(), this))
     , m_dragWidget(new DragWidget(this))
-    , m_mouseCauseDock(false)
+//    , m_mouseCauseDock(false)
 {
     setAccessibleName("mainwindow");
     m_mainPanel->setAccessibleName("mainpanel");
@@ -166,13 +106,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_settings = &DockSettings::Instance();
     //    m_xcbMisc->set_window_type(winId(), XcbMisc::Dock);
-    m_size = m_settings->m_mainWindowSize;
+//    m_size = m_settings->m_mainWindowSize;
     m_mainPanel->setDisplayMode(m_settings->displayMode());
     initSNIHost();
     initComponents();
     initConnections();
 
-    resizeMainPanelWindow();
+    resetDragWindow();
 
     m_mainPanel->setDelegate(this);
     for (auto item : DockItemManager::instance()->itemList())
@@ -181,26 +121,23 @@ MainWindow::MainWindow(QWidget *parent)
     m_dragWidget->setMouseTracking(true);
     m_dragWidget->setFocusPolicy(Qt::NoFocus);
 
-    m_dockPosition = m_settings->position();
+//    m_dockPosition = m_settings->position();
 
-    if ((Top == m_dockPosition) || (Bottom == m_dockPosition)) {
+    if ((Top == m_multiScreenWorker->position()) || (Bottom == m_multiScreenWorker->position())) {
         m_dragWidget->setCursor(Qt::SizeVerCursor);
     } else {
         m_dragWidget->setCursor(Qt::SizeHorCursor);
     }
 
-
-    //    updateRegionMonitorWatch();
-
     connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, this, [=]{
         DisplayMode mode = m_multiScreenWorker->displayMode();
-        // TODO
+        m_mainPanel->setDisplayMode(mode);
     });
     connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, m_shadowMaskOptimizeTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
 
     //　通知窗管
     connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateLayout, this,[=](const QString &screenName){
-        //　FIXME: 这里有个很奇怪的问题，命名是右边屏幕的左边，偏偏就是显示左边屏幕的左边去，未找到原因
+        //　FIXME: 这里有个很奇怪的问题，明明是左边屏幕的左边，偏偏就是显示右边屏幕的左边去，未找到原因
         //　QWidget::setFixedSize(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).size());
         //　QWidget::move(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).topLeft());
 
@@ -209,6 +146,9 @@ MainWindow::MainWindow(QWidget *parent)
         m_mainPanel->setPositonValue(m_multiScreenWorker->position());
         m_mainPanel->update();
     });
+
+    //　通知窗管任务栏大小时顺便更新拖拽区域
+    connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateDragArea, this, &MainWindow::resetDragWindow);
 }
 
 MainWindow::~MainWindow()
@@ -518,24 +458,9 @@ bool MainWindow::appIsOnDock(const QString &appDesktop)
     return DockItemManager::instance()->appIsOnDock(appDesktop);
 }
 
-void MainWindow::resizeMainWindow()
+void MainWindow::resetDragWindow()
 {
-    return;
-    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
-    QSize size = m_settings->windowSize();
-    const QRect windowRect = m_settings->windowRect(m_dockPosition, false);
-    internalMove(windowRect.topLeft());
-    resizeMainPanelWindow();
-    QWidget::setFixedSize(size);
-}
-
-void MainWindow::resizeMainPanelWindow()
-{
-    return;
-    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
-    //    m_mainPanel->setFixedSize(m_settings->m_mainWindowSize);
-
-    switch (m_dockPosition) {
+    switch (m_multiScreenWorker->position()) {
     case Dock::Top:
         m_dragWidget->setGeometry(0, height() - DRAG_AREA_SIZE, width(), DRAG_AREA_SIZE);
         break;
@@ -549,11 +474,18 @@ void MainWindow::resizeMainPanelWindow()
         m_dragWidget->setGeometry(0, 0, DRAG_AREA_SIZE, height());
         break;
     }
+
+    if (m_dockSize == 0)
+        m_dockSize = m_multiScreenWorker->dockRect(m_multiScreenWorker->toScreen(),m_multiScreenWorker->hideMode()).height();
+
+    // 通知窗管和后端更新数据
+    m_multiScreenWorker->updateDaemonDockSize(m_dockSize);
+    m_multiScreenWorker->requestNotifyWindowManager();
+
 }
 
 void MainWindow::updateDisplayMode()
 {
-    return;
     m_mainPanel->setDisplayMode(m_settings->displayMode());
     //    setStrutPartial();
     adjustShadowMask();
@@ -562,48 +494,93 @@ void MainWindow::updateDisplayMode()
 
 void MainWindow::onMainWindowSizeChanged(QPoint offset)
 {
-    if (Dock::Top == m_dockPosition) {
-        m_settings->m_mainWindowSize.setHeight(qBound(MAINWINDOW_MIN_SIZE, m_size.height() + offset.y(), MAINWINDOW_MAX_SIZE));
-        m_settings->m_mainWindowSize.setWidth(width());
-    } else if (Dock::Bottom == m_dockPosition) {
-        m_settings->m_mainWindowSize.setHeight(qBound(MAINWINDOW_MIN_SIZE, m_size.height() - offset.y(), MAINWINDOW_MAX_SIZE));
-        m_settings->m_mainWindowSize.setWidth(width());
-    } else if (Dock::Left == m_dockPosition) {
-        m_settings->m_mainWindowSize.setHeight(height());
-        m_settings->m_mainWindowSize.setWidth(qBound(MAINWINDOW_MIN_SIZE, m_size.width() + offset.x(), MAINWINDOW_MAX_SIZE));
-    } else {
-        m_settings->m_mainWindowSize.setHeight(height());
-        m_settings->m_mainWindowSize.setWidth(qBound(MAINWINDOW_MIN_SIZE, m_size.width() - offset.x(), MAINWINDOW_MAX_SIZE));
+    const QRect &rect = m_multiScreenWorker->dockRect(m_multiScreenWorker->toScreen(),m_multiScreenWorker->hideMode());
+
+    QRect newRect;
+    switch(m_multiScreenWorker->position())
+    {
+    case Top:
+    {
+        newRect.setX(rect.x());
+        newRect.setY(rect.y());
+        newRect.setWidth(rect.width());
+        newRect.setHeight(qBound(MAINWINDOW_MIN_SIZE, rect.height() + offset.y(), MAINWINDOW_MAX_SIZE));
+
+        m_dockSize = newRect.height();
+    }
+        break;
+    case Bottom:
+    {
+        newRect.setX(rect.x());
+        newRect.setY(rect.y() + rect.height() - qBound(MAINWINDOW_MIN_SIZE, rect.height() - offset.y(), MAINWINDOW_MAX_SIZE));
+        newRect.setWidth(rect.width());
+        newRect.setHeight(qBound(MAINWINDOW_MIN_SIZE, rect.height() - offset.y(), MAINWINDOW_MAX_SIZE));
+
+        m_dockSize = newRect.height();
+    }
+        break;
+    case Left:
+    {
+        newRect.setX(rect.x());
+        newRect.setY(rect.y());
+        newRect.setWidth(qBound(MAINWINDOW_MIN_SIZE, rect.width() + offset.x(), MAINWINDOW_MAX_SIZE));
+        newRect.setHeight(rect.height());
+
+        m_dockSize = newRect.width();
+    }
+        break;
+    case Right:
+    {
+        newRect.setX(rect.x() + rect.width() - qBound(MAINWINDOW_MIN_SIZE, rect.width() - offset.x(), MAINWINDOW_MAX_SIZE));
+        newRect.setY(rect.y());
+        newRect.setWidth(qBound(MAINWINDOW_MIN_SIZE, rect.width() - offset.x(), MAINWINDOW_MAX_SIZE));
+        newRect.setHeight(rect.height());
+
+        m_dockSize = newRect.width();
+    }
+        break;
     }
 
-    resizeMainWindow();
-    m_settings->updateFrontendGeometry();
+    // 更新界面大小
+    m_mainPanel->setFixedSize(newRect.size());
+    setFixedSize(newRect.size());
+    move(newRect.topLeft());
+
+
+    // 更新后端接口大小
+    //    m_multiScreenWorker->onRegionMonitorChanged()
+
+    // 更新窗管大小
+    //    resizeMainWindow();
+    //    m_settings->updateFrontendGeometry();
 }
 
 void MainWindow::onDragFinished()
 {
-    if (m_size == m_settings->m_mainWindowSize)
-        return;
+    resetDragWindow();
 
-    m_size = m_settings->m_mainWindowSize;
+//    if (m_size == m_settings->m_mainWindowSize)
+//        return;
 
-    if (m_settings->displayMode() == Fashion) {
-        if (Dock::Top == m_dockPosition || Dock::Bottom == m_dockPosition) {
-            m_settings->m_dockInter->setWindowSizeFashion(m_settings->m_mainWindowSize.height());
-            m_settings->m_dockInter->setWindowSize(m_settings->m_mainWindowSize.height());
-        } else {
-            m_settings->m_dockInter->setWindowSizeFashion(m_settings->m_mainWindowSize.width());
-            m_settings->m_dockInter->setWindowSize(m_settings->m_mainWindowSize.width());
-        }
-    } else {
-        if (Dock::Top == m_dockPosition || Dock::Bottom == m_dockPosition) {
-            m_settings->m_dockInter->setWindowSizeEfficient(m_settings->m_mainWindowSize.height());
-            m_settings->m_dockInter->setWindowSize(m_settings->m_mainWindowSize.height());
-        } else {
-            m_settings->m_dockInter->setWindowSizeEfficient(m_settings->m_mainWindowSize.width());
-            m_settings->m_dockInter->setWindowSize(m_settings->m_mainWindowSize.width());
-        }
-    }
+//    m_size = m_settings->m_mainWindowSize;
+
+//    if (m_settings->displayMode() == Fashion) {
+//        if (Dock::Top == m_dockPosition || Dock::Bottom == m_dockPosition) {
+//            m_settings->m_dockInter->setWindowSizeFashion(m_settings->m_mainWindowSize.height());
+//            m_settings->m_dockInter->setWindowSize(m_settings->m_mainWindowSize.height());
+//        } else {
+//            m_settings->m_dockInter->setWindowSizeFashion(m_settings->m_mainWindowSize.width());
+//            m_settings->m_dockInter->setWindowSize(m_settings->m_mainWindowSize.width());
+//        }
+//    } else {
+//        if (Dock::Top == m_dockPosition || Dock::Bottom == m_dockPosition) {
+//            m_settings->m_dockInter->setWindowSizeEfficient(m_settings->m_mainWindowSize.height());
+//            m_settings->m_dockInter->setWindowSize(m_settings->m_mainWindowSize.height());
+//        } else {
+//            m_settings->m_dockInter->setWindowSizeEfficient(m_settings->m_mainWindowSize.width());
+//            m_settings->m_dockInter->setWindowSize(m_settings->m_mainWindowSize.width());
+//        }
+//    }
 
 
     //    setStrutPartial();
