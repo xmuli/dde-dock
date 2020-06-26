@@ -320,18 +320,18 @@ void MainWindow::compositeChanged()
     m_shadowMaskOptimizeTimer->start();
 }
 
-void MainWindow::internalMove(const QPoint &p)
-{
-    return;
-    const bool isHide = m_settings->hideState() == HideState::Hide && !testAttribute(Qt::WA_UnderMouse);
-    const bool pos_adjust = m_settings->hideMode() != HideMode::KeepShowing &&
-            isHide &&
-            m_panelShowAni->state() == QVariantAnimation::Stopped;
-    if (!pos_adjust) {
-        m_mainPanel->move(0, 0);
-        return QWidget::move(p);
-    }
-}
+//void MainWindow::internalMove(const QPoint &p)
+//{
+//    return;
+//    const bool isHide = m_settings->hideState() == HideState::Hide && !testAttribute(Qt::WA_UnderMouse);
+//    const bool pos_adjust = m_settings->hideMode() != HideMode::KeepShowing &&
+//            isHide &&
+//            m_panelShowAni->state() == QVariantAnimation::Stopped;
+//    if (!pos_adjust) {
+//        m_mainPanel->move(0, 0);
+//        return QWidget::move(p);
+//    }
+//}
 
 void MainWindow::initConnections()
 {
@@ -414,6 +414,13 @@ void MainWindow::getTrayVisableItemCount()
     m_mainPanel->getTrayVisableItemCount();
 }
 
+void MainWindow::setGeometry(const QRect &rect)
+{
+    qDebug() << rect;
+    QWidget::setGeometry(rect);
+    repaint();
+}
+
 void MainWindow::adjustShadowMask()
 {
     if (!m_launched)
@@ -462,6 +469,7 @@ bool MainWindow::appIsOnDock(const QString &appDesktop)
 
 void MainWindow::resetDragWindow()
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     switch (m_multiScreenWorker->position()) {
     case Dock::Top:
         m_dragWidget->setGeometry(0, height() - DRAG_AREA_SIZE, width(), DRAG_AREA_SIZE);
@@ -549,6 +557,7 @@ void MainWindow::onMainWindowSizeChanged(QPoint offset)
         break;
     }
 
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__ << newRect;
     // 更新界面大小
     m_mainPanel->setFixedSize(newRect.size());
     setFixedSize(newRect.size());

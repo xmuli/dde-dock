@@ -63,6 +63,14 @@ public:
                 return rightDock;
             }
         }
+
+        void reset()
+        {
+            leftDock = true;
+            topDock = true;
+            rightDock = true;
+            bottomDock = true;
+        }
     };
 
 public:

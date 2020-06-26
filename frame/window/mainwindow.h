@@ -149,6 +149,9 @@ private:
     bool appIsOnDock(const QString &appDesktop) override;
     void getTrayVisableItemCount();
 
+public:
+    void setGeometry(const QRect &rect);
+
 signals:
     void panelGeometryChanged();
 
@@ -157,7 +160,7 @@ public:
 
 private slots:
     void compositeChanged();
-    void internalMove(const QPoint &p);
+//    void internalMove(const QPoint &p);
     void updateDisplayMode();
 
     void adjustShadowMask();

@@ -41,6 +41,7 @@ MultiScreenWorker::MultiScreenWorker(QWidget *parent, DWindowManagerHelper *help
     , m_dockInter(new DBusDock("com.deepin.dde.daemon.Dock", "/com/deepin/dde/daemon/Dock", QDBusConnection::sessionBus(), this))
     , m_displayInter(new DisplayInter("com.deepin.daemon.Display", "/com/deepin/daemon/Display", QDBusConnection::sessionBus(), this))
     , m_leaveTimer(new QTimer(this))
+    , m_monitorUpdateTimer(new QTimer(this))
     , m_showAni(new QVariantAnimation(this))
     , m_hideAni(new QVariantAnimation(this))
     , m_fromScreen(qApp->primaryScreen()->name())
@@ -69,6 +70,9 @@ void MultiScreenWorker::initMembers()
 {
     m_leaveTimer->setInterval(10);
     m_leaveTimer->setSingleShot(true);
+
+    m_monitorUpdateTimer->setInterval(100);
+    m_monitorUpdateTimer->setSingleShot(true);
 
     //　设置应用角色为任务栏
     m_xcbMisc->set_window_type(parent()->winId(), XcbMisc::Dock);
@@ -125,6 +129,10 @@ void MultiScreenWorker::initConnection()
                                           "sa{sv}as",
                                           this, SLOT(haldleDbusSignal(QDBusMessage)));
 #endif
+
+    connect(m_displayInter, &DisplayInter::ScreenWidthChanged, this, [=](ushort  value){m_screenRawWidth = value;});
+    connect(m_displayInter, &DisplayInter::ScreenHeightChanged, this, [=](ushort  value){m_screenRawHeight = value;});
+
     connect(m_eventInter, &XEventMonitor::CursorMove, this, &MultiScreenWorker::onRegionMonitorChanged);
     connect(m_leaveMonitorInter, &XEventMonitor::CursorMove, this, &MultiScreenWorker::onLeaveMonitorChanged);
 
@@ -134,6 +142,26 @@ void MultiScreenWorker::initConnection()
     connect(this, &MultiScreenWorker::requestNotifyWindowManager, this, &MultiScreenWorker::onRequestNotifyWindowManager);
     connect(this, &MultiScreenWorker::requestUpdateDragArea, this, &MultiScreenWorker::onRequestUpdateDragArea);
     connect(this, &MultiScreenWorker::monitorInfoChaged, this, &MultiScreenWorker::onMonitorInfoChaged);
+
+    connect(m_monitorUpdateTimer, &QTimer::timeout, this, [=]{
+        qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
+        // 更新屏幕停靠信息
+        updateMonitorDockedInfo(m_monitorInfo);
+        // 更新所在屏幕
+        updateDockScreenName();
+        // 更新任务栏大小
+        parent()->setGeometry(dockRect(m_toScreen, m_hideMode));
+        parent()->panel()->setFixedSize(dockRect(m_toScreen, m_hideMode).size());
+        parent()->panel()->move(dockRect(m_toScreen, m_hideMode).topLeft());
+        // 通知后端
+        emit requestUpdateFrontendGeometry(dockRect(m_toScreen, HideMode::KeepShowing));
+        // 拖拽区域
+        emit requestUpdateDragArea();
+        // 监控区域
+        emit requestUpdateRegionMonitor();
+        // 通知窗管
+        emit requestNotifyWindowManager();
+    });
 }
 
 void MultiScreenWorker::initShow()
@@ -194,6 +222,7 @@ void MultiScreenWorker::hideAni(const QString &screen)
 
 void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen, const Position &fromPos, const Position &toPos)
 {
+    // TODO: 考虑切换过快的情况,这里需要停止上一次的动画,可增加信息号控制,暂时无需要
     qDebug() << "from: " << fromScreen << "  to: " << toScreen;
     updateDockScreenName(toScreen);
 
@@ -418,7 +447,7 @@ void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
     }
     lastPos = QPoint(x, y);
 
-    qDebug() << x << y << m_toScreen;
+    qDebug() << x << y << toScreen << m_toScreen;
 
     // 如果离开定时器已启动，这时候如果鼠标又在监视区域移动了，那就保持现状，不需要再做其他操作
     if (m_leaveTimer->isActive())
@@ -428,7 +457,10 @@ void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
     if (toScreen != m_toScreen) {
         Monitor *currentMonitor = monitorByName(m_monitorInfo, toScreen);
         if (!currentMonitor)
+        {
+            qDebug() << "cannot find monitor by name: " << toScreen;
             return;
+        }
 
         // 检查边缘是否允许停靠
         if (currentMonitor->dockPosition().docked(static_cast<Position>(m_dockInter->position())))
@@ -494,6 +526,7 @@ void MultiScreenWorker::onMonitorListChanged(const QList<QDBusObjectPath> &mons)
 
 void MultiScreenWorker::monitorAdded(const QString &path)
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     MonitorInter *inter = new MonitorInter("com.deepin.daemon.Display", path, QDBusConnection::sessionBus(), this);
     Monitor *mon = new Monitor(this);
 
@@ -785,18 +818,12 @@ void MultiScreenWorker::onRequestUpdateDragArea()
 void MultiScreenWorker::onMonitorInfoChaged()
 {
     qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
-    // 更新所在屏幕
-    updateDockScreenName();
-    // 更新任务栏大小
-    parent()->setGeometry(dockRect(m_toScreen, m_hideMode));
-    // 通知后端
-    emit requestUpdateFrontendGeometry(dockRect(m_toScreen, HideMode::KeepShowing));
-    // 拖拽区域
-    emit requestUpdateDragArea();
-    // 监控区域
-    emit requestUpdateRegionMonitor();
-    // 通知窗管
-    emit requestNotifyWindowManager();
+    if (m_monitorUpdateTimer->isActive())
+    {
+        m_monitorUpdateTimer->stop();
+    }
+
+    m_monitorUpdateTimer->start();
 }
 
 void MultiScreenWorker::updateGeometry()
@@ -864,6 +891,7 @@ void MultiScreenWorker::updateInterRect(const QList<Monitor *> monitorList, QLis
 
 void MultiScreenWorker::updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> &map)
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     QList<Monitor *>screens = map.keys();
 
     // 最多支持双屏,这里只计算双屏,单屏默认四边均可停靠任务栏
@@ -876,48 +904,53 @@ void MultiScreenWorker::updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> 
         qFatal("shouldn't be here");
     }
 
+    if (s1->bottomRight() == s2->topLeft()
+            || s1->topLeft() == s2->bottomRight())
+    {
+        s1->dockPosition().reset();
+        s2->dockPosition().reset();
+        return;
+    }
+
     // 对齐
     bool isAligment = false;
     // 左右拼
-    if (s1->bottom() > s2->top() && s1->top() < s2->bottom()) {
-        // s1左 s2右
-        if (s1->right() == s2->left()) {
-            isAligment = (s1->topRight() == s2->topLeft())
-                    && (s1->bottomRight() == s2->bottomLeft());
-            if (isAligment) {
-                s1->dockPosition().rightDock = false;
-                s2->dockPosition().leftDock = false;
-            }
-        }
-        // s1右 s2左
-        if (s1->left() == s2->right()) {
-            isAligment = (s1->topLeft() == s2->topRight())
-                    && (s1->bottomLeft() == s2->bottomRight());
-            if (isAligment) {
-                s1->dockPosition().leftDock = false;
-                s2->dockPosition().rightDock = false;
-            }
+    // s1左 s2右
+    if (s1->right() == s2->left()) {
+        isAligment = (s1->topRight() == s2->topLeft())
+                && (s1->bottomRight() == s2->bottomLeft());
+        if (isAligment) {
+            s1->dockPosition().rightDock = false;
+            s2->dockPosition().leftDock = false;
         }
     }
-    // 上下拼
-    if (s1->right() > s2->left() && s1->left() < s2->right()) {
-        // s1上 s2下
-        if (s1->bottom() == s2->top()) {
-            isAligment = (s1->bottomLeft() == s2->topLeft())
-                    && (s1->bottomRight() == s2->topRight());
-            if (isAligment) {
-                s1->dockPosition().bottomDock = false;
-                s2->dockPosition().topDock = false;
-            }
+    // s1右 s2左
+    if (s1->left() == s2->right()) {
+        isAligment = (s1->topLeft() == s2->topRight())
+                && (s1->bottomLeft() == s2->bottomRight());
+        if (isAligment) {
+            s1->dockPosition().leftDock = false;
+            s2->dockPosition().rightDock = false;
         }
-        // s1下 s2上
-        if (s1->top() == s2->bottom()) {
-            isAligment = (s1->topLeft() == s2->bottomLeft())
-                    && (s1->topRight() == s2->bottomRight());
-            if (isAligment) {
-                s1->dockPosition().topDock = false;
-                s2->dockPosition().bottomDock = false;
-            }
+    }
+
+    // 上下拼
+    // s1上 s2下
+    if (s1->bottom() == s2->top()) {
+        isAligment = (s1->bottomLeft() == s2->topLeft())
+                && (s1->bottomRight() == s2->topRight());
+        if (isAligment) {
+            s1->dockPosition().bottomDock = false;
+            s2->dockPosition().topDock = false;
+        }
+    }
+    // s1下 s2上
+    if (s1->top() == s2->bottom()) {
+        isAligment = (s1->topLeft() == s2->bottomLeft())
+                && (s1->topRight() == s2->bottomRight());
+        if (isAligment) {
+            s1->dockPosition().topDock = false;
+            s2->dockPosition().bottomDock = false;
         }
     }
 }
@@ -1031,12 +1064,13 @@ void MultiScreenWorker::updateWindowManagerDock()
 
     const auto ratio = parent()->devicePixelRatioF();
 
-    //TODO 获取的位置有问题，需要优化
     const QRect rect = getDockShowGeometry(m_toScreen, m_position, m_displayMode);
+    qDebug() << "wm dock area: " << rect;
 
     const QPoint &p = rawXPosition(rect.topLeft());
-    const QSize &s = rect.size();
-    const QRect &primaryRawRect = rect;
+
+    qDebug() << p << rawXPosition(rect.topLeft()) << ratio
+             << m_screenRawHeight << m_screenRawWidth << m_dockInter->position();
 
     XcbMisc::Orientation orientation = XcbMisc::OrientationTop;
     uint strut = 0;
@@ -1046,27 +1080,27 @@ void MultiScreenWorker::updateWindowManagerDock()
     switch (m_dockInter->position()) {
     case Position::Top:
         orientation = XcbMisc::OrientationTop;
-        strut = p.y() + s.height() * ratio;
+        strut = p.y() + rect.height() * ratio;
         strutStart = p.x();
-        strutEnd = qMin(qRound(p.x() + s.width() * ratio), primaryRawRect.right());
+        strutEnd = qMin(qRound(p.x() + rect.width() * ratio), rect.right());
         break;
     case Position::Bottom:
         orientation = XcbMisc::OrientationBottom;
         strut = m_screenRawHeight - p.y();
         strutStart = p.x();
-        strutEnd = qMin(qRound(p.x() + s.width() * ratio), primaryRawRect.right());
+        strutEnd = qMin(qRound(p.x() +rect.width() * ratio), rect.right());
         break;
     case Position::Left:
         orientation = XcbMisc::OrientationLeft;
-        strut = p.x() + s.width() * ratio;
+        strut = p.x() + rect.width() * ratio;
         strutStart = p.y();
-        strutEnd = qMin(qRound(p.y() + s.height() * ratio), primaryRawRect.bottom());
+        strutEnd = qMin(qRound(p.y() + rect.height() * ratio), rect.bottom());
         break;
     case Position::Right:
         orientation = XcbMisc::OrientationRight;
         strut = m_screenRawWidth - p.x();
         strutStart = p.y();
-        strutEnd = qMin(qRound(p.y() + s.height() * ratio), primaryRawRect.bottom());
+        strutEnd = qMin(qRound(p.y() + rect.height() * ratio), rect.bottom());
         break;
     }
 

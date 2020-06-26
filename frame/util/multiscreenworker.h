@@ -189,7 +189,11 @@ private:
     DBusDock *m_dockInter;
     DisplayInter *m_displayInter;
 
+     //FIX: 需要废除,正式提交后废除
     QTimer *m_leaveTimer;
+
+    // 更新屏幕信息
+    QTimer *m_monitorUpdateTimer;
 
     QVariantAnimation *m_showAni;
     QVariantAnimation *m_hideAni;
