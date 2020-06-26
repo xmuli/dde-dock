@@ -163,6 +163,7 @@ private:
      */
     Monitor *monitorByName(const QMap<Monitor *, MonitorInter *> &map,const QString &screenName);
     QScreen *screenByName(const QString &screenName);
+    bool onScreenEdge(const QString &screenName,const QPoint &point);
     bool onScreenEdge(const QPoint &point);
     bool contains(const MonitRect &rect, const QPoint &pos);
     bool contains(const QList<MonitRect> &rectList, const QPoint &pos);
