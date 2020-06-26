@@ -79,8 +79,6 @@ public:
     inline const DisplayMode &displayMode() {return m_displayMode;}
     inline const HideMode &hideMode() {return m_hideMode;}
     inline const HideState &hideState() {return m_hideState;}
-//    inline bool dockVisible() {return m_dockVisible;}
-//    void updateDockVisible(bool visible){m_dockVisible = visible;}
 
     // 适用于切换到另外一个位置
     void changeDockPosition(QString fromScreen,QString toScreen,const Position &fromPos,const Position &toPos);
@@ -98,10 +96,8 @@ public:
     void handleLeaveEvent(QEvent *event);
 
 signals:
-    // 任务栏四大信号
     void displayModeChanegd();      //父对象需要更新圆角情况
     void windowHideModeChanged();
-    void windowVisibleChanged();
 
     // 更新监视区域
     void requestUpdateRegionMonitor();
@@ -120,12 +116,16 @@ public slots:
     void updateDaemonDockSize(int dockSize);
 
 private slots:
+    // Region Monitor
     void onRegionMonitorChanged(int x, int y, const QString &key);
     void onLeaveMonitorChanged(int x, int y, const QString &key);
+
+    // Display Monitor
     void onMonitorListChanged(const QList<QDBusObjectPath> &mons);
     void monitorAdded(const QString &path);
     void monitorRemoved(const QString &path);
 
+    // Animation
     void showAniFinished();
     void hideAniFinished();
 
@@ -135,6 +135,12 @@ private slots:
     void hideModeChanged();
     void hideStateChanged();
 
+    /**
+     * @brief onRequestUpdateRegionMonitor  更新监听区域信息
+     * 触发时机:屏幕大小,屏幕坐标,屏幕数量,发生变化
+     *          任务栏位置发生变化
+     *          任务栏'模式'发生变化
+     */
     void onRequestUpdateRegionMonitor();
 
     // 通知后端任务栏所在位置
@@ -167,13 +173,8 @@ private:
     bool onScreenEdge(const QPoint &point);
     bool contains(const MonitRect &rect, const QPoint &pos);
     bool contains(const QList<MonitRect> &rectList, const QPoint &pos);
-    /**
-     * @brief positionDocked    检查任务栏在此屏幕的对应位置是否允许停靠
-     * @param screenName        屏幕名
-     * @param pos               任务栏位置
-     * @return                  true:允许,false:不允许
-     */
-    bool positionDocked(const QString &screenName, const Position &pos);
+    const QPoint rawXPosition(const QPoint &scaledPos);
+    const QPoint scaledPos(const QPoint &rawXPos);
 
 private:
     QWidget *m_parent;
@@ -207,7 +208,6 @@ private:
     int m_screenRawWidth;
     QString m_registerKey;
     QString m_leaveRegisterKey;
-//    bool m_dockVisible;             // 任务栏当前是否可见
     bool m_aniStart;                // changeDockPosition正在运行中
     bool m_autoHide;                // 和DockSettings保持一致,可以直接使用其单例进行获取
     QList<MonitRect> m_monitorRectList;     // 监听唤起任务栏区域
