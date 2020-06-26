@@ -98,15 +98,20 @@ void MultiScreenWorker::initConnection()
     connect(m_displayInter, &DisplayInter::MonitorsChanged, this, &MultiScreenWorker::onMonitorListChanged);
 
     connect(m_showAni, &QVariantAnimation::valueChanged, parent(), [ = ](QVariant value) {
+        qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
         QRect rect = value.toRect();
         parent()->setFixedSize(rect.size());
         parent()->setGeometry(rect);
+//        parent()->panel()->setFixedSize(rect.size());
+//        parent()->panel()->setGeometry(rect);
     });
 
     connect(m_hideAni, &QVariantAnimation::valueChanged, parent(), [ = ](QVariant value) {
         QRect rect = value.toRect();
         parent()->setFixedSize(rect.size());
         parent()->setGeometry(rect);
+//        parent()->panel()->setFixedSize(rect.size());
+//        parent()->panel()->setGeometry(rect);
     });
 
     connect(m_leaveTimer, &QTimer::timeout, this, &MultiScreenWorker::updateGeometry);
@@ -152,7 +157,7 @@ void MultiScreenWorker::initConnection()
         // 更新任务栏大小
         parent()->setGeometry(dockRect(m_toScreen, m_hideMode));
         parent()->panel()->setFixedSize(dockRect(m_toScreen, m_hideMode).size());
-        parent()->panel()->move(dockRect(m_toScreen, m_hideMode).topLeft());
+        parent()->panel()->setGeometry(dockRect(m_toScreen, m_hideMode));
         // 通知后端
         emit requestUpdateFrontendGeometry(dockRect(m_toScreen, HideMode::KeepShowing));
         // 拖拽区域
@@ -171,8 +176,12 @@ void MultiScreenWorker::initShow()
 
     if (m_hideMode == HideMode::KeepShowing)
         showAni(m_toScreen);
-    else
-        parent()->setGeometry(getDockHideGeometry(m_toScreen, m_position, m_displayMode));
+    else {
+        QRect rect= getDockHideGeometry(m_toScreen, m_position, m_displayMode);
+        parent()->setGeometry(rect);
+        parent()->panel()->setFixedSize(rect.size());
+        parent()->panel()->setGeometry(rect);
+    }
 }
 
 void MultiScreenWorker::showAni(const QString &screen)
@@ -265,11 +274,15 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
     connect(ani1, &QVariantAnimation::valueChanged, this, [ = ](QVariant value) {
         parent()->setFixedSize(value.toRect().size());
         parent()->setGeometry(value.toRect());
+//        parent()->panel()->setFixedSize(value.toRect().size());
+//        parent()->panel()->setGeometry(value.toRect());
     });
 
     connect(ani2, &QVariantAnimation::valueChanged, this, [ = ](QVariant value) {
         parent()->setFixedSize(value.toRect().size());
         parent()->setGeometry(value.toRect());
+//        parent()->panel()->setFixedSize(value.toRect().size());
+//        parent()->panel()->setGeometry(value.toRect());
     });
 
     // 如果更改了显示位置，在显示之前应该更新一下界面布局方向
@@ -436,7 +449,7 @@ void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
      */
     if (onScreenEdge(m_toScreen, QPoint(x, y))) {
         toScreen = m_toScreen;
-        qDebug() << "on the current screen edge";
+//        qDebug() << "on the current screen edge";
     }
 
     // 过滤重复坐标
@@ -447,7 +460,7 @@ void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
     }
     lastPos = QPoint(x, y);
 
-    qDebug() << x << y << toScreen << m_toScreen;
+//    qDebug() << x << y << toScreen << m_toScreen;
 
     // 如果离开定时器已启动，这时候如果鼠标又在监视区域移动了，那就保持现状，不需要再做其他操作
     if (m_leaveTimer->isActive())

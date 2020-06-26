@@ -89,10 +89,11 @@ MainWindow::MainWindow(QWidget *parent)
     , m_dbusDaemonInterface(QDBusConnection::sessionBus().interface())
     , m_sniWatcher(new StatusNotifierWatcher(SNI_WATCHER_SERVICE, SNI_WATCHER_PATH, QDBusConnection::sessionBus(), this))
     , m_dragWidget(new DragWidget(this))
-//    , m_mouseCauseDock(false)
+    //    , m_mouseCauseDock(false)
 {
     setAccessibleName("mainwindow");
     m_mainPanel->setAccessibleName("mainpanel");
+    m_mainPanel->setVisible(true);
     setAttribute(Qt::WA_TranslucentBackground);
     setMouseTracking(true);
     setAcceptDrops(true);
@@ -106,7 +107,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_settings = &DockSettings::Instance();
     //    m_xcbMisc->set_window_type(winId(), XcbMisc::Dock);
-//    m_size = m_settings->m_mainWindowSize;
+    //    m_size = m_settings->m_mainWindowSize;
     m_mainPanel->setDisplayMode(m_settings->displayMode());
     initSNIHost();
     initComponents();
@@ -121,7 +122,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_dragWidget->setMouseTracking(true);
     m_dragWidget->setFocusPolicy(Qt::NoFocus);
 
-//    m_dockPosition = m_settings->position();
+    //    m_dockPosition = m_settings->position();
 
     if ((Top == m_multiScreenWorker->position()) || (Bottom == m_multiScreenWorker->position())) {
         m_dragWidget->setCursor(Qt::SizeVerCursor);
@@ -137,16 +138,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     //　通知窗管
     connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateLayout, this,[=](const QString &screenName){
-        //　FIXME: 这里有个很奇怪的问题，明明是左边屏幕的左边，偏偏就是显示右边屏幕的左边去，未找到原因
-//       QWidget::setFixedSize(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).size());
-//       QWidget::move(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).topLeft());
+        // FIXME: 这里有个很奇怪的问题，明明是左边屏幕的左边，偏偏就是显示右边屏幕的左边去，未找到原因
+        // FIXME: 避免连续重复大量调用setFixedSize或setGeometry有一定效果)
+        //       QWidget::setFixedSize(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).size());
+        //       QWidget::move(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).topLeft());
 
         m_mainPanel->setFixedSize(m_multiScreenWorker->contentSize(screenName));
         m_mainPanel->setDisplayMode(m_multiScreenWorker->displayMode());
         m_mainPanel->setPositonValue(m_multiScreenWorker->position());
         m_mainPanel->update();
-
-//        QWidget::update();
     });
 
     //　通知窗管任务栏大小时顺便更新拖拽区域
@@ -416,9 +416,9 @@ void MainWindow::getTrayVisableItemCount()
 
 void MainWindow::setGeometry(const QRect &rect)
 {
-    qDebug() << rect;
-    QWidget::setGeometry(rect);
-    repaint();
+    this->windowHandle()->setGeometry(rect);
+    //FIX: 切换屏幕显示模式,重置任务栏大小时,不生效
+    //    QWidget::setGeometry(rect);
 }
 
 void MainWindow::adjustShadowMask()
@@ -469,7 +469,7 @@ bool MainWindow::appIsOnDock(const QString &appDesktop)
 
 void MainWindow::resetDragWindow()
 {
-    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
+    //    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     switch (m_multiScreenWorker->position()) {
     case Dock::Top:
         m_dragWidget->setGeometry(0, height() - DRAG_AREA_SIZE, width(), DRAG_AREA_SIZE);
@@ -503,9 +503,7 @@ void MainWindow::resetDragWindow()
 void MainWindow::updateDisplayMode()
 {
     m_mainPanel->setDisplayMode(m_settings->displayMode());
-    //    setStrutPartial();
     adjustShadowMask();
-    //    updateRegionMonitorWatch();
 }
 
 void MainWindow::onMainWindowSizeChanged(QPoint offset)
@@ -557,50 +555,15 @@ void MainWindow::onMainWindowSizeChanged(QPoint offset)
         break;
     }
 
-    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__ << newRect;
     // 更新界面大小
     m_mainPanel->setFixedSize(newRect.size());
     setFixedSize(newRect.size());
     move(newRect.topLeft());
-
-
-    // 更新后端接口大小
-    //    m_multiScreenWorker->onRegionMonitorChanged()
-
-    // 更新窗管大小
-    //    resizeMainWindow();
-    //    m_settings->updateFrontendGeometry();
 }
 
 void MainWindow::onDragFinished()
 {
     resetDragWindow();
-
-//    if (m_size == m_settings->m_mainWindowSize)
-//        return;
-
-//    m_size = m_settings->m_mainWindowSize;
-
-//    if (m_settings->displayMode() == Fashion) {
-//        if (Dock::Top == m_dockPosition || Dock::Bottom == m_dockPosition) {
-//            m_settings->m_dockInter->setWindowSizeFashion(m_settings->m_mainWindowSize.height());
-//            m_settings->m_dockInter->setWindowSize(m_settings->m_mainWindowSize.height());
-//        } else {
-//            m_settings->m_dockInter->setWindowSizeFashion(m_settings->m_mainWindowSize.width());
-//            m_settings->m_dockInter->setWindowSize(m_settings->m_mainWindowSize.width());
-//        }
-//    } else {
-//        if (Dock::Top == m_dockPosition || Dock::Bottom == m_dockPosition) {
-//            m_settings->m_dockInter->setWindowSizeEfficient(m_settings->m_mainWindowSize.height());
-//            m_settings->m_dockInter->setWindowSize(m_settings->m_mainWindowSize.height());
-//        } else {
-//            m_settings->m_dockInter->setWindowSizeEfficient(m_settings->m_mainWindowSize.width());
-//            m_settings->m_dockInter->setWindowSize(m_settings->m_mainWindowSize.width());
-//        }
-//    }
-
-
-    //    setStrutPartial();
 }
 
 void MainWindow::themeTypeChanged(DGuiApplicationHelper::ColorType themeType)

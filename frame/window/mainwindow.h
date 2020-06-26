@@ -123,7 +123,7 @@ public:
     friend class MainPanel;
     friend class MainPanelControl;
 
-    QWidget *panel() {return m_mainPanel;}
+    QWidget *panel() {qDebug() << m_mainPanel->geometry();return m_mainPanel;}
     DragWidget *dragWidget() {return m_dragWidget;}
 
 public slots:
@@ -160,7 +160,6 @@ public:
 
 private slots:
     void compositeChanged();
-//    void internalMove(const QPoint &p);
     void updateDisplayMode();
 
     void adjustShadowMask();
