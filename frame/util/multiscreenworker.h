@@ -115,6 +115,8 @@ public slots:
     void onAutoHideChanged(bool autoHide);
     void updateDaemonDockSize(int dockSize);
 
+    void haldleDbusSignal(QDBusMessage);
+
 private slots:
     // Region Monitor
     void onRegionMonitorChanged(int x, int y, const QString &key);
