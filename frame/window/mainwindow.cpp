@@ -93,7 +93,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     setAccessibleName("mainwindow");
     m_mainPanel->setAccessibleName("mainpanel");
-    m_mainPanel->setVisible(true);
     setAttribute(Qt::WA_TranslucentBackground);
     setMouseTracking(true);
     setAcceptDrops(true);
@@ -143,7 +142,7 @@ MainWindow::MainWindow(QWidget *parent)
         //       QWidget::setFixedSize(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).size());
         //       QWidget::move(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).topLeft());
 
-        m_mainPanel->setFixedSize(m_multiScreenWorker->contentSize(screenName));
+        m_mainPanel->setFixedSize(m_multiScreenWorker->dockRect(screenName,m_multiScreenWorker->hideMode()).size());
         m_mainPanel->setDisplayMode(m_multiScreenWorker->displayMode());
         m_mainPanel->setPositonValue(m_multiScreenWorker->position());
         m_mainPanel->update();
@@ -419,6 +418,8 @@ void MainWindow::setGeometry(const QRect &rect)
     this->windowHandle()->setGeometry(rect);
     //FIX: 切换屏幕显示模式,重置任务栏大小时,不生效
     //    QWidget::setGeometry(rect);
+
+    qDebug() << m_mainPanel->geometry() << this->geometry();
 }
 
 void MainWindow::adjustShadowMask()
@@ -488,9 +489,9 @@ void MainWindow::resetDragWindow()
     if (m_dockSize == 0)
         m_dockSize = m_multiScreenWorker->dockRect(m_multiScreenWorker->toScreen(),m_multiScreenWorker->hideMode()).height();
 
-    // 通知窗管和后端更新数据
-    m_multiScreenWorker->updateDaemonDockSize(m_dockSize);
-    m_multiScreenWorker->requestNotifyWindowManager();
+//    // 通知窗管和后端更新数据
+//    m_multiScreenWorker->updateDaemonDockSize(m_dockSize);
+//    m_multiScreenWorker->requestNotifyWindowManager();
 
     if ((Top == m_multiScreenWorker->position()) || (Bottom == m_multiScreenWorker->position())) {
         m_dragWidget->setCursor(Qt::SizeVerCursor);
