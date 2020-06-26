@@ -79,8 +79,8 @@ public:
     inline const DisplayMode &displayMode() {return m_displayMode;}
     inline const HideMode &hideMode() {return m_hideMode;}
     inline const HideState &hideState() {return m_hideState;}
-    inline bool dockVisible() {return m_dockVisible;}
-    void updateDockVisible(bool visible){m_dockVisible = visible;}
+//    inline bool dockVisible() {return m_dockVisible;}
+//    void updateDockVisible(bool visible){m_dockVisible = visible;}
 
     // 适用于切换到另外一个位置
     void changeDockPosition(QString fromScreen,QString toScreen,const Position &fromPos,const Position &toPos);
@@ -206,7 +206,7 @@ private:
     int m_screenRawWidth;
     QString m_registerKey;
     QString m_leaveRegisterKey;
-    bool m_dockVisible;             // 任务栏当前是否可见
+//    bool m_dockVisible;             // 任务栏当前是否可见
     bool m_aniStart;                // changeDockPosition正在运行中
     bool m_autoHide;                // 和DockSettings保持一致,可以直接使用其单例进行获取
     QList<MonitRect> m_monitorRectList;     // 监听唤起任务栏区域

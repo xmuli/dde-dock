@@ -138,13 +138,15 @@ MainWindow::MainWindow(QWidget *parent)
     //　通知窗管
     connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateLayout, this,[=](const QString &screenName){
         //　FIXME: 这里有个很奇怪的问题，明明是左边屏幕的左边，偏偏就是显示右边屏幕的左边去，未找到原因
-        //　QWidget::setFixedSize(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).size());
-        //　QWidget::move(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).topLeft());
+//       QWidget::setFixedSize(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).size());
+//       QWidget::move(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).topLeft());
 
         m_mainPanel->setFixedSize(m_multiScreenWorker->contentSize(screenName));
         m_mainPanel->setDisplayMode(m_multiScreenWorker->displayMode());
         m_mainPanel->setPositonValue(m_multiScreenWorker->position());
         m_mainPanel->update();
+
+//        QWidget::update();
     });
 
     //　通知窗管任务栏大小时顺便更新拖拽区域
