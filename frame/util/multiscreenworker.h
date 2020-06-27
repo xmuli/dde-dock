@@ -68,35 +68,89 @@ public:
 
     void initMembers();
     void initConnection();
-    //　任务栏第一次启动时被调用
     void initShow();
 
+    /**
+     * @brief showAni   任务栏显示动画
+     * @param screen    显示到目标屏幕上
+     */
     void showAni(const QString &screen);
+    /**
+     * @brief hideAni   任务栏隐藏动画
+     * @param screen    从目标屏幕上隐藏
+     */
     void hideAni(const QString &screen);
-
+    /**
+     * @brief lastScreen
+     * @return                      任务栏上次所在的屏幕
+     */
     inline const QString &lastScreen() {return m_lastScreen;}
+    /**
+     * @brief deskScreen
+     * @return                      任务栏目标屏幕.可以理解为任务栏当前所在屏幕
+     */
     inline const QString &deskScreen() {return m_currentScreen;}
+    /**
+     * @brief position
+     * @return                      任务栏所在方向(上下左右)
+     */
     inline const Position &position() {return m_position;}
+    /**
+     * @brief displayMode
+     * @return                      任务栏显示模式(时尚模式,高效模式)
+     */
     inline const DisplayMode &displayMode() {return m_displayMode;}
+    /**
+     * @brief hideMode
+     * @return                      任务栏状态(一直显示,一直隐藏,智能隐藏)
+     */
     inline const HideMode &hideMode() {return m_hideMode;}
+    /**
+     * @brief hideState
+     * @return                      任务栏的智能隐藏时的一个状态值(1显示,2隐藏,其他不处理)
+     */
     inline const HideState &hideState() {return m_hideState;}
-
-    // 适用于切换到另外一个位置
+    /**
+     * @brief changeDockPosition    做一个动画操作
+     * @param lastScreen            上次任务栏所在的屏幕
+     * @param deskScreen            任务栏要移动到的屏幕
+     * @param fromPos               任务栏上次的方向
+     * @param toPos                 任务栏打算移动到的方向
+     */
     void changeDockPosition(QString lastScreen,QString deskScreen,const Position &fromPos,const Position &toPos);
-
+    /**
+     * @brief updateDockScreenName  将任务栏所在屏幕信息进行更新,在任务栏切换屏幕显示后,这里应该被调用
+     * @param screenName            目标屏幕
+     */
     void updateDockScreenName(const QString &screenName);
     /**
      * @brief updateDockScreenName      找一个可以停靠当前位置任务栏的屏幕当目标屏幕
      */
     void updateDockScreenName();
-    // 任务栏正常隐藏时的区域
-    QRect dockRect(const QString &screenName, const HideMode &mode);
-    // 处理任务栏的离开事件
+    /**
+     * @brief dockRect
+     * @param screenName        屏幕名
+     * @param pos               任务栏位置
+     * @param hideMode          模式
+     * @param displayMode       状态
+     * @return                  按照给定的数据计算出任务栏所在位置
+     */
+    QRect dockRect(const QString &screenName, const Position &pos, const HideMode &hideMode,const DisplayMode &displayMode);
+    /**
+     * @brief dockRect
+     * @param screenName        屏幕名
+     * @return                  按照当前屏幕的当前属性给出任务栏所在区域
+     */
+    QRect dockRect(const QString &screenName);
+
+    /**
+     * @brief handleLeaveEvent  状态为隐藏时,离开任务栏需要隐藏任务栏
+     * @param event             离开事件
+     */
     void handleLeaveEvent(QEvent *event);
 
 signals:
-    void displayModeChanegd();      //父对象需要更新圆角情况
-    void windowHideModeChanged();
+    void displayModeChanegd();
 
     // 更新监视区域
     void requestUpdateRegionMonitor();
@@ -119,7 +173,6 @@ public slots:
 private slots:
     // Region Monitor
     void onRegionMonitorChanged(int x, int y, const QString &key);
-    void onLeaveMonitorChanged(int x, int y, const QString &key);
 
     // Display Monitor
     void onMonitorListChanged(const QList<QDBusObjectPath> &mons);
@@ -181,38 +234,52 @@ private:
     DWindowManagerHelper *m_wmHelper;
     XcbMisc *m_xcbMisc;
 
+    // monitor screen
     XEventMonitor *m_eventInter;
-    XEventMonitor *m_leaveMonitorInter;
 
+    // DBus interface
     DBusDock *m_dockInter;
     DisplayInter *m_displayInter;
 
-    // 更新屏幕信息
+    // update monitor info
     QTimer *m_monitorUpdateTimer;
 
+    // animation
     QVariantAnimation *m_showAni;
     QVariantAnimation *m_hideAni;
 
-    QString m_lastScreen;           // 上一次的屏幕
-    QString m_currentScreen;             // 下一次的屏幕(最新)
+    // screen name
+    QString m_lastScreen;
+    QString m_currentScreen;
 
     // 任务栏四大属性
     Position m_position;            // 当前任务栏位置
-    HideMode m_hideMode;            // 一直显示，一直隐藏，智能隐藏
-    HideState m_hideState;          // 智能隐藏设置,按照后端状态直接设置任务栏的显示或隐藏即可
-    DisplayMode m_displayMode;      // 时尚，高效
+    /**
+     * @brief m_hideMode    需要注意的是,智能隐藏的行为于一直隐藏一致,且响应后端的hidestate信号进行隐藏或显示
+     */
+    HideMode m_hideMode;
+    /**
+     * @brief m_hideState   如果是智能隐藏模式,直接按照状态值控制任务栏显示或隐藏即可,否则不用处理
+     */
+    HideState m_hideState;
+    /**
+     * @brief m_displayMode 时尚模式,高效模式
+     */
+    DisplayMode m_displayMode;
+    /**
+     * @brief m_monitorInfo 屏幕信息(注意需要保证内容实时更新,且有效)
+     */
+    QMap<Monitor *, MonitorInter *> m_monitorInfo;
 
-    QMap<Monitor *, MonitorInter *> m_monitorInfo; //屏幕信息
-
-    // 不和其他流程产生交互，不要操作这里的变量
+    /***************不和其他流程产生交互,尽量不要动这里的变量***************/
     int m_screenRawHeight;
     int m_screenRawWidth;
     QString m_registerKey;
     QString m_leaveRegisterKey;
-    bool m_aniStart;                // changeDockPosition正在运行中
-    bool m_autoHide;                // 和DockSettings保持一致,可以直接使用其单例进行获取
+    bool m_aniStart;                        // changeDockPosition是否正在运行中
+    bool m_autoHide;                        // 和DockSettings保持一致,可以直接使用其单例进行获取
     QList<MonitRect> m_monitorRectList;     // 监听唤起任务栏区域
-    QList<MonitRect> m_interRectList;       // 离开事件发生在这块区域时,不做处理(一直隐藏的模式下,本来是要隐藏的)
+    /*****************************************************************/
 };
 
 #endif // MULTISCREENWORKER_H

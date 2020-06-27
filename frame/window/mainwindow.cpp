@@ -136,7 +136,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //　通知窗管
     connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateLayout, this,[=](const QString &screenName){
-        m_mainPanel->setFixedSize(m_multiScreenWorker->dockRect(screenName,HideMode::KeepShowing).size());
+        m_mainPanel->setFixedSize(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->position(), HideMode::KeepShowing, m_multiScreenWorker->displayMode()).size());
         m_mainPanel->move(0,0);
         m_mainPanel->setDisplayMode(m_multiScreenWorker->displayMode());
         m_mainPanel->setPositonValue(m_multiScreenWorker->position());
@@ -480,7 +480,7 @@ void MainWindow::resetDragWindow()
     }
 
     if (m_dockSize == 0)
-        m_dockSize = m_multiScreenWorker->dockRect(m_multiScreenWorker->deskScreen(),m_multiScreenWorker->hideMode()).height();
+        m_dockSize = m_multiScreenWorker->dockRect(m_multiScreenWorker->deskScreen()).height();
 
     // 通知窗管和后端更新数据
     m_multiScreenWorker->updateDaemonDockSize(m_dockSize);
@@ -502,7 +502,7 @@ void MainWindow::updateDisplayMode()
 
 void MainWindow::onMainWindowSizeChanged(QPoint offset)
 {
-    const QRect &rect = m_multiScreenWorker->dockRect(m_multiScreenWorker->deskScreen(),m_multiScreenWorker->hideMode());
+    const QRect &rect = m_multiScreenWorker->dockRect(m_multiScreenWorker->deskScreen());
 
     QRect newRect;
     switch(m_multiScreenWorker->position())
