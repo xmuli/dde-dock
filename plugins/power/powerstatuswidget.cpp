@@ -94,8 +94,6 @@ QPixmap PowerStatusWidget::getBatteryIcon()
         percentageStr = "080";
     } else if (percentage <= 90) {
         percentageStr = "090";
-    } else if (percentage <= 100) {
-        percentageStr = "100";
     } else {
         percentageStr = "100";
     }
@@ -113,7 +111,8 @@ QPixmap PowerStatusWidget::getBatteryIcon()
         iconStr.append(PLUGIN_MIN_ICON_NAME);
 
     const auto ratio = devicePixelRatioF();
-    QPixmap pix = QIcon::fromTheme(iconStr).pixmap(QSize(20, 20) * ratio);
+    QPixmap pix = QIcon::fromTheme(iconStr,
+                                   QIcon::fromTheme(":/batteryicons/resources/batteryicons/" + iconStr + ".svg")).pixmap(QSize(20, 20) * ratio);
     pix.setDevicePixelRatio(ratio);
 
     return pix;
