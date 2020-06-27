@@ -89,7 +89,7 @@ public:
      */
     void updateDockScreenName();
     // 任务栏内容区域大小
-    QSize contentSize(const QString &screenName);
+//    QSize contentSize(const QString &screenName);
     // 任务栏正常隐藏时的区域
     QRect dockRect(const QString &screenName, const HideMode &mode);
     // 处理任务栏的离开事件
@@ -131,11 +131,11 @@ private slots:
     void showAniFinished();
     void hideAniFinished();
 
-    // 任务栏四大槽函数
+    // 任务栏属性变化
     void onPositionChanged();
     void onDisplayModeChanged();
-    void hideModeChanged();
-    void hideStateChanged();
+    void onHideModeChanged();
+    void onHideStateChanged();
 
     /**
      * @brief onRequestUpdateRegionMonitor  更新监听区域信息

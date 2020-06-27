@@ -463,13 +463,13 @@ void MainWindow::setComposite(const bool hasComposite)
     setEffectEnabled(hasComposite);
 }
 
-void MainWindow::X11MoveResizeWindow(const int x, const int y, const int w, const int h)
-{
-    const auto disp = QX11Info::display();
+//void MainWindow::X11MoveResizeWindow(const int x, const int y, const int w, const int h)
+//{
+//    const auto disp = QX11Info::display();
 
-    XMoveResizeWindow(disp, winId(), x, y, w, h);
-    XFlush(disp);
-}
+//    XMoveResizeWindow(disp, winId(), x, y, w, h);
+//    XFlush(disp);
+//}
 
 bool MainWindow::appIsOnDock(const QString &appDesktop)
 {
@@ -478,7 +478,6 @@ bool MainWindow::appIsOnDock(const QString &appDesktop)
 
 void MainWindow::resetDragWindow()
 {
-    //    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     switch (m_multiScreenWorker->position()) {
     case Dock::Top:
         m_dragWidget->setGeometry(0, height() - DRAG_AREA_SIZE, width(), DRAG_AREA_SIZE);
@@ -497,9 +496,9 @@ void MainWindow::resetDragWindow()
     if (m_dockSize == 0)
         m_dockSize = m_multiScreenWorker->dockRect(m_multiScreenWorker->toScreen(),m_multiScreenWorker->hideMode()).height();
 
-    //    // 通知窗管和后端更新数据
-    //    m_multiScreenWorker->updateDaemonDockSize(m_dockSize);
-    //    m_multiScreenWorker->requestNotifyWindowManager();
+    // 通知窗管和后端更新数据
+    m_multiScreenWorker->updateDaemonDockSize(m_dockSize);
+    m_multiScreenWorker->requestNotifyWindowManager();
 
     if ((Top == m_multiScreenWorker->position()) || (Bottom == m_multiScreenWorker->position())) {
         m_dragWidget->setCursor(Qt::SizeVerCursor);

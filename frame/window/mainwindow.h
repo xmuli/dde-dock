@@ -126,7 +126,7 @@ public:
     MainPanelControl *panel() {qDebug() << m_mainPanel->geometry();return m_mainPanel;}
     DragWidget *dragWidget() {return m_dragWidget;}
 
-    void X11MoveResizeWindow(const int x, const int y, const int w, const int h);
+//    void X11MoveResizeWindow(const int x, const int y, const int w, const int h);
 
 public slots:
     void launch();
