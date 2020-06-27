@@ -371,19 +371,6 @@ void MainPanelControl::setDelegate(MainPanelDelegate *delegate)
     m_delegate = delegate;
 }
 
-void MainPanelControl::setGeometry(const QRect &rect)
-{
-    qDebug() << rect;
-
-    QWidget::setGeometry(rect);
-}
-
-void MainPanelControl::setFixedSize(QSize size)
-{
-    qDebug() << size;
-    return QWidget::setFixedSize(size);
-}
-
 void MainPanelControl::moveItem(DockItem *sourceItem, DockItem *targetItem)
 {
     // get target index

@@ -126,8 +126,6 @@ public:
     MainPanelControl *panel() {qDebug() << m_mainPanel->geometry();return m_mainPanel;}
     DragWidget *dragWidget() {return m_dragWidget;}
 
-//    void X11MoveResizeWindow(const int x, const int y, const int w, const int h);
-
 public slots:
     void launch();
     // 第一次显示
@@ -150,9 +148,6 @@ private:
 
     bool appIsOnDock(const QString &appDesktop) override;
     void getTrayVisableItemCount();
-
-public:
-    void setGeometry(const QRect &rect);
 
 signals:
     void panelGeometryChanged();
@@ -183,28 +178,14 @@ private:
     QStringList m_registerKeys;
 
     QTimer *m_positionUpdateTimer;
-    QTimer *m_expandDelayTimer;
-    QTimer *m_leaveDelayTimer;
     QTimer *m_shadowMaskOptimizeTimer;
-    QVariantAnimation *m_panelShowAni;
-    QVariantAnimation *m_panelHideAni;
 
-    QPropertyAnimation *m_showAni;
-    QPropertyAnimation *m_hideAni;
-
-    //    XcbMisc *m_xcbMisc;
     DockSettings *m_settings;
 
     QDBusConnectionInterface *m_dbusDaemonInterface;
     org::kde::StatusNotifierWatcher *m_sniWatcher;
     QString m_sniHostService;
-    //    QSize m_size;
     DragWidget *m_dragWidget;
-    //    Position m_dockPosition;
-    //    bool m_mouseCauseDock;
-
-    //　任务栏当前所在屏幕
-    QString m_dockCurrentScreen;
 
     int m_dockSize = 0;
 

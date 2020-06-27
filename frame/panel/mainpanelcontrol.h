@@ -73,9 +73,6 @@ public:
     MainPanelDelegate *delegate() const;
     void setDelegate(MainPanelDelegate *delegate);
 
-    void setGeometry(const QRect &rect);
-    void setFixedSize(QSize size);
-
 signals:
     void itemMoved(DockItem *sourceItem, DockItem *targetItem);
     void itemAdded(const QString &appDesktop, int idx);

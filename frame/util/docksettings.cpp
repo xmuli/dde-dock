@@ -146,7 +146,7 @@ DockSettings::DockSettings(QWidget *parent)
     connect(m_dockInter, &DBusDock::DisplayModeChanged, this, &DockSettings::onDisplayModeChanged);
     connect(m_dockInter, &DBusDock::HideModeChanged, this, &DockSettings::hideModeChanged, Qt::QueuedConnection);
     connect(m_dockInter, &DBusDock::HideStateChanged, this, &DockSettings::hideStateChanged);
-    connect(m_dockInter, &DBusDock::ServiceRestarted, this, &DockSettings::resetFrontendGeometry);
+//    connect(m_dockInter, &DBusDock::ServiceRestarted, this, &DockSettings::resetFrontendGeometry);
     connect(m_dockInter, &DBusDock::OpacityChanged, this, &DockSettings::onOpacityChanged);
     connect(m_dockInter, &DBusDock::WindowSizeEfficientChanged, this, &DockSettings::onWindowSizeChanged);
     connect(m_dockInter, &DBusDock::WindowSizeFashionChanged, this, &DockSettings::onWindowSizeChanged);
@@ -420,11 +420,13 @@ void DockSettings::onGSettingsChanged(const QString &key)
 
 void DockSettings::onPositionChanged()
 {
+     qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     const Position nextPos = Dock::Position(m_dockInter->position());
 
     if (m_position == nextPos)
         return;
     m_position = nextPos;
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
 
     // 通知主窗口改变位置
     emit positionChanged();

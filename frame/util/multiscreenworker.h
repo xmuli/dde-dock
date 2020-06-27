@@ -25,6 +25,7 @@
 #include "monitor.h"
 #include "utils.h"
 #include "item/dockitem.h"
+#include "docksettings.h"
 
 #include "xcb/xcb_misc.h"
 
@@ -73,23 +74,21 @@ public:
     void showAni(const QString &screen);
     void hideAni(const QString &screen);
 
-    inline const QString &fromScreen() {return m_fromScreen;}
-    inline const QString &toScreen() {return m_toScreen;}
+    inline const QString &lastScreen() {return m_lastScreen;}
+    inline const QString &deskScreen() {return m_deskScreen;}
     inline const Position &position() {return m_position;}
     inline const DisplayMode &displayMode() {return m_displayMode;}
     inline const HideMode &hideMode() {return m_hideMode;}
     inline const HideState &hideState() {return m_hideState;}
 
     // 适用于切换到另外一个位置
-    void changeDockPosition(QString fromScreen,QString toScreen,const Position &fromPos,const Position &toPos);
+    void changeDockPosition(QString lastScreen,QString deskScreen,const Position &fromPos,const Position &toPos);
 
     void updateDockScreenName(const QString &screenName);
     /**
      * @brief updateDockScreenName      找一个可以停靠当前位置任务栏的屏幕当目标屏幕
      */
     void updateDockScreenName();
-    // 任务栏内容区域大小
-//    QSize contentSize(const QString &screenName);
     // 任务栏正常隐藏时的区域
     QRect dockRect(const QString &screenName, const HideMode &mode);
     // 处理任务栏的离开事件
@@ -115,7 +114,7 @@ public slots:
     void onAutoHideChanged(bool autoHide);
     void updateDaemonDockSize(int dockSize);
 
-    void haldleDbusSignal(QDBusMessage);
+    void handleDbusSignal(QDBusMessage);
 
 private slots:
     // Region Monitor
@@ -153,7 +152,6 @@ private slots:
     void onRequestUpdateDragArea();
     void onMonitorInfoChaged();
 
-    void updateGeometry();
     void updateInterRect(const QList<Monitor *>monitorList, QList<MonitRect> &list);
     void updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> &map);
 
@@ -189,17 +187,14 @@ private:
     DBusDock *m_dockInter;
     DisplayInter *m_displayInter;
 
-     //FIX: 需要废除,正式提交后废除
-    QTimer *m_leaveTimer;
-
     // 更新屏幕信息
     QTimer *m_monitorUpdateTimer;
 
     QVariantAnimation *m_showAni;
     QVariantAnimation *m_hideAni;
 
-    QString m_fromScreen;           // 上一次的屏幕
-    QString m_toScreen;             // 下一次的屏幕(最新)
+    QString m_lastScreen;           // 上一次的屏幕
+    QString m_deskScreen;             // 下一次的屏幕(最新)
 
     // 任务栏四大属性
     Position m_position;            // 当前任务栏位置

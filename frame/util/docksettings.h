@@ -43,6 +43,7 @@ class DockItemManager;
 class DockSettings : public QObject
 {
     Q_OBJECT
+    friend class MultiScreenWorker;
 
 public:
     static DockSettings &Instance();
@@ -80,7 +81,7 @@ public:
     void calculateWindowConfig();
 
     QSize m_mainWindowSize;
-    DBusDock *m_dockInter;
+
     bool m_menuVisible;
 
     inline const QMap<Monitor *, MonitorInter *> monitorList() {return m_monitors;}
@@ -133,6 +134,9 @@ private:
     void calculateRelativePos(Monitor *s1, Monitor *s2);
 
 private:
+    DBusDock *m_dockInter;
+    DisplayInter *m_displayInter;
+
     int m_dockWindowSize;
     bool m_autoHide;
     int m_screenRawHeight;
@@ -160,7 +164,7 @@ private:
     QAction m_keepHiddenAct;
     QAction m_smartHideAct;
 
-    DisplayInter *m_displayInter;
+
     DockItemManager *m_itemManager;
     bool m_trashPluginShow;
 
