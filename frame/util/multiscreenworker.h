@@ -75,7 +75,7 @@ public:
     void hideAni(const QString &screen);
 
     inline const QString &lastScreen() {return m_lastScreen;}
-    inline const QString &deskScreen() {return m_deskScreen;}
+    inline const QString &deskScreen() {return m_currentScreen;}
     inline const Position &position() {return m_position;}
     inline const DisplayMode &displayMode() {return m_displayMode;}
     inline const HideMode &hideMode() {return m_hideMode;}
@@ -194,7 +194,7 @@ private:
     QVariantAnimation *m_hideAni;
 
     QString m_lastScreen;           // 上一次的屏幕
-    QString m_deskScreen;             // 下一次的屏幕(最新)
+    QString m_currentScreen;             // 下一次的屏幕(最新)
 
     // 任务栏四大属性
     Position m_position;            // 当前任务栏位置

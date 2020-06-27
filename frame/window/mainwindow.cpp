@@ -136,11 +136,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     //　通知窗管
     connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateLayout, this,[=](const QString &screenName){
-        // FIXME: 这里有个很奇怪的问题，明明是左边屏幕的左边，偏偏就是显示右边屏幕的左边去，未找到原因
-        // FIXME: 避免连续重复大量调用setFixedSize或setGeometry有一定效果)
-        // QWidget::setFixedSize(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).size());
-        // QWidget::move(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).topLeft());
-
         m_mainPanel->setFixedSize(m_multiScreenWorker->dockRect(screenName,HideMode::KeepShowing).size());
         m_mainPanel->move(0,0);
         m_mainPanel->setDisplayMode(m_multiScreenWorker->displayMode());
