@@ -548,6 +548,7 @@ void DockSettings::onOpacityChanged(const double value)
 
 void DockSettings::trayVisableCountChanged(const int &count)
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     emit trayCountChanged();
 }
 

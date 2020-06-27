@@ -189,6 +189,7 @@ void MainPanelControl::setDisplayMode(DisplayMode mode)
 
 void MainPanelControl::updateMainPanelLayout()
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     switch (m_position) {
     case Position::Top:
     case Position::Bottom:
@@ -282,6 +283,7 @@ void MainPanelControl::removePluginAreaItem(QWidget *wdg)
 
 void MainPanelControl::resizeEvent(QResizeEvent *event)
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     resizeDesktopWidget();
     resizeDockIcon();
     return QWidget::resizeEvent(event);
@@ -367,6 +369,19 @@ MainPanelDelegate *MainPanelControl::delegate() const
 void MainPanelControl::setDelegate(MainPanelDelegate *delegate)
 {
     m_delegate = delegate;
+}
+
+void MainPanelControl::setGeometry(const QRect &rect)
+{
+    qDebug() << rect;
+
+    QWidget::setGeometry(rect);
+}
+
+void MainPanelControl::setFixedSize(QSize size)
+{
+    qDebug() << size;
+    return QWidget::setFixedSize(size);
 }
 
 void MainPanelControl::moveItem(DockItem *sourceItem, DockItem *targetItem)
@@ -814,6 +829,7 @@ void MainPanelControl::moveAppSonWidget()
 
 void MainPanelControl::itemUpdated(DockItem *item)
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     item->parentWidget()->adjustSize();
     resizeDockIcon();
 }
@@ -861,6 +877,7 @@ void MainPanelControl::paintEvent(QPaintEvent *event)
 
 void MainPanelControl::resizeDockIcon()
 {
+    qDebug() << this->geometry();
     if (!m_tray)
         return;
     // 插件有点特殊，因为会引入第三方的插件，并不会受dock的缩放影响，我们只能限制我们自己的插件，否则会导致显示错误。
@@ -1062,6 +1079,7 @@ void MainPanelControl::calcuDockIconSize(int w, int h, PluginsItem *trashPlugin,
 
 void MainPanelControl::getTrayVisableItemCount()
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     if (m_trayAreaLayout->count() > 0) {
         TrayPluginItem *w = static_cast<TrayPluginItem *>(m_trayAreaLayout->itemAt(0)->widget());
         m_trayIconCount = w->trayVisableItemCount();

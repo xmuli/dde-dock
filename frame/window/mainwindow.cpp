@@ -121,8 +121,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_dragWidget->setMouseTracking(true);
     m_dragWidget->setFocusPolicy(Qt::NoFocus);
 
-    //    m_dockPosition = m_settings->position();
-
     if ((Top == m_multiScreenWorker->position()) || (Bottom == m_multiScreenWorker->position())) {
         m_dragWidget->setCursor(Qt::SizeVerCursor);
     } else {
@@ -133,16 +131,18 @@ MainWindow::MainWindow(QWidget *parent)
         DisplayMode mode = m_multiScreenWorker->displayMode();
         m_mainPanel->setDisplayMode(mode);
     });
+
     connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, m_shadowMaskOptimizeTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
 
     //　通知窗管
     connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateLayout, this,[=](const QString &screenName){
         // FIXME: 这里有个很奇怪的问题，明明是左边屏幕的左边，偏偏就是显示右边屏幕的左边去，未找到原因
         // FIXME: 避免连续重复大量调用setFixedSize或setGeometry有一定效果)
-        //       QWidget::setFixedSize(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).size());
-        //       QWidget::move(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).topLeft());
+        // QWidget::setFixedSize(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).size());
+        // QWidget::move(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->hideMode()).topLeft());
 
-        m_mainPanel->setFixedSize(m_multiScreenWorker->dockRect(screenName,m_multiScreenWorker->hideMode()).size());
+        m_mainPanel->setFixedSize(m_multiScreenWorker->dockRect(screenName,HideMode::KeepShowing).size());
+        m_mainPanel->move(0,0);
         m_mainPanel->setDisplayMode(m_multiScreenWorker->displayMode());
         m_mainPanel->setPositonValue(m_multiScreenWorker->position());
         m_mainPanel->update();
@@ -463,6 +463,14 @@ void MainWindow::setComposite(const bool hasComposite)
     setEffectEnabled(hasComposite);
 }
 
+void MainWindow::X11MoveResizeWindow(const int x, const int y, const int w, const int h)
+{
+    const auto disp = QX11Info::display();
+
+    XMoveResizeWindow(disp, winId(), x, y, w, h);
+    XFlush(disp);
+}
+
 bool MainWindow::appIsOnDock(const QString &appDesktop)
 {
     return DockItemManager::instance()->appIsOnDock(appDesktop);
@@ -489,9 +497,9 @@ void MainWindow::resetDragWindow()
     if (m_dockSize == 0)
         m_dockSize = m_multiScreenWorker->dockRect(m_multiScreenWorker->toScreen(),m_multiScreenWorker->hideMode()).height();
 
-//    // 通知窗管和后端更新数据
-//    m_multiScreenWorker->updateDaemonDockSize(m_dockSize);
-//    m_multiScreenWorker->requestNotifyWindowManager();
+    //    // 通知窗管和后端更新数据
+    //    m_multiScreenWorker->updateDaemonDockSize(m_dockSize);
+    //    m_multiScreenWorker->requestNotifyWindowManager();
 
     if ((Top == m_multiScreenWorker->position()) || (Bottom == m_multiScreenWorker->position())) {
         m_dragWidget->setCursor(Qt::SizeVerCursor);
@@ -557,6 +565,7 @@ void MainWindow::onMainWindowSizeChanged(QPoint offset)
     }
 
     // 更新界面大小
+    qDebug() << newRect;
     m_mainPanel->setFixedSize(newRect.size());
     setFixedSize(newRect.size());
     move(newRect.topLeft());
