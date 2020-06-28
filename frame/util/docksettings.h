@@ -58,7 +58,7 @@ public:
 //    inline int narrowTimeout() const { return 100; }
     inline bool autoHide() const { return m_autoHide; }
 //    const QRect primaryRect() const;
-    const QRect currentRect(const bool beNarrow = false);
+//    const QRect currentRect(const bool beNarrow = false);
 //    const QList<QRect> monitorsRect() const;
 //    inline const QRect primaryRawRect() const { return m_primaryRawRect; }
 //    inline const QRect currentRawRect() const { return m_currentRawRect; }
@@ -170,8 +170,8 @@ private:
     bool m_trashPluginShow;
 
     QMap<Monitor *, MonitorInter *> m_monitors;
-    bool m_isMouseMoveCause;
-    Monitor *m_mouseCauseDockScreen;
+//    bool m_isMouseMoveCause;
+//    Monitor *m_mouseCauseDockScreen;
 
     //    QString m_currentScreen;
 };

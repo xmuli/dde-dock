@@ -99,6 +99,7 @@ void MultiScreenWorker::initConnection()
     connect(m_displayInter, &DisplayInter::MonitorsChanged, this, &MultiScreenWorker::onMonitorListChanged);
 
     connect(m_showAni, &QVariantAnimation::valueChanged, parent(), [ = ](QVariant value) {
+        qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
         QRect rect = value.toRect();
         parent()->setFixedSize(rect.size());
         parent()->setGeometry(rect);
@@ -121,6 +122,7 @@ void MultiScreenWorker::initConnection()
     });
 
     connect(m_hideAni, &QVariantAnimation::valueChanged, parent(), [ = ](QVariant value) {
+        qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
         QRect rect = value.toRect();
         parent()->setFixedSize(rect.size());
         parent()->setGeometry(rect);
@@ -235,7 +237,14 @@ void MultiScreenWorker::showAni(const QString &screen)
 
     emit requestUpdateFrontendGeometry(dockRect(m_currentScreen, m_position, HideMode::KeepShowing, m_displayMode));
 
-    // 任务栏位置已经正确就不需要再重复一次动画了
+    /************************************************************************
+      * 务必先走第一步，再走第二部，否则就会出现从一直隐藏切换为一直显示，任务栏不显示的问题
+      ************************************************************************/
+    //1 先停掉其他的动画，否则这里的修改可能会被其他的动画覆盖掉
+    if (m_hideAni->state() == QVariantAnimation::Running)
+        m_hideAni->stop();
+
+    //2 任务栏位置已经正确就不需要再重复一次动画了
     if (getDockShowGeometry(screen, static_cast<Position>(m_dockInter->position()), m_displayMode) == parent()->geometry()) {
         parent()->panel()->setFixedSize(dockRect(m_currentScreen, m_position, HideMode::KeepShowing, m_displayMode).size());
         parent()->panel()->move(0, 0);
@@ -244,9 +253,6 @@ void MultiScreenWorker::showAni(const QString &screen)
     }
 
     updateDockScreenName(screen);
-
-    if (m_hideAni->state() == QVariantAnimation::Running)
-        m_hideAni->stop();
 
     m_showAni->setStartValue(getDockHideGeometry(screen, static_cast<Position>(m_dockInter->position()), m_displayMode));
     m_showAni->setEndValue(getDockShowGeometry(screen, static_cast<Position>(m_dockInter->position()), m_displayMode));
@@ -258,7 +264,14 @@ void MultiScreenWorker::hideAni(const QString &screen)
     if (m_hideAni->state() == QVariantAnimation::Running || m_aniStart)
         return;
 
-    // 任务栏位置已经正确就不需要再重复一次动画了
+    /************************************************************************
+      * 务必先走第一步，再走第二部，否则就会出现从一直隐藏切换为一直显示，任务栏不显示的问题
+      ************************************************************************/
+    //1 先停掉其他的动画，否则这里的修改可能会被其他的动画覆盖掉
+    if (m_showAni->state() == QVariantAnimation::Running)
+        m_showAni->stop();
+
+    //2 任务栏位置已经正确就不需要再重复一次动画了
     if (getDockHideGeometry(screen, static_cast<Position>(m_dockInter->position()), m_displayMode) == parent()->geometry()) {
         parent()->panel()->setFixedSize(dockRect(m_currentScreen, m_position, HideMode::KeepShowing, m_displayMode).size());
         parent()->panel()->move(0, 0);
@@ -266,13 +279,11 @@ void MultiScreenWorker::hideAni(const QString &screen)
         return;
     }
 
-    if (m_showAni->state() == QVariantAnimation::Running)
-        m_showAni->stop();
-
     updateDockScreenName(screen);
 
     m_hideAni->setStartValue(getDockShowGeometry(screen, static_cast<Position>(m_dockInter->position()), m_displayMode));
     m_hideAni->setEndValue(getDockHideGeometry(screen, static_cast<Position>(m_dockInter->position()), m_displayMode));
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     m_hideAni->start();
 }
 
@@ -434,6 +445,7 @@ QRect MultiScreenWorker::dockRect(const QString &screenName)
 
 void MultiScreenWorker::handleLeaveEvent(QEvent *event)
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     Q_UNUSED(event);
 
     if (m_hideMode == HideMode::KeepShowing)
@@ -457,6 +469,7 @@ void MultiScreenWorker::handleLeaveEvent(QEvent *event)
 
 void MultiScreenWorker::onAutoHideChanged(bool autoHide)
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     m_autoHide = autoHide;
 
     if (m_autoHide) {
@@ -718,7 +731,6 @@ void MultiScreenWorker::onOpacityChanged(const double value)
 
 void MultiScreenWorker::onPositionChanged()
 {
-    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     const Position position = Dock::Position(m_dockInter->position());
     Position lastPos = m_position;
     if (lastPos == position)
@@ -729,7 +741,6 @@ void MultiScreenWorker::onPositionChanged()
     m_position = position;
 
     // 更新鼠标拖拽样式
-    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     if ((Top == m_position) || (Bottom == m_position)) {
         parent()->panel()->setCursor(Qt::SizeVerCursor);
     } else {
@@ -787,6 +798,7 @@ void MultiScreenWorker::onHideModeChanged()
 
 void MultiScreenWorker::onHideStateChanged()
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     const Dock::HideState state = Dock::HideState(m_dockInter->hideState());
 
     if (state == Dock::Unknown)
