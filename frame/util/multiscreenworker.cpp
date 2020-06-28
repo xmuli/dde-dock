@@ -509,8 +509,8 @@ void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
     if (m_registerKey != key)
         return;
 
-    if (m_draging) {
-        qDebug() << "dock is draging";
+    if (m_draging || m_aniStart) {
+        qDebug() << "dock is draging or animation is running";
         return;
     }
 

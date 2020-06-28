@@ -39,7 +39,7 @@
 #include <QObject>
 
 #define WINDOWMARGIN ((m_displayMode == Dock::Efficient) ? 0 : 10)
-#define ANIMATIONTIME 1000
+#define ANIMATIONTIME 300
 
 DGUI_USE_NAMESPACE
 
