@@ -321,11 +321,43 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
     connect(ani1, &QVariantAnimation::valueChanged, this, [ = ](QVariant value) {
         parent()->setFixedSize(value.toRect().size());
         parent()->setGeometry(value.toRect());
+
+        switch (m_position) {
+        case Position::Top: {
+            const int panelSize = parent()->panel()->height();
+            parent()->panel()->move(0, dockRect(m_currentScreen).height() - panelSize);
+        }
+        break;
+        case Position::Left: {
+            const int panelSize = parent()->panel()->width();
+            parent()->panel()->move(dockRect(m_currentScreen).width() - panelSize, 0);
+        }
+        break;
+        case Position::Bottom:
+        case Position::Right:
+            break;
+        }
     });
 
     connect(ani2, &QVariantAnimation::valueChanged, this, [ = ](QVariant value) {
         parent()->setFixedSize(value.toRect().size());
         parent()->setGeometry(value.toRect());
+
+        switch (m_position) {
+        case Position::Top: {
+            const int panelSize = parent()->panel()->height();
+            parent()->panel()->move(0, dockRect(m_currentScreen).height() - panelSize);
+        }
+        break;
+        case Position::Left: {
+            const int panelSize = parent()->panel()->width();
+            parent()->panel()->move(dockRect(m_currentScreen).width() - panelSize, 0);
+        }
+        break;
+        case Position::Bottom:
+        case Position::Right:
+            break;
+        }
     });
 
     // 如果更改了显示位置，在显示之前应该更新一下界面布局方向
