@@ -99,25 +99,41 @@ void MultiScreenWorker::initConnection()
 
         switch (m_position) {
         case Position::Top: {
-            //            qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
-            //            const int panelSize = parent()->panel()->height();
-            //            parent()->panel()->move(0,panelSize - rect.height());
+            const int panelSize = parent()->panel()->height();
+            parent()->panel()->move(0,rect.height() - panelSize);
         }
             break;
         case Position::Left: {
+            const int panelSize = parent()->panel()->width();
+            parent()->panel()->move(rect.width() - panelSize, 0);
         }
             break;
         case Position::Bottom:
         case Position::Right:
             break;
         }
-        //        parent->move()
     });
 
     connect(m_hideAni, &QVariantAnimation::valueChanged, parent(), [ = ](QVariant value) {
         QRect rect = value.toRect();
         parent()->setFixedSize(rect.size());
         parent()->setGeometry(rect);
+
+        switch (m_position) {
+        case Position::Top: {
+            const int panelSize = parent()->panel()->height();
+            parent()->panel()->move(0,rect.height() - panelSize);
+        }
+            break;
+        case Position::Left: {
+            const int panelSize = parent()->panel()->width();
+            parent()->panel()->move(rect.width() - panelSize, 0);
+        }
+            break;
+        case Position::Bottom:
+        case Position::Right:
+            break;
+        }
     });
 
     connect(m_showAni, &QVariantAnimation::finished, this, &MultiScreenWorker::showAniFinished);
