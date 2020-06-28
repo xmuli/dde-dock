@@ -222,6 +222,7 @@ private:
      */
     Monitor *monitorByName(const QMap<Monitor *, MonitorInter *> &map,const QString &screenName);
     QScreen *screenByName(const QString &screenName);
+    qreal scaleByName(const QString &screenName);
     bool onScreenEdge(const QString &screenName,const QPoint &point);
     bool onScreenEdge(const QPoint &point);
     bool contains(const MonitRect &rect, const QPoint &pos);
@@ -254,7 +255,7 @@ private:
 
     // 任务栏四大属性
     Position m_position;            // 当前任务栏位置
-    /**
+    /**5
      * @brief m_hideMode    需要注意的是,智能隐藏的行为于一直隐藏一致,且响应后端的hidestate信号进行隐藏或显示
      */
     HideMode m_hideMode;
