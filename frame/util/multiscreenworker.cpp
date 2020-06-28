@@ -102,12 +102,12 @@ void MultiScreenWorker::initConnection()
             const int panelSize = parent()->panel()->height();
             parent()->panel()->move(0, rect.height() - panelSize);
         }
-        break;
+            break;
         case Position::Left: {
             const int panelSize = parent()->panel()->width();
             parent()->panel()->move(rect.width() - panelSize, 0);
         }
-        break;
+            break;
         case Position::Bottom:
         case Position::Right:
             break;
@@ -124,12 +124,12 @@ void MultiScreenWorker::initConnection()
             const int panelSize = parent()->panel()->height();
             parent()->panel()->move(0, rect.height() - panelSize);
         }
-        break;
+            break;
         case Position::Left: {
             const int panelSize = parent()->panel()->width();
             parent()->panel()->move(rect.width() - panelSize, 0);
         }
-        break;
+            break;
         case Position::Bottom:
         case Position::Right:
             break;
@@ -330,11 +330,11 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
     // 如果更改了显示位置，在显示之前应该更新一下界面布局方向
     if (fromPos != toPos)
         connect(ani1, &QVariantAnimation::finished, this, [ = ] {
-        // 预设一下大小
-        parent()->panel()->setFixedSize(dockRect(m_currentScreen, m_position, HideMode::KeepHidden, m_displayMode).size());
-        //隐藏后需要通知界面更新布局方向
-        emit requestUpdateLayout(m_currentScreen);
-    }, Qt::DirectConnection);
+            // 预设一下大小
+            parent()->panel()->setFixedSize(dockRect(m_currentScreen, m_position, HideMode::KeepHidden, m_displayMode).size());
+            //隐藏后需要通知界面更新布局方向
+            emit requestUpdateLayout(m_currentScreen);
+        }, Qt::DirectConnection);
 
 
     connect(group, &QVariantAnimation::finished, this, [ = ] {
@@ -419,6 +419,18 @@ void MultiScreenWorker::handleLeaveEvent(QEvent *event)
 void MultiScreenWorker::onAutoHideChanged(bool autoHide)
 {
     m_autoHide = autoHide;
+
+    if(m_autoHide)
+    {
+        switch (m_hideMode) {
+        case HideMode::KeepHidden:
+        case HideMode::SmartHide:
+            hideAni(m_currentScreen);
+            break;
+        case HideMode::KeepShowing:
+            break;
+        }
+    }
 }
 
 void MultiScreenWorker::updateDaemonDockSize(int dockSize)
@@ -761,28 +773,28 @@ void MultiScreenWorker::onRequestUpdateRegionMonitor()
             rect.x2 = inter->x() + inter->w();
             rect.y2 = inter->y() + monitorHeight;
         }
-        break;
+            break;
         case Bottom: {
             rect.x1 = inter->x();
             rect.y1 = inter->y() + inter->h() - monitorHeight;
             rect.x2 = inter->x() + inter->w();
             rect.y2 = inter->y() + inter->h();
         }
-        break;
+            break;
         case Left: {
             rect.x1 = inter->x();
             rect.y1 = inter->y();
             rect.x2 = inter->x() + monitorHeight;
             rect.y2 = inter->y() + inter->h();
         }
-        break;
+            break;
         case Right: {
             rect.x1 = inter->x() + inter->w() - monitorHeight;
             rect.y1 = inter->y();
             rect.x2 = inter->x() + inter->w();
             rect.y2 = inter->y() + inter->h();
         }
-        break;
+            break;
         }
 
         if (!m_monitorRectList.contains(rect)) {
@@ -817,7 +829,7 @@ void MultiScreenWorker::onRequestUpdateFrontendGeometry(const QRect &rect)
 {
     const qreal scale = scaleByName(m_currentScreen);
 #ifdef QT_DEBUG
-        qDebug() << rect;
+    qDebug() << rect;
 #endif
 
     m_dockInter->SetFrontendWindowRect(rect.x() / scale, rect.y() / scale, rect.width() / scale, rect.height() / scale);
@@ -892,28 +904,28 @@ void MultiScreenWorker::updateInterRect(const QList<Monitor *> monitorList, QLis
             rect.x2 = inter->x() + inter->w();
             rect.y2 = inter->y() + dockSize + WINDOWMARGIN;
         }
-        break;
+            break;
         case Bottom: {
             rect.x1 = inter->x();
             rect.y1 = inter->y() + inter->h() - dockSize - WINDOWMARGIN;
             rect.x2 = inter->x() + inter->w();
             rect.y2 = inter->y() + inter->h();
         }
-        break;
+            break;
         case Left: {
             rect.x1 = inter->x();
             rect.y1 = inter->y();
             rect.x2 = inter->x() + dockSize + WINDOWMARGIN;
             rect.y2 = inter->y() + inter->h();
         }
-        break;
+            break;
         case Right: {
             rect.x1 = inter->x() + inter->w() - dockSize - WINDOWMARGIN;
             rect.y1 = inter->y();
             rect.x2 = inter->x() + inter->w();
             rect.y2 = inter->y() + inter->h();
         }
-        break;
+            break;
         }
 
         list << rect;
@@ -948,7 +960,7 @@ void MultiScreenWorker::updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> 
     // s1左 s2右
     if (s1->right() == s2->left()) {
         isAligment = (s1->topRight() == s2->topLeft())
-                     && (s1->bottomRight() == s2->bottomLeft());
+                && (s1->bottomRight() == s2->bottomLeft());
         if (isAligment) {
             s1->dockPosition().rightDock = false;
             s2->dockPosition().leftDock = false;
@@ -957,7 +969,7 @@ void MultiScreenWorker::updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> 
     // s1右 s2左
     if (s1->left() == s2->right()) {
         isAligment = (s1->topLeft() == s2->topRight())
-                     && (s1->bottomLeft() == s2->bottomRight());
+                && (s1->bottomLeft() == s2->bottomRight());
         if (isAligment) {
             s1->dockPosition().leftDock = false;
             s2->dockPosition().rightDock = false;
@@ -968,7 +980,7 @@ void MultiScreenWorker::updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> 
     // s1上 s2下
     if (s1->bottom() == s2->top()) {
         isAligment = (s1->bottomLeft() == s2->topLeft())
-                     && (s1->bottomRight() == s2->topRight());
+                && (s1->bottomRight() == s2->topRight());
         if (isAligment) {
             s1->dockPosition().bottomDock = false;
             s2->dockPosition().topDock = false;
@@ -977,7 +989,7 @@ void MultiScreenWorker::updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> 
     // s1下 s2上
     if (s1->top() == s2->bottom()) {
         isAligment = (s1->topLeft() == s2->bottomLeft())
-                     && (s1->topRight() == s2->bottomRight());
+                && (s1->topRight() == s2->bottomRight());
         if (isAligment) {
             s1->dockPosition().topDock = false;
             s2->dockPosition().bottomDock = false;
@@ -1004,21 +1016,21 @@ QRect MultiScreenWorker::getDockShowGeometry(const QString &screenName, const Po
                 rect.setWidth(inter->w() - 2 * WINDOWMARGIN);
                 rect.setHeight(dockSize);
             }
-            break;
+                break;
             case Bottom: {
                 rect.setX(inter->x() + WINDOWMARGIN);
                 rect.setY(inter->y() + inter->h() - WINDOWMARGIN - dockSize);
                 rect.setWidth(inter->w() - 2 * WINDOWMARGIN);
                 rect.setHeight(dockSize);
             }
-            break;
+                break;
             case Left: {
                 rect.setX(inter->x() + WINDOWMARGIN);
                 rect.setY(inter->y() + WINDOWMARGIN);
                 rect.setWidth(dockSize);
                 rect.setHeight(inter->h() - 2 * WINDOWMARGIN);
             }
-            break;
+                break;
             case Right: {
                 rect.setX(inter->x() + inter->w() - WINDOWMARGIN - dockSize);
                 rect.setY(inter->y() + WINDOWMARGIN);
@@ -1051,28 +1063,28 @@ QRect MultiScreenWorker::getDockHideGeometry(const QString &screenName, const Po
                 rect.setWidth(inter->w() - 2 * margin);
                 rect.setHeight(0);
             }
-            break;
+                break;
             case Bottom: {
                 rect.setX(inter->x() + margin);
                 rect.setY(inter->y() + inter->h());
                 rect.setWidth(inter->w() - 2 * margin);
                 rect.setHeight(0);
             }
-            break;
+                break;
             case Left: {
                 rect.setX(inter->x());
                 rect.setY(inter->y() + margin);
                 rect.setWidth(0);
                 rect.setHeight(inter->h() - 2 * margin);
             }
-            break;
+                break;
             case Right: {
                 rect.setX(inter->x() + inter->w());
                 rect.setY(inter->y() + margin);
                 rect.setWidth(0);
                 rect.setHeight(inter->h() - 2 * margin);
             }
-            break;
+                break;
             }
         }
     }
@@ -1224,9 +1236,9 @@ const QPoint MultiScreenWorker::rawXPosition(const QPoint &scaledPos)
     QScreen const *screen = Utils::screenAtByScaled(scaledPos);
 
     return screen ? screen->geometry().topLeft() +
-           (scaledPos - screen->geometry().topLeft()) *
-           screen->devicePixelRatio()
-           : scaledPos;
+                    (scaledPos - screen->geometry().topLeft()) *
+                    screen->devicePixelRatio()
+                  : scaledPos;
 }
 
 const QPoint MultiScreenWorker::scaledPos(const QPoint &rawXPos)
@@ -1234,7 +1246,7 @@ const QPoint MultiScreenWorker::scaledPos(const QPoint &rawXPos)
     QScreen const *screen = Utils::screenAt(rawXPos);
 
     return screen
-           ? screen->geometry().topLeft() +
-           (rawXPos - screen->geometry().topLeft()) / screen->devicePixelRatio()
-           : rawXPos;
+            ? screen->geometry().topLeft() +
+              (rawXPos - screen->geometry().topLeft()) / screen->devicePixelRatio()
+            : rawXPos;
 }
