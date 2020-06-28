@@ -79,11 +79,11 @@ public:
     //    QString &currentDockScreen() { return m_currentScreen; }
     
 //    void posChangedUpdateSettings();
-    void calculateWindowConfig();
+//    void calculateWindowConfig();
 
-    QSize m_mainWindowSize;
+//    QSize m_mainWindowSize;
 
-    inline const QMap<Monitor *, MonitorInter *> monitorList() {return m_monitors;}
+//    inline const QMap<Monitor *, MonitorInter *> monitorList() {return m_monitors;}
 
 signals:
     void dataChanged() const;
@@ -93,7 +93,7 @@ signals:
     void windowVisibleChanged() const;
     void windowHideModeChanged() const;
     void windowGeometryChanged() const;
-    void opacityChanged(const quint8 value) const;
+//    void opacityChanged(const quint8 value) const;
     void trayCountChanged() const;
 
 public slots:
@@ -112,7 +112,7 @@ private slots:
     void dockItemCountChanged();
     void primaryScreenChanged();
     //    void resetFrontendGeometry();
-    void onOpacityChanged(const double value);
+//    void onOpacityChanged(const double value);
     void trayVisableCountChanged(const int &count);
     void onWindowSizeChanged();
     void onMonitorListChanged(const QList<QDBusObjectPath> &mons);
@@ -123,7 +123,7 @@ private:
     DockSettings operator =(DockSettings const &) = delete;
 
     void gtkIconThemeChanged();
-    void checkService();
+//    void checkService();
 
     void calculateMultiScreensPos();
     void monitorAdded(const QString &path);

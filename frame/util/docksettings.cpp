@@ -78,7 +78,7 @@ DockSettings::DockSettings(QWidget *parent)
     , m_mouseCauseDockScreen(nullptr)
 {
     m_settingsMenu.setAccessibleName("settingsmenu");
-    checkService();
+//    checkService();
 
     onMonitorListChanged(m_displayInter->monitors());
 
@@ -147,7 +147,7 @@ DockSettings::DockSettings(QWidget *parent)
     connect(m_dockInter, &DBusDock::HideModeChanged, this, &DockSettings::hideModeChanged, Qt::QueuedConnection);
     connect(m_dockInter, &DBusDock::HideStateChanged, this, &DockSettings::hideStateChanged);
 //    connect(m_dockInter, &DBusDock::ServiceRestarted, this, &DockSettings::resetFrontendGeometry);
-    connect(m_dockInter, &DBusDock::OpacityChanged, this, &DockSettings::onOpacityChanged);
+//    connect(m_dockInter, &DBusDock::OpacityChanged, this, &DockSettings::onOpacityChanged);
     connect(m_dockInter, &DBusDock::WindowSizeEfficientChanged, this, &DockSettings::onWindowSizeChanged);
     connect(m_dockInter, &DBusDock::WindowSizeFashionChanged, this, &DockSettings::onWindowSizeChanged);
 
@@ -169,10 +169,10 @@ DockSettings::DockSettings(QWidget *parent)
     }
 
     calculateMultiScreensPos();
-    calculateWindowConfig();
+//    calculateWindowConfig();
 //    resetFrontendGeometry();
 
-    QTimer::singleShot(0, this, [ = ] {onOpacityChanged(m_dockInter->opacity());});
+//    QTimer::singleShot(0, this, [ = ] {onOpacityChanged(m_dockInter->opacity());});
     QTimer::singleShot(0, this, [=] {
         onGSettingsChanged("enable");
     });
@@ -440,7 +440,7 @@ void DockSettings::onDisplayModeChanged()
     qApp->setProperty(PROP_DISPLAY_MODE, QVariant::fromValue(m_displayMode));
 
     emit displayModeChanegd();
-    calculateWindowConfig();
+//    calculateWindowConfig();
 
    //QTimer::singleShot(1, m_itemManager, &DockItemManager::sortPluginItems);
 }
@@ -485,7 +485,7 @@ void DockSettings::primaryScreenChanged()
     }
     calculateMultiScreensPos();
     emit dataChanged();
-    calculateWindowConfig();
+//    calculateWindowConfig();
 
     // 主屏切换时，如果缩放比例不一样，需要刷新item的图标(bug:3176)
     m_itemManager->refershItemsIcon();
@@ -539,69 +539,69 @@ void DockSettings::primaryScreenChanged()
 //    return canBeDock;
 //}
 
-void DockSettings::onOpacityChanged(const double value)
-{
-    if (m_opacity == value) return;
+//void DockSettings::onOpacityChanged(const double value)
+//{
+//    if (m_opacity == value) return;
 
-    m_opacity = value;
+//    m_opacity = value;
 
-    emit opacityChanged(value * 255);
-}
+//    emit opacityChanged(value * 255);
+//}
 
 void DockSettings::trayVisableCountChanged(const int &count)
 {
     emit trayCountChanged();
 }
 
-void DockSettings::calculateWindowConfig()
-{
-    if (m_displayMode == Dock::Efficient) {
-        m_dockWindowSize = int(m_dockInter->windowSizeEfficient());
-        if (m_dockWindowSize > WINDOW_MAX_SIZE || m_dockWindowSize < WINDOW_MIN_SIZE) {
-            m_dockWindowSize = EffICIENT_DEFAULT_HEIGHT;
-            m_dockInter->setWindowSize(EffICIENT_DEFAULT_HEIGHT);
-        }
+//void DockSettings::calculateWindowConfig()
+//{
+//    if (m_displayMode == Dock::Efficient) {
+//        m_dockWindowSize = int(m_dockInter->windowSizeEfficient());
+//        if (m_dockWindowSize > WINDOW_MAX_SIZE || m_dockWindowSize < WINDOW_MIN_SIZE) {
+//            m_dockWindowSize = EffICIENT_DEFAULT_HEIGHT;
+//            m_dockInter->setWindowSize(EffICIENT_DEFAULT_HEIGHT);
+//        }
 
-        switch (m_position) {
-        case Top:
-        case Bottom:
-            m_mainWindowSize.setHeight(m_dockWindowSize);
-            m_mainWindowSize.setWidth(currentRect().width());
-            break;
+//        switch (m_position) {
+//        case Top:
+//        case Bottom:
+//            m_mainWindowSize.setHeight(m_dockWindowSize);
+//            m_mainWindowSize.setWidth(currentRect().width());
+//            break;
 
-        case Left:
-        case Right:
-            m_mainWindowSize.setHeight(currentRect().height());
-            m_mainWindowSize.setWidth(m_dockWindowSize);
-            break;
-        }
-    } else if (m_displayMode == Dock::Fashion) {
-        m_dockWindowSize = int(m_dockInter->windowSizeFashion());
-        if (m_dockWindowSize > WINDOW_MAX_SIZE || m_dockWindowSize < WINDOW_MIN_SIZE) {
-            m_dockWindowSize = FASHION_DEFAULT_HEIGHT;
-            m_dockInter->setWindowSize(FASHION_DEFAULT_HEIGHT);
-        }
+//        case Left:
+//        case Right:
+//            m_mainWindowSize.setHeight(currentRect().height());
+//            m_mainWindowSize.setWidth(m_dockWindowSize);
+//            break;
+//        }
+//    } else if (m_displayMode == Dock::Fashion) {
+//        m_dockWindowSize = int(m_dockInter->windowSizeFashion());
+//        if (m_dockWindowSize > WINDOW_MAX_SIZE || m_dockWindowSize < WINDOW_MIN_SIZE) {
+//            m_dockWindowSize = FASHION_DEFAULT_HEIGHT;
+//            m_dockInter->setWindowSize(FASHION_DEFAULT_HEIGHT);
+//        }
 
-        switch (m_position) {
-        case Top:
-        case Bottom: {
-            m_mainWindowSize.setHeight(m_dockWindowSize);
-            m_mainWindowSize.setWidth(this->currentRect().width() - MAINWINDOW_MARGIN * 2);
-            break;
-        }
-        case Left:
-        case Right: {
-            m_mainWindowSize.setHeight(this->currentRect().height() - MAINWINDOW_MARGIN * 2);
-            m_mainWindowSize.setWidth(m_dockWindowSize);
-            break;
-        }
-        }
-    } else {
-        Q_ASSERT(false);
-    }
+//        switch (m_position) {
+//        case Top:
+//        case Bottom: {
+//            m_mainWindowSize.setHeight(m_dockWindowSize);
+//            m_mainWindowSize.setWidth(this->currentRect().width() - MAINWINDOW_MARGIN * 2);
+//            break;
+//        }
+//        case Left:
+//        case Right: {
+//            m_mainWindowSize.setHeight(this->currentRect().height() - MAINWINDOW_MARGIN * 2);
+//            m_mainWindowSize.setWidth(m_dockWindowSize);
+//            break;
+//        }
+//        }
+//    } else {
+//        Q_ASSERT(false);
+//    }
 
-//    resetFrontendGeometry();
-}
+////    resetFrontendGeometry();
+//}
 
 void DockSettings::gtkIconThemeChanged()
 {
@@ -618,35 +618,35 @@ void DockSettings::gtkIconThemeChanged()
 
 void DockSettings::onWindowSizeChanged()
 {
-    calculateWindowConfig();
+//    calculateWindowConfig();
     emit windowGeometryChanged();
 }
 
-void DockSettings::checkService()
-{
-    // com.deepin.dde.daemon.Dock服务比dock晚启动，导致dock启动后的状态错误
+//void DockSettings::checkService()
+//{
+//    // com.deepin.dde.daemon.Dock服务比dock晚启动，导致dock启动后的状态错误
 
-    QString serverName = "com.deepin.dde.daemon.Dock";
-    QDBusConnectionInterface *ifc = QDBusConnection::sessionBus().interface();
+//    QString serverName = "com.deepin.dde.daemon.Dock";
+//    QDBusConnectionInterface *ifc = QDBusConnection::sessionBus().interface();
 
-    if (!ifc->isServiceRegistered(serverName)) {
-        connect(ifc, &QDBusConnectionInterface::serviceOwnerChanged, this, [ = ](const QString & name, const QString & oldOwner, const QString & newOwner) {
-            Q_UNUSED(oldOwner)
-            if (name == serverName && !newOwner.isEmpty()) {
+//    if (!ifc->isServiceRegistered(serverName)) {
+//        connect(ifc, &QDBusConnectionInterface::serviceOwnerChanged, this, [ = ](const QString & name, const QString & oldOwner, const QString & newOwner) {
+//            Q_UNUSED(oldOwner)
+//            if (name == serverName && !newOwner.isEmpty()) {
 
-                m_dockInter = new DBusDock(serverName, "/com/deepin/dde/daemon/Dock", QDBusConnection::sessionBus(), this);
-                onPositionChanged();
-                onDisplayModeChanged();
-                hideModeChanged();
-                hideStateChanged();
-                onOpacityChanged(m_dockInter->opacity());
-                onWindowSizeChanged();
+//                m_dockInter = new DBusDock(serverName, "/com/deepin/dde/daemon/Dock", QDBusConnection::sessionBus(), this);
+//                onPositionChanged();
+//                onDisplayModeChanged();
+//                hideModeChanged();
+//                hideStateChanged();
+//                onOpacityChanged(m_dockInter->opacity());
+//                onWindowSizeChanged();
 
-                disconnect(ifc);
-            }
-        });
-    }
-}
+//                disconnect(ifc);
+//            }
+//        });
+//    }
+//}
 
 //void DockSettings::posChangedUpdateSettings()
 //{

@@ -150,6 +150,7 @@ public:
     void handleLeaveEvent(QEvent *event);
 
 signals:
+    void opacityChanged(const quint8 value) const;
     void displayModeChanegd();
 
     // 更新监视区域
@@ -184,6 +185,8 @@ private slots:
     void showAniFinished();
     void hideAniFinished();
 
+    void onOpacityChanged(const double value);
+
     // 任务栏属性变化
     void onPositionChanged();
     void onDisplayModeChanged();
@@ -210,6 +213,7 @@ private slots:
     void updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> &map);
 
 private:
+    void checkDaemonDockService();
     MainWindow *parent();
     // 获取任务栏分别显示和隐藏时对应的位置
     QRect getDockShowGeometry(const QString &screenName,const Position &pos, const DisplayMode &displaymode);
@@ -253,6 +257,8 @@ private:
     // screen name
     QString m_lastScreen;
     QString m_currentScreen;
+
+    double m_opacity;
 
     // 任务栏四大属性
     Position m_position;            // 当前任务栏位置
