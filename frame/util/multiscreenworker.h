@@ -167,6 +167,7 @@ signals:
 public slots:
     void onAutoHideChanged(bool autoHide);
     void updateDaemonDockSize(int dockSize);
+    void onDragStateChanged(bool draging);
 
     void handleDbusSignal(QDBusMessage);
 
@@ -278,6 +279,7 @@ private:
     QString m_registerKey;
     QString m_leaveRegisterKey;
     bool m_aniStart;                        // changeDockPosition是否正在运行中
+    bool m_draging;
     bool m_autoHide;                        // 和DockSettings保持一致,可以直接使用其单例进行获取
     QList<MonitRect> m_monitorRectList;     // 监听唤起任务栏区域
     /*****************************************************************/

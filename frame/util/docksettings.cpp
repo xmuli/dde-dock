@@ -59,7 +59,7 @@ static QGSettings *GSettingsByTrash()
 DockSettings::DockSettings(QWidget *parent)
     : QObject(parent)
     , m_dockInter(new DBusDock("com.deepin.dde.daemon.Dock", "/com/deepin/dde/daemon/Dock", QDBusConnection::sessionBus(), this))
-    , m_menuVisible(true)
+    , m_displayInter(new DisplayInter("com.deepin.daemon.Display", "/com/deepin/daemon/Display", QDBusConnection::sessionBus(), this))
     , m_autoHide(true)
     , m_opacity(0.4)
     , m_fashionModeAct(tr("Fashion Mode"), this)
@@ -71,7 +71,7 @@ DockSettings::DockSettings(QWidget *parent)
     , m_keepShownAct(tr("Keep Shown"), this)
     , m_keepHiddenAct(tr("Keep Hidden"), this)
     , m_smartHideAct(tr("Smart Hide"), this)
-    , m_displayInter(new DisplayInter("com.deepin.daemon.Display", "/com/deepin/daemon/Display", QDBusConnection::sessionBus(), this))
+    , m_menuEnable(true)
     , m_itemManager(DockItemManager::instance(this))
     , m_trashPluginShow(true)
     , m_isMouseMoveCause(false)
@@ -170,7 +170,7 @@ DockSettings::DockSettings(QWidget *parent)
 
     calculateMultiScreensPos();
     calculateWindowConfig();
-    resetFrontendGeometry();
+//    resetFrontendGeometry();
 
     QTimer::singleShot(0, this, [ = ] {onOpacityChanged(m_dockInter->opacity());});
     QTimer::singleShot(0, this, [=] {
@@ -178,19 +178,19 @@ DockSettings::DockSettings(QWidget *parent)
     });
 }
 
-const QList<QRect> DockSettings::monitorsRect() const
-{
-    QList<QRect> monsRect;
-    QMapIterator<Monitor *, MonitorInter *> iterator(m_monitors);
-    while (iterator.hasNext()) {
-        iterator.next();
-        Monitor *monitor = iterator.key();
-        if (monitor) {
-            monsRect << monitor->rect();
-        }
-    }
-    return  monsRect;
-}
+//const QList<QRect> DockSettings::monitorsRect() const
+//{
+//    QList<QRect> monsRect;
+//    QMapIterator<Monitor *, MonitorInter *> iterator(m_monitors);
+//    while (iterator.hasNext()) {
+//        iterator.next();
+//        Monitor *monitor = iterator.key();
+//        if (monitor) {
+//            monsRect << monitor->rect();
+//        }
+//    }
+//    return  monsRect;
+//}
 
 DockSettings &DockSettings::Instance()
 {
@@ -198,16 +198,16 @@ DockSettings &DockSettings::Instance()
     return settings;
 }
 
-const QRect DockSettings::primaryRect() const
-{
-    QRect rect = m_primaryRawRect;
-    qreal scale = qApp->primaryScreen()->devicePixelRatio();
+//const QRect DockSettings::primaryRect() const
+//{
+//    QRect rect = m_primaryRawRect;
+//    qreal scale = qApp->primaryScreen()->devicePixelRatio();
 
-    rect.setWidth(std::round(qreal(rect.width()) / scale));
-    rect.setHeight(std::round(qreal(rect.height()) / scale));
+//    rect.setWidth(std::round(qreal(rect.width()) / scale));
+//    rect.setHeight(std::round(qreal(rect.height()) / scale));
 
-    return rect;
-}
+//    return rect;
+//}
 
 const QRect DockSettings::currentRect(const bool beNarrow)
 {
@@ -236,7 +236,7 @@ const QRect DockSettings::currentRect(const bool beNarrow)
             }
         }
 
-        m_currentScreen = currentScrName;
+//        m_currentScreen = currentScrName;
         m_currentRawRect = rect;
 
     } else {
@@ -249,54 +249,54 @@ const QRect DockSettings::currentRect(const bool beNarrow)
     return rect;
 }
 
-const int DockSettings::dockMargin() const
-{
-    if (m_displayMode == Dock::Efficient)
-        return 0;
+//const int DockSettings::dockMargin() const
+//{
+//    if (m_displayMode == Dock::Efficient)
+//        return 0;
 
-    return 10;
-}
+//    return 10;
+//}
 
 //const QSize DockSettings::panelSize() const
 //{
 //    return m_mainWindowSize;
 //}
 
-const QRect DockSettings::windowRect(const Position position, const bool hide, const bool beNarrow)
-{
-    QSize size = m_mainWindowSize;
-    if (hide) {
-        switch (position) {
-        case Top:
-        case Bottom:    size.setHeight(0);      break;
-        case Left:
-        case Right:     size.setWidth(0);       break;
-        }
-    }
+//const QRect DockSettings::windowRect(const Position position, const bool hide, const bool beNarrow)
+//{
+//    QSize size = m_mainWindowSize;
+//    if (hide) {
+//        switch (position) {
+//        case Top:
+//        case Bottom:    size.setHeight(0);      break;
+//        case Left:
+//        case Right:     size.setWidth(0);       break;
+//        }
+//    }
 
 
-    const QRect primaryRect = this->currentRect(beNarrow);
-    const int offsetX = (primaryRect.width() - size.width()) / 2;
-    const int offsetY = (primaryRect.height() - size.height()) / 2;
-    int margin = hide ?  0 : this->dockMargin();
-    QPoint p(0, 0);
-    switch (position) {
-    case Top:
-        p = QPoint(offsetX, margin);
-        break;
-    case Left:
-        p = QPoint(margin, offsetY);
-        break;
-    case Right:
-        p = QPoint(primaryRect.width() - size.width() - margin, offsetY);
-        break;
-    case Bottom:
-        p = QPoint(offsetX, primaryRect.height() - size.height() - margin);
-        break;
-    }
+//    const QRect primaryRect = this->currentRect(beNarrow);
+//    const int offsetX = (primaryRect.width() - size.width()) / 2;
+//    const int offsetY = (primaryRect.height() - size.height()) / 2;
+//    int margin = hide ?  0 : this->dockMargin();
+//    QPoint p(0, 0);
+//    switch (position) {
+//    case Top:
+//        p = QPoint(offsetX, margin);
+//        break;
+//    case Left:
+//        p = QPoint(margin, offsetY);
+//        break;
+//    case Right:
+//        p = QPoint(primaryRect.width() - size.width() - margin, offsetY);
+//        break;
+//    case Bottom:
+//        p = QPoint(offsetX, primaryRect.height() - size.height() - margin);
+//        break;
+//    }
 
-    return QRect(primaryRect.topLeft() + p, size);
-}
+//    return QRect(primaryRect.topLeft() + p, size);
+//}
 
 void DockSettings::showDockSettingsMenu()
 {
@@ -414,7 +414,7 @@ void DockSettings::onGSettingsChanged(const QString &key)
 
     if (setting->keys().contains("enable")) {
         const bool isEnable = GSettingsByMenu()->keys().contains("enable") && GSettingsByMenu()->get("enable").toBool();
-        m_menuVisible=isEnable && setting->get("enable").toBool();
+        m_menuEnable=isEnable && setting->get("enable").toBool();
     }
 }
 
@@ -491,53 +491,53 @@ void DockSettings::primaryScreenChanged()
     m_itemManager->refershItemsIcon();
 }
 
-void DockSettings::resetFrontendGeometry()
-{
-    return;
-    const QRect r = windowRect(m_position);
-    const qreal ratio = dockRatio();
-    const QPoint p = rawXPosition(r.topLeft());
-    const uint w = r.width() * ratio;
-    const uint h = r.height() * ratio;
+//void DockSettings::resetFrontendGeometry()
+//{
+//    return;
+//    const QRect r = windowRect(m_position);
+//    const qreal ratio = dockRatio();
+//    const QPoint p = rawXPosition(r.topLeft());
+//    const uint w = r.width() * ratio;
+//    const uint h = r.height() * ratio;
 
-    m_frontendRect = QRect(p.x(), p.y(), w, h);
-    m_dockInter->SetFrontendWindowRect(p.x(), p.y(), w, h);
-}
+//    m_frontendRect = QRect(p.x(), p.y(), w, h);
+//    m_dockInter->SetFrontendWindowRect(p.x(), p.y(), w, h);
+//}
 
-void DockSettings::updateFrontendGeometry()
-{
-    resetFrontendGeometry();
-}
+//void DockSettings::updateFrontendGeometry()
+//{
+//    resetFrontendGeometry();
+//}
 
-bool DockSettings::setDockScreen(const QString &scrName)
-{
-    QList<Monitor*> monitors = m_monitors.keys();
-    for (Monitor *monitor : monitors) {
-        if (monitor && monitor->name() == scrName) {
-            m_mouseCauseDockScreen = monitor;
-            break;
-        }
-    }
+//bool DockSettings::setDockScreen(const QString &scrName)
+//{
+//    QList<Monitor*> monitors = m_monitors.keys();
+//    for (Monitor *monitor : monitors) {
+//        if (monitor && monitor->name() == scrName) {
+//            m_mouseCauseDockScreen = monitor;
+//            break;
+//        }
+//    }
 
-    bool canBeDock = false;
-    switch (m_position) {
-    case Top:
-        canBeDock = m_mouseCauseDockScreen->dockPosition().topDock;
-        break;
-    case Right:
-        canBeDock = m_mouseCauseDockScreen->dockPosition().rightDock;
-        break;
-    case Bottom:
-        canBeDock = m_mouseCauseDockScreen->dockPosition().bottomDock;
-        break;
-    case Left:
-        canBeDock = m_mouseCauseDockScreen->dockPosition().leftDock;
-        break;
-    }
-    m_isMouseMoveCause = canBeDock;
+//    bool canBeDock = false;
+//    switch (m_position) {
+//    case Top:
+//        canBeDock = m_mouseCauseDockScreen->dockPosition().topDock;
+//        break;
+//    case Right:
+//        canBeDock = m_mouseCauseDockScreen->dockPosition().rightDock;
+//        break;
+//    case Bottom:
+//        canBeDock = m_mouseCauseDockScreen->dockPosition().bottomDock;
+//        break;
+//    case Left:
+//        canBeDock = m_mouseCauseDockScreen->dockPosition().leftDock;
+//        break;
+//    }
+//    m_isMouseMoveCause = canBeDock;
 
-    return canBeDock;
-}
+//    return canBeDock;
+//}
 
 void DockSettings::onOpacityChanged(const double value)
 {
@@ -550,7 +550,6 @@ void DockSettings::onOpacityChanged(const double value)
 
 void DockSettings::trayVisableCountChanged(const int &count)
 {
-    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     emit trayCountChanged();
 }
 
@@ -601,7 +600,7 @@ void DockSettings::calculateWindowConfig()
         Q_ASSERT(false);
     }
 
-    resetFrontendGeometry();
+//    resetFrontendGeometry();
 }
 
 void DockSettings::gtkIconThemeChanged()
@@ -610,12 +609,12 @@ void DockSettings::gtkIconThemeChanged()
     m_itemManager->refershItemsIcon();
 }
 
-qreal DockSettings::dockRatio() const
-{
-    QScreen const *screen = Utils::screenAtByScaled(m_frontendRect.center());
+//qreal DockSettings::dockRatio() const
+//{
+//    QScreen const *screen = Utils::screenAtByScaled(m_frontendRect.center());
 
-    return screen ? screen->devicePixelRatio() : qApp->devicePixelRatio();
-}
+//    return screen ? screen->devicePixelRatio() : qApp->devicePixelRatio();
+//}
 
 void DockSettings::onWindowSizeChanged()
 {
@@ -649,15 +648,15 @@ void DockSettings::checkService()
     }
 }
 
-void DockSettings::posChangedUpdateSettings()
-{
-    DockItem::setDockPosition(m_position);
-    qApp->setProperty(PROP_POSITION, QVariant::fromValue(m_position));
+//void DockSettings::posChangedUpdateSettings()
+//{
+//    DockItem::setDockPosition(m_position);
+//    qApp->setProperty(PROP_POSITION, QVariant::fromValue(m_position));
 
-    calculateWindowConfig();
+//    calculateWindowConfig();
 
-    m_itemManager->refershItemsIcon();
-}
+//    m_itemManager->refershItemsIcon();
+//}
 
 void DockSettings::calculateMultiScreensPos()
 {

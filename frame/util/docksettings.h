@@ -52,37 +52,36 @@ public:
     inline HideMode hideMode() const { return m_hideMode; }
     inline HideState hideState() const { return m_hideState; }
     inline Position position() const { return m_position; }
-    inline int screenRawHeight() const { return m_screenRawHeight; }
-    inline int screenRawWidth() const { return m_screenRawWidth; }
-    inline int expandTimeout() const { return m_dockInter->showTimeout(); }
-    inline int narrowTimeout() const { return 100; }
+//    inline int screenRawHeight() const { return m_screenRawHeight; }
+//    inline int screenRawWidth() const { return m_screenRawWidth; }
+//    inline int expandTimeout() const { return int(m_dockInter->showTimeout()); }
+//    inline int narrowTimeout() const { return 100; }
     inline bool autoHide() const { return m_autoHide; }
-    const QRect primaryRect() const;
+//    const QRect primaryRect() const;
     const QRect currentRect(const bool beNarrow = false);
-    const QList<QRect> monitorsRect() const;
-    inline const QRect primaryRawRect() const { return m_primaryRawRect; }
-    inline const QRect currentRawRect() const { return m_currentRawRect; }
-    inline const QRect frontendWindowRect() const { return m_frontendRect; }
-    inline const QSize windowSize() const { return m_mainWindowSize; }
-    inline const quint8 Opacity() const { return m_opacity * 255; }
-    const int dockMargin() const;
+//    const QList<QRect> monitorsRect() const;
+//    inline const QRect primaryRawRect() const { return m_primaryRawRect; }
+//    inline const QRect currentRawRect() const { return m_currentRawRect; }
+//    inline const QRect frontendWindowRect() const { return m_frontendRect; }
+//    inline const QSize windowSize() const { return m_mainWindowSize; }
+    inline quint8 Opacity() const { return quint8(m_opacity * 255); }
+    inline bool menuEnable() const { return m_menuEnable; }
+//    int dockMargin() const;
 
-//    const QSize panelSize() const;
-    const QRect windowRect(const Position position, const bool hide = false, const bool beNarrow = false);
-    qreal dockRatio() const;
+    //    const QSize panelSize() const;
+    //    const QRect windowRect(const Position position, const bool hide = false, const bool beNarrow = false);
+//    qreal dockRatio() const;
 
     void showDockSettingsMenu();
-    void updateFrontendGeometry();
+    //    void updateFrontendGeometry();
 
-    bool setDockScreen(const QString &scrName);
-    QString &currentDockScreen() { return m_currentScreen; }
+    //    bool setDockScreen(const QString &scrName);
+    //    QString &currentDockScreen() { return m_currentScreen; }
     
-    void posChangedUpdateSettings();
+//    void posChangedUpdateSettings();
     void calculateWindowConfig();
 
     QSize m_mainWindowSize;
-
-    bool m_menuVisible;
 
     inline const QMap<Monitor *, MonitorInter *> monitorList() {return m_monitors;}
 
@@ -104,17 +103,18 @@ public slots:
 private slots:
     void menuActionClicked(QAction *action);
     void onGSettingsChanged(const QString &key);
+    // TODO 是否还有其他的插件未处理其gsettings配置,另外,这里后面可以优化全自动的,而非一个一个单独处理
+    void onTrashGSettingsChanged(const QString &key);
     void onPositionChanged();
     void onDisplayModeChanged();
     void hideModeChanged();
     void hideStateChanged();
     void dockItemCountChanged();
     void primaryScreenChanged();
-    void resetFrontendGeometry();
+    //    void resetFrontendGeometry();
     void onOpacityChanged(const double value);
     void trayVisableCountChanged(const int &count);
     void onWindowSizeChanged();
-    void onTrashGSettingsChanged(const QString &key);
     void onMonitorListChanged(const QList<QDBusObjectPath> &mons);
 
 private:
@@ -152,6 +152,7 @@ private:
     QRect m_currentRawRect;
     QRect m_frontendRect;
 
+    // menu
     QMenu m_settingsMenu;
     QMenu *m_hideSubMenu;
     QAction m_fashionModeAct;
@@ -163,7 +164,7 @@ private:
     QAction m_keepShownAct;
     QAction m_keepHiddenAct;
     QAction m_smartHideAct;
-
+    bool m_menuEnable;
 
     DockItemManager *m_itemManager;
     bool m_trashPluginShow;
@@ -171,7 +172,8 @@ private:
     QMap<Monitor *, MonitorInter *> m_monitors;
     bool m_isMouseMoveCause;
     Monitor *m_mouseCauseDockScreen;
-    QString m_currentScreen;
+
+    //    QString m_currentScreen;
 };
 
 #endif // DOCKSETTINGS_H

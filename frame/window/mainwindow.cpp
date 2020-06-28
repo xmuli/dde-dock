@@ -198,7 +198,7 @@ void MainWindow::showEvent(QShowEvent *e)
 void MainWindow::mousePressEvent(QMouseEvent *e)
 {
     e->ignore();
-    if (e->button() == Qt::RightButton && m_settings->m_menuVisible) {
+    if (e->button() == Qt::RightButton && m_settings->menuEnable()) {
         m_settings->showDockSettingsMenu();
         return;
     }
@@ -364,8 +364,12 @@ void MainWindow::initConnections()
     connect(DockItemManager::instance(), &DockItemManager::requestWindowAutoHide, m_settings, &DockSettings::setAutoHide);
     connect(m_mainPanel, &MainPanelControl::itemMoved, DockItemManager::instance(), &DockItemManager::itemMoved, Qt::DirectConnection);
     connect(m_mainPanel, &MainPanelControl::itemAdded, DockItemManager::instance(), &DockItemManager::itemAdded, Qt::DirectConnection);
+
+    connect(m_dragWidget, &DragWidget::dragPointOffset, m_multiScreenWorker, [=]{m_multiScreenWorker->onDragStateChanged(true);});
+    connect(m_dragWidget, &DragWidget::dragFinished, m_multiScreenWorker, [=]{m_multiScreenWorker->onDragStateChanged(false);});
     connect(m_dragWidget, &DragWidget::dragPointOffset, this, &MainWindow::onMainWindowSizeChanged);
     connect(m_dragWidget, &DragWidget::dragFinished, this, &MainWindow::onDragFinished);
+
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::themeTypeChanged);
     //    connect(m_eventInter, &XEventMonitor::CursorMove, this, &MainWindow::onRegionMonitorChanged);
 
@@ -525,6 +529,8 @@ void MainWindow::onMainWindowSizeChanged(QPoint offset)
         newRect.setHeight(qBound(MAINWINDOW_MIN_SIZE, rect.height() - offset.y(), MAINWINDOW_MAX_SIZE));
 
         m_dockSize = newRect.height();
+
+        qDebug() << newRect;
     }
         break;
     case Left:
