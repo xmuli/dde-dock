@@ -72,7 +72,7 @@ MultiScreenWorker::~MultiScreenWorker()
 
 void MultiScreenWorker::initMembers()
 {
-    m_monitorUpdateTimer->setInterval(3000);
+    m_monitorUpdateTimer->setInterval(10);
     m_monitorUpdateTimer->setSingleShot(true);
 
     //　设置应用角色为任务栏
@@ -185,6 +185,10 @@ void MultiScreenWorker::initConnection()
         // 更新所在屏幕
         updateDockScreenName();
         // 更新任务栏自身信息
+        /**
+          *注意这里要先对parent()进行setFixedSize，在分辨率切换过程中，setGeometry可能会导致其大小未改变
+          */
+        parent()->setFixedSize(dockRect(m_currentScreen).size());
         parent()->setGeometry(dockRect(m_currentScreen));
         parent()->panel()->setFixedSize(dockRect(m_currentScreen).size());
         parent()->panel()->move(0, 0);

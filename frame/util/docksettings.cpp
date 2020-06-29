@@ -168,7 +168,7 @@ DockSettings::DockSettings(QWidget *parent)
         connect(app, &DApplication::iconThemeChanged, this, &DockSettings::gtkIconThemeChanged);
     }
 
-    calculateMultiScreensPos();
+//    calculateMultiScreensPos();
 //    calculateWindowConfig();
 //    resetFrontendGeometry();
 
@@ -378,7 +378,7 @@ void DockSettings::menuActionClicked(QAction *action)
         return m_dockInter->setDisplayMode(Efficient);
 
 //    m_isMouseMoveCause = false;
-    calculateMultiScreensPos();
+//    calculateMultiScreensPos();
     if (action == &m_topPosAct)
         return m_dockInter->setPosition(Top);
     if (action == &m_bottomPosAct)
@@ -483,7 +483,7 @@ void DockSettings::primaryScreenChanged()
     if (m_screenRawHeight == 0 || m_screenRawWidth == 0){
         return;
     }
-    calculateMultiScreensPos();
+//    calculateMultiScreensPos();
     emit dataChanged();
 //    calculateWindowConfig();
 
@@ -658,30 +658,30 @@ void DockSettings::onWindowSizeChanged()
 //    m_itemManager->refershItemsIcon();
 //}
 
-void DockSettings::calculateMultiScreensPos()
-{
-    QList<Monitor *> monitors = m_monitors.keys();
-    for (Monitor *monitor : monitors) {
-        monitor->setDockPosition(Monitor::DockPosition(true, true, true, true));
-    }
+//void DockSettings::calculateMultiScreensPos()
+//{
+//    QList<Monitor *> monitors = m_monitors.keys();
+//    for (Monitor *monitor : monitors) {
+//        monitor->setDockPosition(Monitor::DockPosition(true, true, true, true));
+//    }
 
-    switch (m_monitors.size()) {
-    case 0:
-        break;
-    case 1: {
-        QList<Monitor*>screens = m_monitors.keys();
-        Monitor* s1 = screens.at(0);
-        s1->setDockPosition(Monitor::DockPosition(true, true, true, true));
-    }
-        break;
-    case 2:
-        twoScreensCalPos();
-        break;
-    case 3:
-        treeScreensCalPos();
-        break;
-    }
-}
+//    switch (m_monitors.size()) {
+//    case 0:
+//        break;
+//    case 1: {
+//        QList<Monitor*>screens = m_monitors.keys();
+//        Monitor* s1 = screens.at(0);
+//        s1->setDockPosition(Monitor::DockPosition(true, true, true, true));
+//    }
+//        break;
+//    case 2:
+//        twoScreensCalPos();
+//        break;
+//    case 3:
+//        treeScreensCalPos();
+//        break;
+//    }
+//}
 
 void DockSettings::monitorAdded(const QString &path)
 {
@@ -742,73 +742,73 @@ void DockSettings::monitorRemoved(const QString &path)
 
     monitor->deleteLater();
 
-    calculateMultiScreensPos();
+//    calculateMultiScreensPos();
 }
 
-void DockSettings::twoScreensCalPos()
-{
-    QList<Monitor*>screens = m_monitors.keys();
-    Monitor* s1 = screens.at(0);
-    Monitor* s2 = screens.at(1);
-    if (!s1 && !s2)
-        return;
+//void DockSettings::twoScreensCalPos()
+//{
+//    QList<Monitor*>screens = m_monitors.keys();
+//    Monitor* s1 = screens.at(0);
+//    Monitor* s2 = screens.at(1);
+//    if (!s1 && !s2)
+//        return;
 
-    // 只在某屏显示时,其它屏禁用
-    bool s1Enabled = s1->enable();
-    bool s2Enabled = s2->enable();
-    if (!s1Enabled || !s2Enabled) {
-        if (!s1Enabled && s2Enabled) {
-            s1->setDockPosition(Monitor::DockPosition(false, false, false, false));
-            s2->setDockPosition(Monitor::DockPosition(true, true, true, true));
-        } else if (!s2Enabled && s1Enabled) {
-            s1->setDockPosition(Monitor::DockPosition(true, true, true, true));
-            s2->setDockPosition(Monitor::DockPosition(false, false, false, false));
-        } else if (!s1Enabled && !s2Enabled) {
-            s1->setDockPosition(Monitor::DockPosition(false, false, false, false));
-            s2->setDockPosition(Monitor::DockPosition(false, false, false, false));
-        }
-        return;
-    }
+//    // 只在某屏显示时,其它屏禁用
+//    bool s1Enabled = s1->enable();
+//    bool s2Enabled = s2->enable();
+//    if (!s1Enabled || !s2Enabled) {
+//        if (!s1Enabled && s2Enabled) {
+//            s1->setDockPosition(Monitor::DockPosition(false, false, false, false));
+//            s2->setDockPosition(Monitor::DockPosition(true, true, true, true));
+//        } else if (!s2Enabled && s1Enabled) {
+//            s1->setDockPosition(Monitor::DockPosition(true, true, true, true));
+//            s2->setDockPosition(Monitor::DockPosition(false, false, false, false));
+//        } else if (!s1Enabled && !s2Enabled) {
+//            s1->setDockPosition(Monitor::DockPosition(false, false, false, false));
+//            s2->setDockPosition(Monitor::DockPosition(false, false, false, false));
+//        }
+//        return;
+//    }
 
-    combination(screens);
-}
+//    combination(screens);
+//}
 
-void DockSettings::treeScreensCalPos()
-{
-    QList<Monitor*>screens = m_monitors.keys();
-    Monitor* s1 = screens.at(0);
-    Monitor* s2 = screens.at(1);
-    Monitor* s3 = screens.at(2);
-    if (!s1 && !s2 && !s3)
-        return;
+//void DockSettings::treeScreensCalPos()
+//{
+//    QList<Monitor*>screens = m_monitors.keys();
+//    Monitor* s1 = screens.at(0);
+//    Monitor* s2 = screens.at(1);
+//    Monitor* s3 = screens.at(2);
+//    if (!s1 && !s2 && !s3)
+//        return;
 
-    // 只在某屏显示时,其它屏禁用
-    bool s1Enabled = s1->enable();
-    bool s2Enabled = s2->enable();
-    bool s3Enabled = s3->enable();
-    if (!s1Enabled || !s2Enabled || !s3Enabled) {
-        if (!s1Enabled && !s2Enabled && s3Enabled) {
-            s1->setDockPosition(Monitor::DockPosition(false, false, false, false));
-            s2->setDockPosition(Monitor::DockPosition(false, false, false, false));
-            s3->setDockPosition(Monitor::DockPosition(true, true, true, true));
-        } else if (!s1Enabled && s2Enabled && !s3Enabled) {
-            s1->setDockPosition(Monitor::DockPosition(false, false, false, false));
-            s2->setDockPosition(Monitor::DockPosition(true, true, true, true));
-            s3->setDockPosition(Monitor::DockPosition(false, false, false, false));
-        } else if (s1Enabled && !s2Enabled && !s3Enabled) {
-            s1->setDockPosition(Monitor::DockPosition(true, true, true, true));
-            s2->setDockPosition(Monitor::DockPosition(false, false, false, false));
-            s3->setDockPosition(Monitor::DockPosition(false, false, false, false));
-        } else if (!s1Enabled && !s2Enabled && !s3Enabled) {
-            s1->setDockPosition(Monitor::DockPosition(false, false, false, false));
-            s2->setDockPosition(Monitor::DockPosition(false, false, false, false));
-            s3->setDockPosition(Monitor::DockPosition(false, false, false, false));
-        }
-        return;
-    }
+//    // 只在某屏显示时,其它屏禁用
+//    bool s1Enabled = s1->enable();
+//    bool s2Enabled = s2->enable();
+//    bool s3Enabled = s3->enable();
+//    if (!s1Enabled || !s2Enabled || !s3Enabled) {
+//        if (!s1Enabled && !s2Enabled && s3Enabled) {
+//            s1->setDockPosition(Monitor::DockPosition(false, false, false, false));
+//            s2->setDockPosition(Monitor::DockPosition(false, false, false, false));
+//            s3->setDockPosition(Monitor::DockPosition(true, true, true, true));
+//        } else if (!s1Enabled && s2Enabled && !s3Enabled) {
+//            s1->setDockPosition(Monitor::DockPosition(false, false, false, false));
+//            s2->setDockPosition(Monitor::DockPosition(true, true, true, true));
+//            s3->setDockPosition(Monitor::DockPosition(false, false, false, false));
+//        } else if (s1Enabled && !s2Enabled && !s3Enabled) {
+//            s1->setDockPosition(Monitor::DockPosition(true, true, true, true));
+//            s2->setDockPosition(Monitor::DockPosition(false, false, false, false));
+//            s3->setDockPosition(Monitor::DockPosition(false, false, false, false));
+//        } else if (!s1Enabled && !s2Enabled && !s3Enabled) {
+//            s1->setDockPosition(Monitor::DockPosition(false, false, false, false));
+//            s2->setDockPosition(Monitor::DockPosition(false, false, false, false));
+//            s3->setDockPosition(Monitor::DockPosition(false, false, false, false));
+//        }
+//        return;
+//    }
 
-    combination(screens);
-}
+//    combination(screens);
+//}
 
 void DockSettings::combination(QList<Monitor *> &screens)
 {

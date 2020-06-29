@@ -125,11 +125,11 @@ private:
     void gtkIconThemeChanged();
 //    void checkService();
 
-    void calculateMultiScreensPos();
+//    void calculateMultiScreensPos();
     void monitorAdded(const QString &path);
     void monitorRemoved(const QString &path);
-    void twoScreensCalPos();
-    void treeScreensCalPos();
+//    void twoScreensCalPos();
+//    void treeScreensCalPos();
     void combination(QList<Monitor*> &screens);
     void calculateRelativePos(Monitor *s1, Monitor *s2);
 

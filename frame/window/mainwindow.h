@@ -123,7 +123,7 @@ public:
     friend class MainPanel;
     friend class MainPanelControl;
 
-    MainPanelControl *panel() {qDebug() << m_mainPanel->geometry();return m_mainPanel;}
+    MainPanelControl *panel() {/*qDebug() << m_mainPanel->geometry();*/return m_mainPanel;}
     DragWidget *dragWidget() {return m_dragWidget;}
 
 public slots:
