@@ -48,132 +48,73 @@ class DockSettings : public QObject
 public:
     static DockSettings &Instance();
 
-    inline DisplayMode displayMode() const { return m_displayMode; }
-    inline HideMode hideMode() const { return m_hideMode; }
-    inline HideState hideState() const { return m_hideState; }
-    inline Position position() const { return m_position; }
-//    inline int screenRawHeight() const { return m_screenRawHeight; }
-//    inline int screenRawWidth() const { return m_screenRawWidth; }
-//    inline int expandTimeout() const { return int(m_dockInter->showTimeout()); }
-//    inline int narrowTimeout() const { return 100; }
-    inline bool autoHide() const { return m_autoHide; }
-//    const QRect primaryRect() const;
-//    const QRect currentRect(const bool beNarrow = false);
-//    const QList<QRect> monitorsRect() const;
-//    inline const QRect primaryRawRect() const { return m_primaryRawRect; }
-//    inline const QRect currentRawRect() const { return m_currentRawRect; }
-//    inline const QRect frontendWindowRect() const { return m_frontendRect; }
-//    inline const QSize windowSize() const { return m_mainWindowSize; }
-    inline quint8 Opacity() const { return quint8(m_opacity * 255); }
-    inline bool menuEnable() const { return m_menuEnable; }
-//    int dockMargin() const;
+//    inline DisplayMode displayMode() const { return m_displayMode; }
+//    inline HideMode hideMode() const { return m_hideMode; }
+//    inline HideState hideState() const { return m_hideState; }
+//    inline Position position() const { return m_position; }
+//    inline bool autoHide() const { return m_autoHide; }
+//    inline quint8 Opacity() const { return quint8(m_opacity * 255); }
+//    inline bool menuEnable() const { return m_menuEnable; }
 
-    //    const QSize panelSize() const;
-    //    const QRect windowRect(const Position position, const bool hide = false, const bool beNarrow = false);
-//    qreal dockRatio() const;
-
-    void showDockSettingsMenu();
-    //    void updateFrontendGeometry();
-
-    //    bool setDockScreen(const QString &scrName);
-    //    QString &currentDockScreen() { return m_currentScreen; }
-    
-//    void posChangedUpdateSettings();
-//    void calculateWindowConfig();
-
-//    QSize m_mainWindowSize;
-
-//    inline const QMap<Monitor *, MonitorInter *> monitorList() {return m_monitors;}
+//    void showDockSettingsMenu();
 
 signals:
-    void dataChanged() const;
-    void positionChanged() const;
-    void autoHideChanged(const bool autoHide) const;
-    void displayModeChanegd() const;
-    void windowVisibleChanged() const;
-    void windowHideModeChanged() const;
-    void windowGeometryChanged() const;
-//    void opacityChanged(const quint8 value) const;
-    void trayCountChanged() const;
+//    void autoHideChanged(const bool autoHide) const;
+//    void windowVisibleChanged() const;
+//    void trayCountChanged() const;
 
 public slots:
-    void updateGeometry();
-    void setAutoHide(const bool autoHide);
+//    void updateGeometry();
+//    void setAutoHide(const bool autoHide);
 
 private slots:
-    void menuActionClicked(QAction *action);
-    void onGSettingsChanged(const QString &key);
+//    void menuActionClicked(QAction *action);
+//    void onGSettingsChanged(const QString &key);
     // TODO 是否还有其他的插件未处理其gsettings配置,另外,这里后面可以优化全自动的,而非一个一个单独处理
-    void onTrashGSettingsChanged(const QString &key);
-    void onPositionChanged();
-    void onDisplayModeChanged();
-    void hideModeChanged();
-    void hideStateChanged();
-    void dockItemCountChanged();
-    void primaryScreenChanged();
-    //    void resetFrontendGeometry();
-//    void onOpacityChanged(const double value);
-    void trayVisableCountChanged(const int &count);
-    void onWindowSizeChanged();
-    void onMonitorListChanged(const QList<QDBusObjectPath> &mons);
+//    void onTrashGSettingsChanged(const QString &key);
+
+//    void onPositionChanged();
+//    void onDisplayModeChanged();
+//    void hideModeChanged();
+//    void hideStateChanged();
+
+//    void trayVisableCountChanged(const int &count);
 
 private:
     explicit DockSettings(QWidget *parent = nullptr);
     DockSettings(DockSettings const &) = delete;
     DockSettings operator =(DockSettings const &) = delete;
 
-    void gtkIconThemeChanged();
-//    void checkService();
-
-//    void calculateMultiScreensPos();
-    void monitorAdded(const QString &path);
-    void monitorRemoved(const QString &path);
-//    void twoScreensCalPos();
-//    void treeScreensCalPos();
-    void combination(QList<Monitor*> &screens);
-    void calculateRelativePos(Monitor *s1, Monitor *s2);
+//    void gtkIconThemeChanged();
 
 private:
-    DBusDock *m_dockInter;
-    DisplayInter *m_displayInter;
+//    DBusDock *m_dockInter;
+//    DisplayInter *m_displayInter;
 
-    int m_dockWindowSize;
-    bool m_autoHide;
-    int m_screenRawHeight;
-    int m_screenRawWidth;
-    double m_opacity;
-    int m_dockMargin;
-    QSet<Position> m_forbidPositions;
-    Position m_position;
-    HideMode m_hideMode;
-    HideState m_hideState;
-    DisplayMode m_displayMode;
-    QRect m_primaryRawRect;
-    QRect m_currentRawRect;
-    QRect m_frontendRect;
+//    bool m_autoHide;
+//    double m_opacity;
+//    int m_dockMargin;
+//    Position m_position;
+//    HideMode m_hideMode;
+//    HideState m_hideState;
+//    DisplayMode m_displayMode;
 
     // menu
-    QMenu m_settingsMenu;
-    QMenu *m_hideSubMenu;
-    QAction m_fashionModeAct;
-    QAction m_efficientModeAct;
-    QAction m_topPosAct;
-    QAction m_bottomPosAct;
-    QAction m_leftPosAct;
-    QAction m_rightPosAct;
-    QAction m_keepShownAct;
-    QAction m_keepHiddenAct;
-    QAction m_smartHideAct;
-    bool m_menuEnable;
+//    QMenu m_settingsMenu;
+//    QMenu *m_hideSubMenu;
+//    QAction m_fashionModeAct;
+//    QAction m_efficientModeAct;
+//    QAction m_topPosAct;
+//    QAction m_bottomPosAct;
+//    QAction m_leftPosAct;
+//    QAction m_rightPosAct;
+//    QAction m_keepShownAct;
+//    QAction m_keepHiddenAct;
+//    QAction m_smartHideAct;
+//    bool m_menuEnable;
 
-    DockItemManager *m_itemManager;
-    bool m_trashPluginShow;
-
-    QMap<Monitor *, MonitorInter *> m_monitors;
-//    bool m_isMouseMoveCause;
-//    Monitor *m_mouseCauseDockScreen;
-
-    //    QString m_currentScreen;
+//    DockItemManager *m_itemManager;
+//    bool m_trashPluginShow;
 };
 
 #endif // DOCKSETTINGS_H

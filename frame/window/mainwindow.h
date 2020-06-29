@@ -41,11 +41,11 @@ DWIDGET_USE_NAMESPACE
 
 using XEventMonitor = ::com::deepin::api::XEventMonitor;
 
-class DockSettings;
+//class DockSettings;
 class MainPanel;
 class MainPanelControl;
 class QTimer;
-
+class MenuWorker;
 class DragWidget : public QWidget
 {
     Q_OBJECT
@@ -123,7 +123,7 @@ public:
     friend class MainPanel;
     friend class MainPanelControl;
 
-    MainPanelControl *panel() {/*qDebug() << m_mainPanel->geometry();*/return m_mainPanel;}
+    MainPanelControl *panel() {return m_mainPanel;}
     DragWidget *dragWidget() {return m_dragWidget;}
 
 public slots:
@@ -177,10 +177,10 @@ private:
     QString m_registerKey;
     QStringList m_registerKeys;
 
-    QTimer *m_positionUpdateTimer;
     QTimer *m_shadowMaskOptimizeTimer;
 
-    DockSettings *m_settings;
+//    DockSettings *m_settings;
+    MenuWorker *m_menuWorker;
 
     QDBusConnectionInterface *m_dbusDaemonInterface;
     org::kde::StatusNotifierWatcher *m_sniWatcher;

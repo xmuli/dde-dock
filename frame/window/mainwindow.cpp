@@ -24,7 +24,8 @@
 #include "panel/mainpanelcontrol.h"
 #include "controller/dockitemmanager.h"
 #include "util/utils.h"
-#include "util/docksettings.h"
+//#include "util/docksettings.h"
+#include "util/menuworker.h"
 
 #include <DStyle>
 #include <DPlatformWindowHandle>
@@ -40,6 +41,8 @@
 #include <X11/X.h>
 #include <X11/Xutil.h>
 
+#include <com_deepin_dde_daemon_dock.h>
+
 #define SNI_WATCHER_SERVICE "org.kde.StatusNotifierWatcher"
 #define SNI_WATCHER_PATH "/StatusNotifierWatcher"
 
@@ -48,6 +51,7 @@
 #define DRAG_AREA_SIZE (5)
 
 using org::kde::StatusNotifierWatcher;
+using DBusDock = com::deepin::dde::daemon::Dock;
 
 const QPoint rawXPosition(const QPoint &scaledPos)
 {
@@ -77,19 +81,14 @@ MainWindow::MainWindow(QWidget *parent)
     , m_wmHelper(DWindowManagerHelper::instance())
     , m_multiScreenWorker(new MultiScreenWorker(this,m_wmHelper))
     , m_eventInter(new XEventMonitor("com.deepin.api.XEventMonitor", "/com/deepin/api/XEventMonitor", QDBusConnection::sessionBus()))
-    , m_positionUpdateTimer(new QTimer(this))
-//    , m_expandDelayTimer(new QTimer(this))
-//    , m_leaveDelayTimer(new QTimer(this))
     , m_shadowMaskOptimizeTimer(new QTimer(this))
-//    , m_panelShowAni(new QVariantAnimation(this))
-//    , m_panelHideAni(new QVariantAnimation(this))
-//    , m_showAni(new QPropertyAnimation(this,"geometry"))
-//    , m_hideAni(new QPropertyAnimation(this,"geometry"))
-    //    , m_xcbMisc(XcbMisc::instance())
+    , m_menuWorker(new MenuWorker(new DBusDock("com.deepin.dde.daemon.Dock"
+                                               , "/com/deepin/dde/daemon/Dock"
+                                               , QDBusConnection::sessionBus()
+                                               , this),this))
     , m_dbusDaemonInterface(QDBusConnection::sessionBus().interface())
     , m_sniWatcher(new StatusNotifierWatcher(SNI_WATCHER_SERVICE, SNI_WATCHER_PATH, QDBusConnection::sessionBus(), this))
     , m_dragWidget(new DragWidget(this))
-    //    , m_mouseCauseDock(false)
 {
     setAccessibleName("mainwindow");
     m_mainPanel->setAccessibleName("mainpanel");
@@ -104,10 +103,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_platformWindowHandle.setShadowOffset(QPoint(0, 5));
     m_platformWindowHandle.setShadowColor(QColor(0, 0, 0, 0.3 * 255));
 
-    m_settings = &DockSettings::Instance();
-    //    m_xcbMisc->set_window_type(winId(), XcbMisc::Dock);
-    //    m_size = m_settings->m_mainWindowSize;
-    m_mainPanel->setDisplayMode(m_settings->displayMode());
+//    m_settings = &DockSettings::Instance();
+    m_mainPanel->setDisplayMode(m_multiScreenWorker->displayMode());
     initSNIHost();
     initComponents();
     initConnections();
@@ -149,7 +146,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    //    delete m_xcbMisc;
+
 }
 
 void MainWindow::launch()
@@ -198,8 +195,8 @@ void MainWindow::showEvent(QShowEvent *e)
 void MainWindow::mousePressEvent(QMouseEvent *e)
 {
     e->ignore();
-    if (e->button() == Qt::RightButton && m_settings->menuEnable()) {
-        m_settings->showDockSettingsMenu();
+    if (e->button() == Qt::RightButton && m_menuWorker->menuEnable()) {
+        m_menuWorker->showDockSettingsMenu();
         return;
     }
 }
@@ -224,33 +221,24 @@ void MainWindow::enterEvent(QEvent *e)
 
 void MainWindow::mouseMoveEvent(QMouseEvent *e)
 {
+    Q_UNUSED(e);
     //重写mouseMoveEvent 解决bug12866  leaveEvent事件失效
 }
 
 void MainWindow::moveEvent(QMoveEvent *event)
 {
-    //    qDebug() << event->pos();
+    Q_UNUSED(event);
 }
 
 void MainWindow::leaveEvent(QEvent *e)
 {
     QWidget::leaveEvent(e);
     return m_multiScreenWorker->handleLeaveEvent(e);
-
-    //    if (m_panelHideAni->state() == QPropertyAnimation::Running)
-    //        return;
-
-    //    m_expandDelayTimer->stop();
-    //    m_leaveDelayTimer->start();
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
 {
     QWidget::dragEnterEvent(e);
-
-    if (m_settings->hideState() != Show) {
-//        m_expandDelayTimer->start();
-    }
 }
 
 void MainWindow::initSNIHost()
@@ -270,23 +258,8 @@ void MainWindow::initSNIHost()
 
 void MainWindow::initComponents()
 {
-    m_positionUpdateTimer->setSingleShot(true);
-    m_positionUpdateTimer->setInterval(20);
-    m_positionUpdateTimer->start();
-
-//    m_expandDelayTimer->setSingleShot(true);
-//    m_expandDelayTimer->setInterval(m_settings->expandTimeout());
-
-//    m_leaveDelayTimer->setSingleShot(true);
-//    m_leaveDelayTimer->setInterval(m_settings->narrowTimeout());
-
     m_shadowMaskOptimizeTimer->setSingleShot(true);
     m_shadowMaskOptimizeTimer->setInterval(100);
-
-//    m_panelShowAni->setEasingCurve(QEasingCurve::InOutCubic);
-//    m_panelHideAni->setEasingCurve(QEasingCurve::InOutCubic);
-//    m_showAni->setEasingCurve(QEasingCurve::InOutCubic);
-//    m_hideAni->setEasingCurve(QEasingCurve::InOutCubic);
 
     QTimer::singleShot(1, this, &MainWindow::compositeChanged);
 
@@ -298,59 +271,16 @@ void MainWindow::compositeChanged()
     const bool composite = m_wmHelper->hasComposite();
     setComposite(composite);
 
-    // NOTE(justforlxz): On the sw platform, there is an unstable
-    // display position error, disable animation solution
-#ifndef DISABLE_SHOW_ANIMATION
-    const int duration = composite ? 300 : 0;
-#else
-    const int duration = 0;
-#endif
-
-//    m_panelHideAni->setDuration(duration);
-//    m_panelShowAni->setDuration(duration);
-//    m_showAni->setDuration(duration);
-//    m_hideAni->setDuration(duration);
-
     m_shadowMaskOptimizeTimer->start();
 }
 
-//void MainWindow::internalMove(const QPoint &p)
-//{
-//    return;
-//    const bool isHide = m_settings->hideState() == HideState::Hide && !testAttribute(Qt::WA_UnderMouse);
-//    const bool pos_adjust = m_settings->hideMode() != HideMode::KeepShowing &&
-//            isHide &&
-//            m_panelShowAni->state() == QVariantAnimation::Stopped;
-//    if (!pos_adjust) {
-//        m_mainPanel->move(0, 0);
-//        return QWidget::move(p);
-//    }
-//}
-
 void MainWindow::initConnections()
 {
-    connect(m_settings, &DockSettings::dataChanged, m_positionUpdateTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
-    //    connect(m_settings, &DockSettings::positionChanged, this, &MainWindow::positionChanged);
-//    connect(m_settings, &DockSettings::autoHideChanged, m_leaveDelayTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
-    connect(m_settings, &DockSettings::windowGeometryChanged, this, &MainWindow::updateGeometry, Qt::DirectConnection);
-    connect(m_settings, &DockSettings::trayCountChanged, this, &MainWindow::getTrayVisableItemCount, Qt::DirectConnection);
-    //    connect(m_settings, &DockSettings::windowHideModeChanged, this, &MainWindow::setStrutPartial, Qt::QueuedConnection);
-    //    connect(m_settings, &DockSettings::windowHideModeChanged, [this] { resetPanelEnvironment(); });
-//    connect(m_settings, &DockSettings::windowHideModeChanged, m_leaveDelayTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
-    //    connect(m_settings, &DockSettings::windowVisibleChanged, this, &MainWindow::updatePanelVisible, Qt::QueuedConnection);
-    connect(m_settings, &DockSettings::displayModeChanegd, m_positionUpdateTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
-    connect(m_multiScreenWorker, &MultiScreenWorker::opacityChanged, this, &MainWindow::setMaskAlpha);
-    connect(m_settings, &DockSettings::displayModeChanegd, this, &MainWindow::updateDisplayMode, Qt::QueuedConnection);
+    connect(m_menuWorker, &MenuWorker::trayCountChanged, this, &MainWindow::getTrayVisableItemCount, Qt::DirectConnection);
+    connect(m_multiScreenWorker, &MultiScreenWorker::opacityChanged, this, &MainWindow::setMaskAlpha, Qt::QueuedConnection);
+    connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, this, &MainWindow::updateDisplayMode, Qt::QueuedConnection);
 
-    //    connect(m_positionUpdateTimer, &QTimer::timeout, this, &MainWindow::updatePosition, Qt::QueuedConnection);
-    //    connect(m_expandDelayTimer, &QTimer::timeout, this, &MainWindow::expand, Qt::QueuedConnection);
-    //    connect(m_leaveDelayTimer, &QTimer::timeout, this, &MainWindow::updatePanelVisible, Qt::QueuedConnection);
     connect(m_shadowMaskOptimizeTimer, &QTimer::timeout, this, &MainWindow::adjustShadowMask, Qt::QueuedConnection);
-
-//    connect(m_panelHideAni, &QPropertyAnimation::finished, m_shadowMaskOptimizeTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
-//    connect(m_panelShowAni, &QPropertyAnimation::finished, m_shadowMaskOptimizeTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
-//    connect(m_panelHideAni, &QPropertyAnimation::finished, this, &MainWindow::panelGeometryChanged);
-//    connect(m_panelShowAni, &QPropertyAnimation::finished, this, &MainWindow::panelGeometryChanged);
 
     connect(m_wmHelper, &DWindowManagerHelper::hasCompositeChanged, this, &MainWindow::compositeChanged, Qt::QueuedConnection);
     connect(&m_platformWindowHandle, &DPlatformWindowHandle::frameMarginsChanged, m_shadowMaskOptimizeTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
@@ -360,8 +290,7 @@ void MainWindow::initConnections()
     connect(DockItemManager::instance(), &DockItemManager::itemInserted, m_mainPanel, &MainPanelControl::insertItem, Qt::DirectConnection);
     connect(DockItemManager::instance(), &DockItemManager::itemRemoved, m_mainPanel, &MainPanelControl::removeItem, Qt::DirectConnection);
     connect(DockItemManager::instance(), &DockItemManager::itemUpdated, m_mainPanel, &MainPanelControl::itemUpdated, Qt::DirectConnection);
-    //    connect(DockItemManager::instance(), &DockItemManager::requestRefershWindowVisible, this, &MainWindow::updatePanelVisible, Qt::QueuedConnection);
-    connect(DockItemManager::instance(), &DockItemManager::requestWindowAutoHide, m_settings, &DockSettings::setAutoHide);
+    connect(DockItemManager::instance(), &DockItemManager::requestWindowAutoHide, m_menuWorker, &MenuWorker::setAutoHide);
     connect(m_mainPanel, &MainPanelControl::itemMoved, DockItemManager::instance(), &DockItemManager::itemMoved, Qt::DirectConnection);
     connect(m_mainPanel, &MainPanelControl::itemAdded, DockItemManager::instance(), &DockItemManager::itemAdded, Qt::DirectConnection);
 
@@ -371,41 +300,9 @@ void MainWindow::initConnections()
     connect(m_dragWidget, &DragWidget::dragFinished, this, &MainWindow::onDragFinished);
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::themeTypeChanged);
-    //    connect(m_eventInter, &XEventMonitor::CursorMove, this, &MainWindow::onRegionMonitorChanged);
 
-    connect(m_settings, &DockSettings::autoHideChanged, m_multiScreenWorker, &MultiScreenWorker::onAutoHideChanged);
+    connect(m_menuWorker, &MenuWorker::autoHideChanged, m_multiScreenWorker, &MultiScreenWorker::onAutoHideChanged);
 }
-
-//const QPoint MainWindow::x11GetWindowPos()
-//{
-//    const auto disp = QX11Info::display();
-
-//    unsigned int unused;
-//    int x;
-//    int y;
-//    Window unused_window;
-
-//    XGetGeometry(disp, winId(), &unused_window, &x, &y, &unused, &unused, &unused, &unused);
-//    XFlush(disp);
-
-//    return QPoint(x, y);
-//}
-
-//void MainWindow::x11MoveWindow(const int x, const int y)
-//{
-//    const auto disp = QX11Info::display();
-
-//    XMoveWindow(disp, winId(), x, y);
-//    XFlush(disp);
-//}
-
-//void MainWindow::x11MoveResizeWindow(const int x, const int y, const int w, const int h)
-//{
-//    const auto disp = QX11Info::display();
-
-//    XMoveResizeWindow(disp, winId(), x, y, w, h);
-//    XFlush(disp);
-//}
 
 void MainWindow::getTrayVisableItemCount()
 {
@@ -421,7 +318,7 @@ void MainWindow::adjustShadowMask()
         return;
 
     const bool composite = m_wmHelper->hasComposite();
-    const bool isFasion = m_settings->displayMode() == Fashion;
+    const bool isFasion = m_multiScreenWorker->displayMode() == Fashion;
 
     DStyleHelper dstyle(style());
     const int radius = dstyle.pixelMetric(DStyle::PM_TopLevelWindowRadius);
@@ -443,7 +340,7 @@ void MainWindow::setEffectEnabled(const bool enabled)
 {
     setMaskColor(AutoColor);
 
-    setMaskAlpha(DockSettings::Instance().Opacity());
+    setMaskAlpha(m_multiScreenWorker->opacity());
 
     m_platformWindowHandle.setBorderWidth(enabled ? 1 : 0);
 }
@@ -452,14 +349,6 @@ void MainWindow::setComposite(const bool hasComposite)
 {
     setEffectEnabled(hasComposite);
 }
-
-//void MainWindow::X11MoveResizeWindow(const int x, const int y, const int w, const int h)
-//{
-//    const auto disp = QX11Info::display();
-
-//    XMoveResizeWindow(disp, winId(), x, y, w, h);
-//    XFlush(disp);
-//}
 
 bool MainWindow::appIsOnDock(const QString &appDesktop)
 {
@@ -500,7 +389,7 @@ void MainWindow::resetDragWindow()
 
 void MainWindow::updateDisplayMode()
 {
-    m_mainPanel->setDisplayMode(m_settings->displayMode());
+    m_mainPanel->setDisplayMode(m_multiScreenWorker->displayMode());
     adjustShadowMask();
 }
 

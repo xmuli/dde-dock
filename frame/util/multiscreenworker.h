@@ -111,6 +111,11 @@ public:
      */
     inline const HideState &hideState() {return m_hideState;}
     /**
+     * @brief opacity
+     * @return                      任务栏透明度
+     */
+    inline quint8 opacity() {return m_opacity * 255;}
+    /**
      * @brief changeDockPosition    做一个动画操作
      * @param lastScreen            上次任务栏所在的屏幕
      * @param deskScreen            任务栏要移动到的屏幕
@@ -186,6 +191,8 @@ private slots:
     void hideAniFinished();
 
     void onOpacityChanged(const double value);
+    void onWindowSizeChanged(uint value);
+    void primaryScreenChanged();
 
     // 任务栏属性变化
     void onPositionChanged();

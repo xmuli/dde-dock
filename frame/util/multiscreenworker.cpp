@@ -54,7 +54,7 @@ MultiScreenWorker::MultiScreenWorker(QWidget *parent, DWindowManagerHelper *help
     , m_aniStart(false)
     , m_draging(false)
     , m_autoHide(true)
-{
+{   
     qDebug() << "init dock screen: " << m_currentScreen;
     initMembers();
     initConnection();
@@ -72,6 +72,11 @@ MultiScreenWorker::~MultiScreenWorker()
 
 void MultiScreenWorker::initMembers()
 {
+    DockItem::setDockPosition(m_position);
+    qApp->setProperty(PROP_POSITION, QVariant::fromValue(m_position));
+    DockItem::setDockDisplayMode(m_displayMode);
+    qApp->setProperty(PROP_DISPLAY_MODE, QVariant::fromValue(m_displayMode));
+
     m_monitorUpdateTimer->setInterval(10);
     m_monitorUpdateTimer->setSingleShot(true);
 
@@ -96,10 +101,7 @@ void MultiScreenWorker::initMembers()
 
 void MultiScreenWorker::initConnection()
 {
-    connect(m_displayInter, &DisplayInter::MonitorsChanged, this, &MultiScreenWorker::onMonitorListChanged);
-
     connect(m_showAni, &QVariantAnimation::valueChanged, parent(), [ = ](QVariant value) {
-        qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
         QRect rect = value.toRect();
         parent()->setFixedSize(rect.size());
         parent()->setGeometry(rect);
@@ -122,7 +124,6 @@ void MultiScreenWorker::initConnection()
     });
 
     connect(m_hideAni, &QVariantAnimation::valueChanged, parent(), [ = ](QVariant value) {
-        qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
         QRect rect = value.toRect();
         parent()->setFixedSize(rect.size());
         parent()->setGeometry(rect);
@@ -166,9 +167,17 @@ void MultiScreenWorker::initConnection()
         emit requestUpdateFrontendGeometry(dockRect(m_currentScreen));
     });
     connect(m_dockInter, &DBusDock::OpacityChanged, this, &MultiScreenWorker::onOpacityChanged);
+    connect(m_dockInter, &DBusDock::WindowSizeEfficientChanged, this, &MultiScreenWorker::onWindowSizeChanged);
+    connect(m_dockInter, &DBusDock::WindowSizeFashionChanged, this, &MultiScreenWorker::onWindowSizeChanged);
 
     connect(m_displayInter, &DisplayInter::ScreenWidthChanged, this, [ = ](ushort  value) {m_screenRawWidth = value;});
     connect(m_displayInter, &DisplayInter::ScreenHeightChanged, this, [ = ](ushort  value) {m_screenRawHeight = value;});
+    connect(m_displayInter, &DisplayInter::MonitorsChanged, this, &MultiScreenWorker::onMonitorListChanged);
+
+    connect(m_displayInter, &DisplayInter::PrimaryRectChanged, this, &MultiScreenWorker::primaryScreenChanged);
+    connect(m_displayInter, &DisplayInter::ScreenHeightChanged, this, &MultiScreenWorker::primaryScreenChanged);
+    connect(m_displayInter, &DisplayInter::ScreenWidthChanged, this, &MultiScreenWorker::primaryScreenChanged);
+    connect(m_displayInter, &DisplayInter::PrimaryChanged, this, &MultiScreenWorker::primaryScreenChanged);
 
     connect(m_eventInter, &XEventMonitor::CursorMove, this, &MultiScreenWorker::onRegionMonitorChanged);
 
@@ -449,7 +458,6 @@ QRect MultiScreenWorker::dockRect(const QString &screenName)
 
 void MultiScreenWorker::handleLeaveEvent(QEvent *event)
 {
-    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     Q_UNUSED(event);
 
     if (m_hideMode == HideMode::KeepShowing)
@@ -733,6 +741,24 @@ void MultiScreenWorker::onOpacityChanged(const double value)
     emit opacityChanged(value * 255);
 }
 
+void MultiScreenWorker::onWindowSizeChanged(uint value)
+{
+    m_monitorUpdateTimer->start();
+}
+
+void MultiScreenWorker::primaryScreenChanged()
+{
+    const int screenRawHeight = m_displayInter->screenHeight();
+    const int screenRawWidth = m_displayInter->screenWidth();
+
+    // 无效值
+    if (screenRawHeight == 0 || screenRawWidth == 0){
+        return;
+    }
+
+    m_monitorUpdateTimer->start();
+}
+
 void MultiScreenWorker::onPositionChanged()
 {
     const Position position = Dock::Position(m_dockInter->position());
@@ -933,10 +959,6 @@ void MultiScreenWorker::onMonitorInfoChaged()
             && m_monitorInfo.keys().first()->rect() == m_monitorInfo.keys().last()->rect()) {
         qDebug() << "repeat screen";
         return;
-    }
-
-    if (m_monitorUpdateTimer->isActive()) {
-        m_monitorUpdateTimer->stop();
     }
 
     m_monitorUpdateTimer->start();
