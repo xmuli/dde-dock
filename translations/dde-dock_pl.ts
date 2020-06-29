@@ -12,20 +12,40 @@
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Ustawienia Bluetooth</translation>
+    </message>
 </context>
 <context>
     <name>BluetoothItem</name>
     <message>
         <source>Turn off</source>
-        <translation type="unfinished"/>
+        <translation>Wyłączyć</translation>
     </message>
     <message>
         <source>Turn on</source>
-        <translation type="unfinished"/>
+        <translation>Włączyć</translation>
     </message>
     <message>
         <source>Bluetooth settings</source>
-        <translation type="unfinished"/>
+        <translation>Ustawienia Bluetooth</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation>Podłączono %1</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>Łączenie...</translation>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation>Wyłączony</translation>
     </message>
 </context>
 <context>
@@ -49,28 +69,16 @@
         <translation>Data i czas</translation>
     </message>
     <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">Czas 12-godzinny</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">Czas 24-godzinny</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">Ustawienia czasu</translation>
-    </message>
-    <message>
         <source>12-hour time</source>
-        <translation type="unfinished"/>
+        <translation>Czas 12 godziny</translation>
     </message>
     <message>
         <source>24-hour time</source>
-        <translation type="unfinished"/>
+        <translation>czas 24 godziny</translation>
     </message>
     <message>
         <source>Time settings</source>
-        <translation type="unfinished"/>
+        <translation>Ustawienia czasu</translation>
     </message>
 </context>
 <context>
@@ -192,7 +200,7 @@
     <name>LauncherItem</name>
     <message>
         <source>Launcher</source>
-        <translation>Aktywator</translation>
+        <translation>Launcher</translation>
     </message>
 </context>
 <context>
@@ -210,27 +218,27 @@
     <name>NetworkItem</name>
     <message>
         <source>Wireless connection</source>
-        <translation type="unfinished"/>
+        <translation>Połączenie bezprzewodowe</translation>
     </message>
     <message>
         <source>Wired connection</source>
-        <translation type="unfinished"/>
+        <translation>Połączenie przewodowe</translation>
     </message>
     <message>
         <source>Disable wired connection</source>
-        <translation type="unfinished"/>
+        <translation>Wyłącz połączenie przewodowe</translation>
     </message>
     <message>
         <source>Enable wired connection</source>
-        <translation type="unfinished"/>
+        <translation>Włącz połączenie przewodowe</translation>
     </message>
     <message>
         <source>Disable wireless connection</source>
-        <translation type="unfinished"/>
+        <translation>Wyłącz połączenie bezprzewodowe</translation>
     </message>
     <message>
         <source>Enable wireless connection</source>
-        <translation type="unfinished"/>
+        <translation>Włącz połączenie bezprzewodowe</translation>
     </message>
     <message>
         <source>Disable network</source>
@@ -250,7 +258,7 @@
     </message>
     <message>
         <source>Wireless connection: %1</source>
-        <translation type="unfinished"/>
+        <translation>Połączenie bezprzewodowe: %1</translation>
     </message>
     <message>
         <source>Wired connection: %1</source>
@@ -318,10 +326,6 @@
         <translation>Poziom: %1, pozostało: %2:%3</translation>
     </message>
     <message>
-        <source>Charged %1</source>
-        <translation type="vanished">Naładowana %1</translation>
-    </message>
-    <message>
         <source>Charging %1, %2 min until full</source>
         <translation>Ładowanie %1, %2min do końca</translation>
     </message>
@@ -330,12 +334,12 @@
         <translation>Ładowanie %1, %2:%3 do końca</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation type="unfinished"/>
+        <source>%1 charged</source>
+        <translation>Naładowano %1</translation>
     </message>
     <message>
-        <source>%1 charged</source>
-        <translation type="unfinished"/>
+        <source>Capacity %1 ....</source>
+        <translation>Pojemność %1 ....</translation>
     </message>
 </context>
 <context>
@@ -358,10 +362,6 @@
     <message>
         <source>Shut down</source>
         <translation>Wyłącz</translation>
-    </message>
-    <message>
-        <source>Restart</source>
-        <translation type="vanished">Uruchom ponownie</translation>
     </message>
     <message>
         <source>Suspend</source>
@@ -414,20 +414,12 @@
         <translation>Wycisz</translation>
     </message>
     <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">Ustawienia dźwięku</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">Obecna głośność %1</translation>
-    </message>
-    <message>
         <source>Sound settings</source>
-        <translation type="unfinished"/>
+        <translation>Ustawienia dźwięku</translation>
     </message>
     <message>
         <source>Volume %1</source>
-        <translation type="unfinished"/>
+        <translation>Głośność %1</translation>
     </message>
 </context>
 <context>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">Nieznany</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">Połączenie przewodowe: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>Połączenie przewodowe</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">Brak sieci</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">Połączenie bezprzewodowe: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">Połączono, ale brak dostępu do Internetu</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="unfinished"/>
     </message>
 </context>
 <context>

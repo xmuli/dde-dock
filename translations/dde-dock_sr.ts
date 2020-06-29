@@ -3,7 +3,7 @@
     <name>AbstractPluginsController</name>
     <message>
         <source>The plugin %1 is not compatible with the system.</source>
-        <translation>Додатак %1 није компатибилан са системом.</translation>
+        <translation>Додатак %1 није усаглашен са системом.</translation>
     </message>
 </context>
 <context>
@@ -11,6 +11,10 @@
     <message>
         <source>Bluetooth</source>
         <translation>Блутут</translation>
+    </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Блутут подешавања</translation>
     </message>
 </context>
 <context>
@@ -26,6 +30,22 @@
     <message>
         <source>Bluetooth settings</source>
         <translation>Блутут подешавања</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation>%1 повезано</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>Повезивање...</translation>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Блутут</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation>Искључен</translation>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>Датум и сат</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">12-часовно време</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">24-часовно време</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">Подешавање времена</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -100,7 +108,7 @@
     </message>
     <message>
         <source>Delete</source>
-        <translation>Испразни</translation>
+        <translation>Обриши</translation>
     </message>
     <message>
         <source>This action cannot be restored</source>
@@ -126,7 +134,7 @@
     </message>
     <message>
         <source>Open</source>
-        <translation>Отвори</translation>
+        <translation>Покрени</translation>
     </message>
     <message>
         <source>Unmount all</source>
@@ -137,7 +145,7 @@
     <name>DockSettings</name>
     <message>
         <source>Fashion Mode</source>
-        <translation>Улицкан режим</translation>
+        <translation>Модеран режим</translation>
     </message>
     <message>
         <source>Efficient Mode</source>
@@ -192,7 +200,7 @@
     <name>LauncherItem</name>
     <message>
         <source>Launcher</source>
-        <translation>Покретач Програма</translation>
+        <translation>Покретач програма</translation>
     </message>
 </context>
 <context>
@@ -311,15 +319,11 @@
     </message>
     <message>
         <source>Capacity %1, %2 min remaining</source>
-        <translation>Капацитет %1, %2 мин преостало</translation>
+        <translation>Ниво %1, %2 мин преостало</translation>
     </message>
     <message>
         <source>Capacity %1, %2 hr %3 min remaining</source>
-        <translation>Капацитет %1, %2 ч %3 мин преостало</translation>
-    </message>
-    <message>
-        <source>Charged %1</source>
-        <translation type="vanished">Напуњено %1</translation>
+        <translation>Ниво %1, %2 ч %3 мин преостало</translation>
     </message>
     <message>
         <source>Charging %1, %2 min until full</source>
@@ -330,19 +334,19 @@
         <translation>Пуни се %1, %2 ч %3 мин преостало</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>Пуни се %1 ....</translation>
-    </message>
-    <message>
         <source>%1 charged</source>
         <translation>%1 напуњено</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation>Ниво %1 ....</translation>
     </message>
 </context>
 <context>
     <name>ShowDesktopPlugin</name>
     <message>
         <source>Show Desktop</source>
-        <translation>Прикажи радну површину</translation>
+        <translation>Прикажи Радну Површину</translation>
     </message>
     <message>
         <source>Undock</source>
@@ -357,11 +361,7 @@
     </message>
     <message>
         <source>Shut down</source>
-        <translation>Искључи</translation>
-    </message>
-    <message>
-        <source>Restart</source>
-        <translation type="vanished">Поново покрени</translation>
+        <translation>Искључивање</translation>
     </message>
     <message>
         <source>Suspend</source>
@@ -377,7 +377,7 @@
     </message>
     <message>
         <source>Log out</source>
-        <translation>Одјави се</translation>
+        <translation>Одјављивање</translation>
     </message>
     <message>
         <source>Switch account</source>
@@ -414,14 +414,6 @@
         <translation>Ућуткај</translation>
     </message>
     <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">Подешавање звука</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">Јачина звука %1</translation>
-    </message>
-    <message>
         <source>Sound settings</source>
         <translation>Подешавање звука</translation>
     </message>
@@ -456,7 +448,7 @@
     <name>TrashWidget</name>
     <message>
         <source>Open</source>
-        <translation>Отвори</translation>
+        <translation>Покрени</translation>
     </message>
     <message>
         <source>Empty</source>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">Непознато</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">Жичана веза: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>Жичана веза</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">Нема мреже</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">Бежична веза: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">Повезани сте, али нема интернета</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">Бежична веза: %1</translation>
     </message>
 </context>
 <context>

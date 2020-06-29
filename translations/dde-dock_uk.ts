@@ -3,7 +3,7 @@
     <name>AbstractPluginsController</name>
     <message>
         <source>The plugin %1 is not compatible with the system.</source>
-        <translation>Плагін %1 не сумісний із системою.</translation>
+        <translation>Додаток %1 не сумісний із системою.</translation>
     </message>
 </context>
 <context>
@@ -11,6 +11,10 @@
     <message>
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Параметри Bluetooth</translation>
     </message>
 </context>
 <context>
@@ -26,6 +30,22 @@
     <message>
         <source>Bluetooth settings</source>
         <translation>Параметри Bluetooth</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation>З&apos;єднано %1</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>Встановлюємо з&apos;єднання…</translation>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation>Вимкнено</translation>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>Дата, час</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">12 Годинний Час</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">24 Годинний Час</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">Налаштування Часу</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -100,7 +108,7 @@
     </message>
     <message>
         <source>Delete</source>
-        <translation>Вилучити</translation>
+        <translation>Видалити</translation>
     </message>
     <message>
         <source>This action cannot be restored</source>
@@ -141,15 +149,15 @@
     </message>
     <message>
         <source>Efficient Mode</source>
-        <translation>Режим ефективності</translation>
+        <translation>Практичний режим</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation>Верх</translation>
+        <translation>Вгорі</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation>Вниз</translation>
+        <translation>Внизу</translation>
     </message>
     <message>
         <source>Left</source>
@@ -177,7 +185,7 @@
     </message>
     <message>
         <source>Location</source>
-        <translation>Місце знаходження</translation>
+        <translation>Розташування</translation>
     </message>
     <message>
         <source>Status</source>
@@ -185,7 +193,7 @@
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Плагіни</translation>
+        <translation>Додатки</translation>
     </message>
 </context>
 <context>
@@ -258,11 +266,11 @@
     </message>
     <message>
         <source>Not connected</source>
-        <translation>Не з&apos;єднано</translation>
+        <translation>Не підключено</translation>
     </message>
     <message>
         <source>Connecting</source>
-        <translation>З‘єднується</translation>
+        <translation>З&apos;єднання</translation>
     </message>
     <message>
         <source>Network cable unplugged</source>
@@ -318,10 +326,6 @@
         <translation>Батарея %1, %2 год %3 хв залишилося</translation>
     </message>
     <message>
-        <source>Charged %1</source>
-        <translation type="vanished">Заряджений на %1</translation>
-    </message>
-    <message>
         <source>Charging %1, %2 min until full</source>
         <translation>Зарядка %1, %2 хв до повної</translation>
     </message>
@@ -330,12 +334,12 @@
         <translation>Зарядка %1, %2 год %3 хв до повної</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>Заряджаємо %1....</translation>
-    </message>
-    <message>
         <source>%1 charged</source>
         <translation>Заряджено на %1</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation>Ємність %1 ....</translation>
     </message>
 </context>
 <context>
@@ -360,10 +364,6 @@
         <translation>Вимкнути</translation>
     </message>
     <message>
-        <source>Restart</source>
-        <translation type="vanished">Перезавантажити</translation>
-    </message>
-    <message>
         <source>Suspend</source>
         <translation>Призупинити</translation>
     </message>
@@ -377,7 +377,7 @@
     </message>
     <message>
         <source>Log out</source>
-        <translation>Вийти</translation>
+        <translation>Вихід</translation>
     </message>
     <message>
         <source>Switch account</source>
@@ -400,7 +400,7 @@
     </message>
     <message>
         <source>Application</source>
-        <translation>Програма</translation>
+        <translation>Застосунок</translation>
     </message>
 </context>
 <context>
@@ -412,14 +412,6 @@
     <message>
         <source>Mute</source>
         <translation>Вимкнути звук</translation>
-    </message>
-    <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">Налаштування аудіо</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">Поточна гучність %1</translation>
     </message>
     <message>
         <source>Sound settings</source>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">Невідомо</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">Бездротове підключення: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>Дротове підключення</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">Немає мережі</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">Бездротове підключення: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">З&apos;єднано, але доступу до інтернету немає</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">Бездротове з&apos;єднання: %1</translation>
     </message>
 </context>
 <context>

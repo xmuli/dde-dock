@@ -12,6 +12,10 @@
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Impostazioni Bluetooth</translation>
+    </message>
 </context>
 <context>
     <name>BluetoothItem</name>
@@ -26,6 +30,22 @@
     <message>
         <source>Bluetooth settings</source>
         <translation>Impostazioni Bluetooth</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation>%1 connesso</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>Connessione in corso...</translation>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation>Disattivato</translation>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>Orologio</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">Formato 12 ore</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">Formato 24 ore</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">Impostazioni orarie</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -311,15 +319,11 @@
     </message>
     <message>
         <source>Capacity %1, %2 min remaining</source>
-        <translation>Capacità %1, %2 min. rimanenti</translation>
+        <translation>Autonomia %1, %2 min. rimanenti</translation>
     </message>
     <message>
         <source>Capacity %1, %2 hr %3 min remaining</source>
-        <translation>Capacità %1, %2 ore e %3 min. rimanenti</translation>
-    </message>
-    <message>
-        <source>Charged %1</source>
-        <translation type="vanished">Carica %1</translation>
+        <translation>Autonomia %1, %2 ore e %3 min. rimanenti</translation>
     </message>
     <message>
         <source>Charging %1, %2 min until full</source>
@@ -330,12 +334,12 @@
         <translation>Carica %1, %2 ore e %3 min. per la carica completa</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>In carica %1 ....</translation>
-    </message>
-    <message>
         <source>%1 charged</source>
         <translation>Carica %1</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation>Carica %1 ...</translation>
     </message>
 </context>
 <context>
@@ -358,10 +362,6 @@
     <message>
         <source>Shut down</source>
         <translation>Spegni</translation>
-    </message>
-    <message>
-        <source>Restart</source>
-        <translation type="vanished">Riavvia</translation>
     </message>
     <message>
         <source>Suspend</source>
@@ -412,14 +412,6 @@
     <message>
         <source>Mute</source>
         <translation>Muto</translation>
-    </message>
-    <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">Impostazioni Audio</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">Volume attuale %1</translation>
     </message>
     <message>
         <source>Sound settings</source>
@@ -473,42 +465,15 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">Sconosciuto</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">Connessione cablata: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>Connessione cablata</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">Nessuna Rete</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">Connessione WiFi: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">Connesso senza accesso ad internet</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">Connessione WiFi: %1</translation>
     </message>
 </context>
 <context>
     <name>WirelessList</name>
     <message>
         <source>Wireless Network</source>
-        <translation>WiFi</translation>
+        <translation>Rete wireless</translation>
     </message>
     <message>
         <source>Wireless Network %1</source>

@@ -12,6 +12,10 @@
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Bluetooth nustatymai</translation>
+    </message>
 </context>
 <context>
     <name>BluetoothItem</name>
@@ -26,6 +30,22 @@
     <message>
         <source>Bluetooth settings</source>
         <translation>Bluetooth nustatymai</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>Data ir laikas</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">12 valandų laikas</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">24 valandų laikas</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">Laiko nustatymai</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -318,10 +326,6 @@
         <translation>Talpa %1, liko %2 val. %3 min.</translation>
     </message>
     <message>
-        <source>Charged %1</source>
-        <translation type="vanished">Įkrauta %1</translation>
-    </message>
-    <message>
         <source>Charging %1, %2 min until full</source>
         <translation>Įkraunama %1, iki pilnos liko %2 min.</translation>
     </message>
@@ -330,12 +334,12 @@
         <translation>Įkraunama %1, iki pilnos liko %2 val. %3 min.</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>Įkraunama %1....</translation>
-    </message>
-    <message>
         <source>%1 charged</source>
         <translation>%1 įkrauta</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation>Talpa %1 ....</translation>
     </message>
 </context>
 <context>
@@ -358,10 +362,6 @@
     <message>
         <source>Shut down</source>
         <translation>Išjungti</translation>
-    </message>
-    <message>
-        <source>Restart</source>
-        <translation type="vanished">Paleisti iš naujo</translation>
     </message>
     <message>
         <source>Suspend</source>
@@ -412,14 +412,6 @@
     <message>
         <source>Mute</source>
         <translation>Nutildyti</translation>
-    </message>
-    <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">Garso nustatymai</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">Esamas garsis %1</translation>
     </message>
     <message>
         <source>Sound settings</source>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">Nežinoma</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">Laidinis ryšys: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>Laidinis ryšys</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">Nėra tinklo</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">Belaidis ryšys: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">Prisijungta, bet nėra prieigos prie interneto</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">Belaidis ryšys: %1</translation>
     </message>
 </context>
 <context>

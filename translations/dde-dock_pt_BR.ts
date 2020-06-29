@@ -12,6 +12,10 @@
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Configurações do Bluetooth</translation>
+    </message>
 </context>
 <context>
     <name>BluetoothItem</name>
@@ -25,7 +29,23 @@
     </message>
     <message>
         <source>Bluetooth settings</source>
-        <translation>Configurações de Bluetooth</translation>
+        <translation>Configurações do Bluetooth</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation>%1 conectado</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>Conectando...</translation>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation>Desativado</translation>
     </message>
 </context>
 <context>
@@ -39,7 +59,7 @@
     <name>DBusAdaptors</name>
     <message>
         <source>Add keyboard layout</source>
-        <translation>Adicionar o layout de teclado</translation>
+        <translation>Adicionar layout de teclado</translation>
     </message>
 </context>
 <context>
@@ -49,43 +69,31 @@
         <translation>Data e Hora</translation>
     </message>
     <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">12 Horas</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">24 Horas</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">Configurações de Data e Hora</translation>
-    </message>
-    <message>
         <source>12-hour time</source>
-        <translation>12 horas</translation>
+        <translation>Formato de 12 horas</translation>
     </message>
     <message>
         <source>24-hour time</source>
-        <translation>24 horas</translation>
+        <translation>Formato de 24 horas</translation>
     </message>
     <message>
         <source>Time settings</source>
-        <translation>Configurações de Data e Hora</translation>
+        <translation>Configurações de data e hora</translation>
     </message>
 </context>
 <context>
     <name>DeviceItem</name>
     <message>
         <source>Enable network</source>
-        <translation>Ativar Rede</translation>
+        <translation>Ativar rede</translation>
     </message>
     <message>
         <source>Disable network</source>
-        <translation>Desativar Rede</translation>
+        <translation>Desativar rede</translation>
     </message>
     <message>
         <source>Network settings</source>
-        <translation>Configurações de Rede</translation>
+        <translation>Configurações de rede</translation>
     </message>
 </context>
 <context>
@@ -104,7 +112,7 @@
     </message>
     <message>
         <source>This action cannot be restored</source>
-        <translation>Esta ação não pode ser desfeita</translation>
+        <translation>Esta ação não pode ser revertida</translation>
     </message>
 </context>
 <context>
@@ -130,7 +138,7 @@
     </message>
     <message>
         <source>Unmount all</source>
-        <translation>Desmontar todos</translation>
+        <translation>Desmontar tudo</translation>
     </message>
 </context>
 <context>
@@ -161,15 +169,15 @@
     </message>
     <message>
         <source>Keep Shown</source>
-        <translation>Sempre Exibir</translation>
+        <translation>Sempre exibir</translation>
     </message>
     <message>
         <source>Keep Hidden</source>
-        <translation>Sempre Ocultar</translation>
+        <translation>Sempre ocultar</translation>
     </message>
     <message>
         <source>Smart Hide</source>
-        <translation>Ocultar Inteligente</translation>
+        <translation>Ocultar inteligente</translation>
     </message>
     <message>
         <source>Mode</source>
@@ -185,7 +193,7 @@
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Complementos</translation>
+        <translation>Plugins</translation>
     </message>
 </context>
 <context>
@@ -203,7 +211,7 @@
     </message>
     <message>
         <source>Undock</source>
-        <translation>Remover da Dock</translation>
+        <translation>Remover da dock</translation>
     </message>
 </context>
 <context>
@@ -214,23 +222,23 @@
     </message>
     <message>
         <source>Wired connection</source>
-        <translation>Conexão cabeada</translation>
+        <translation>Conexão Cabeada</translation>
     </message>
     <message>
         <source>Disable wired connection</source>
-        <translation>Desativar a conexão cabeada</translation>
+        <translation>Desativar conexão cabeada</translation>
     </message>
     <message>
         <source>Enable wired connection</source>
-        <translation>Ativar a conexão cabeada</translation>
+        <translation>Ativar conexão cabeada</translation>
     </message>
     <message>
         <source>Disable wireless connection</source>
-        <translation>Desativar a conexão Wi-Fi</translation>
+        <translation>Desativar conexão Wi-Fi</translation>
     </message>
     <message>
         <source>Enable wireless connection</source>
-        <translation>Ativar a conexão Wi-Fi</translation>
+        <translation>Ativar conexão Wi-Fi</translation>
     </message>
     <message>
         <source>Disable network</source>
@@ -254,7 +262,7 @@
     </message>
     <message>
         <source>Wired connection: %1</source>
-        <translation>Conexão cabeada: %1</translation>
+        <translation>Conexão Cabeada: %1</translation>
     </message>
     <message>
         <source>Not connected</source>
@@ -292,7 +300,7 @@
     <name>OnboardPlugin</name>
     <message>
         <source>Onboard</source>
-        <translation>Teclado Virtual</translation>
+        <translation>Teclado virtual</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -307,7 +315,7 @@
     </message>
     <message>
         <source>Power settings</source>
-        <translation>Configurações de Energia</translation>
+        <translation>Configurações de energia</translation>
     </message>
     <message>
         <source>Capacity %1, %2 min remaining</source>
@@ -318,10 +326,6 @@
         <translation>%1 Carregado - %2h%3 restantes</translation>
     </message>
     <message>
-        <source>Charged %1</source>
-        <translation type="vanished">%1 Carregado</translation>
-    </message>
-    <message>
         <source>Charging %1, %2 min until full</source>
         <translation>Carregando %1 - %2m até completar</translation>
     </message>
@@ -330,11 +334,11 @@
         <translation>Carregando %1 - %2h%3 até completar</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>Carregando %1...</translation>
+        <source>%1 charged</source>
+        <translation>%1 Carregado</translation>
     </message>
     <message>
-        <source>%1 charged</source>
+        <source>Capacity %1 ....</source>
         <translation>%1 Carregado</translation>
     </message>
 </context>
@@ -342,26 +346,22 @@
     <name>ShowDesktopPlugin</name>
     <message>
         <source>Show Desktop</source>
-        <translation>Exibir Área de Trabalho</translation>
+        <translation>Área de Trabalho</translation>
     </message>
     <message>
         <source>Undock</source>
-        <translation>Remover da Dock</translation>
+        <translation>Remover da dock</translation>
     </message>
 </context>
 <context>
     <name>ShutdownPlugin</name>
     <message>
         <source>Power</source>
-        <translation>Sessão</translation>
+        <translation>Energia</translation>
     </message>
     <message>
         <source>Shut down</source>
         <translation>Desligar</translation>
-    </message>
-    <message>
-        <source>Restart</source>
-        <translation type="vanished">Reiniciar</translation>
     </message>
     <message>
         <source>Suspend</source>
@@ -385,7 +385,7 @@
     </message>
     <message>
         <source>Power settings</source>
-        <translation>Configurações de Energia</translation>
+        <translation>Configurações de energia</translation>
     </message>
     <message>
         <source>Reboot</source>
@@ -407,23 +407,15 @@
     <name>SoundItem</name>
     <message>
         <source>Unmute</source>
-        <translation>Com Áudio</translation>
+        <translation>Com áudio</translation>
     </message>
     <message>
         <source>Mute</source>
-        <translation>Sem Áudio</translation>
-    </message>
-    <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">Configurações de Áudio</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">Volume %1</translation>
+        <translation>Sem áudio</translation>
     </message>
     <message>
         <source>Sound settings</source>
-        <translation>Configurações de Som</translation>
+        <translation>Configurações de som</translation>
     </message>
     <message>
         <source>Volume %1</source>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">Desconhecido</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">Conexão Cabeada: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>Conexão Cabeada</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">Sem Rede</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">Conexão Wi-Fi: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">Conectado, sem Internet</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">Conexão Wi-Fi: %1</translation>
     </message>
 </context>
 <context>

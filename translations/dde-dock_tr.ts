@@ -12,6 +12,10 @@
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Bluetooth ayarları</translation>
+    </message>
 </context>
 <context>
     <name>BluetoothItem</name>
@@ -26,6 +30,22 @@
     <message>
         <source>Bluetooth settings</source>
         <translation>Bluetooth ayarları</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation>%1 bağlandı</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>Bağlanıyor...</translation>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation>Kapat</translation>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>Tarih Saat</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">12 Saatlik Zaman</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">24 Saatlik Zaman</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">Zaman Ayarları</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -85,7 +93,7 @@
     </message>
     <message>
         <source>Network settings</source>
-        <translation>Ağ ayarları</translation>
+        <translation>Ay ayarları</translation>
     </message>
 </context>
 <context>
@@ -318,24 +326,20 @@
         <translation>%1 ve azalıyor, %2 saat %3 dakika kaldı</translation>
     </message>
     <message>
-        <source>Charged %1</source>
-        <translation type="vanished">%1 Şarj oldu</translation>
-    </message>
-    <message>
         <source>Charging %1, %2 min until full</source>
         <translation>%1 ve doluyor, tam dolmaya %2 dakika kaldı</translation>
     </message>
     <message>
         <source>Charging %1, %2 hr %3 min until full</source>
-        <translation>%1 ve doluyor, tam dolmaya %2 saat %3 dakika kaldı</translation>
-    </message>
-    <message>
-        <source>Charging %1 ....</source>
-        <translation>%1 Şarj oluyor...</translation>
+        <translation>%1 doluyor, doluma %2 saat %3 dakika var</translation>
     </message>
     <message>
         <source>%1 charged</source>
         <translation>%1 şarj oldu</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation>Kapasite %1 ....</translation>
     </message>
 </context>
 <context>
@@ -358,10 +362,6 @@
     <message>
         <source>Shut down</source>
         <translation>Kapat</translation>
-    </message>
-    <message>
-        <source>Restart</source>
-        <translation type="vanished">Yeniden başlat</translation>
     </message>
     <message>
         <source>Suspend</source>
@@ -411,15 +411,7 @@
     </message>
     <message>
         <source>Mute</source>
-        <translation>Sessiz</translation>
-    </message>
-    <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">Ses Ayarları</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">Mevcut Ses Düzeyi %1</translation>
+        <translation>Sesi kapat</translation>
     </message>
     <message>
         <source>Sound settings</source>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">Bilinmiyor</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">Kablolu bağlantı: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>Kablolu Bağlantı</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">Ağ Yok</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">Kablosuz Bağlantı: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">Bağlı ancak İnternet erişimi yok</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">Kablosuz bağlantı: %1</translation>
     </message>
 </context>
 <context>

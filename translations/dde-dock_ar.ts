@@ -10,7 +10,11 @@
     <name>BluetoothApplet</name>
     <message>
         <source>Bluetooth</source>
-        <translation>بلوتوث</translation>
+        <translation>البلوتوث</translation>
+    </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>إعدادات البلوتوث</translation>
     </message>
 </context>
 <context>
@@ -27,12 +31,28 @@
         <source>Bluetooth settings</source>
         <translation>إعدادات البلوتوث</translation>
     </message>
+    <message>
+        <source>%1 connected</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>البلوتوث</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>BluetoothPlugin</name>
     <message>
         <source>Bluetooth</source>
-        <translation>بلوتوث</translation>
+        <translation>البلوتوث</translation>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>الوقت والتاريخ</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">توقيت الـ 12 ساعة</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">توقيت الـ 24 ساعة</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">إعدادات الوقت</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -318,10 +326,6 @@
         <translation>السعة 1% ,2% ساعة 3% دقيقة متبقية</translation>
     </message>
     <message>
-        <source>Charged %1</source>
-        <translation type="vanished">مشحون %1</translation>
-    </message>
-    <message>
         <source>Charging %1, %2 min until full</source>
         <translation>جاري الشحن 1%, 2% دقيقة للاكتمال</translation>
     </message>
@@ -330,12 +334,12 @@
         <translation>جاري الشحن 1%, 2% ساعة 3% دقيقة للاكتمال</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>يتم الآن شحن 1%</translation>
-    </message>
-    <message>
         <source>%1 charged</source>
         <translation>مشحون 1%</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation>السعة %1 ...</translation>
     </message>
 </context>
 <context>
@@ -358,10 +362,6 @@
     <message>
         <source>Shut down</source>
         <translation>إيقاف التشغيل</translation>
-    </message>
-    <message>
-        <source>Restart</source>
-        <translation type="vanished">إعادة التشغيل</translation>
     </message>
     <message>
         <source>Suspend</source>
@@ -396,7 +396,7 @@
     <name>SoundApplet</name>
     <message>
         <source>Device</source>
-        <translation>جهاز</translation>
+        <translation>الجهاز</translation>
     </message>
     <message>
         <source>Application</source>
@@ -412,14 +412,6 @@
     <message>
         <source>Mute</source>
         <translation>صامت</translation>
-    </message>
-    <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">إعدادات الصوت</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">الحجم الحالي %1</translation>
     </message>
     <message>
         <source>Sound settings</source>
@@ -460,7 +452,7 @@
     </message>
     <message>
         <source>Empty</source>
-        <translation>إفراغ</translation>
+        <translation>فارغ</translation>
     </message>
 </context>
 <context>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">غير معروف</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">اتصال سلكي بـ : %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>اتصال سلكي</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">لا توجد شبكة</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">اتصال لاسلكي بـ : %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">متصل لكن لا يوجد اتصال بالإنترنت</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">الاتصال اللاسلكي: 1%</translation>
     </message>
 </context>
 <context>

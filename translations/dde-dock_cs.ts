@@ -12,6 +12,10 @@
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Nastavení Bluetooth</translation>
+    </message>
 </context>
 <context>
     <name>BluetoothItem</name>
@@ -26,6 +30,22 @@
     <message>
         <source>Bluetooth settings</source>
         <translation>Nastavení Bluetooth</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation>%1 připojeno</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>Připojování…</translation>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation>Vypnuto</translation>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>Datum a čas</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">12 hodinový čas</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">24 hodinový čas</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">Nastavení času</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -218,7 +226,7 @@
     </message>
     <message>
         <source>Disable wired connection</source>
-        <translation>Vypnout bezdrátové připojení</translation>
+        <translation>Vypnout drátové připojení</translation>
     </message>
     <message>
         <source>Enable wired connection</source>
@@ -311,15 +319,11 @@
     </message>
     <message>
         <source>Capacity %1, %2 min remaining</source>
-        <translation>Stav %1, %2 min zbývá</translation>
+        <translation>Energie %1, %2 min zbývá</translation>
     </message>
     <message>
         <source>Capacity %1, %2 hr %3 min remaining</source>
         <translation>Stav %1, %2 h %3 min zbývá</translation>
-    </message>
-    <message>
-        <source>Charged %1</source>
-        <translation type="vanished">Nabito %1</translation>
     </message>
     <message>
         <source>Charging %1, %2 min until full</source>
@@ -330,12 +334,12 @@
         <translation>Nabíjení %1, %2 h %3 min do úplného nabití</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>Nabíjení %1…</translation>
-    </message>
-    <message>
         <source>%1 charged</source>
         <translation>%1 nabito</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation>Kapacita %1…</translation>
     </message>
 </context>
 <context>
@@ -360,10 +364,6 @@
         <translation>Vypnout</translation>
     </message>
     <message>
-        <source>Restart</source>
-        <translation type="vanished">Restartovat</translation>
-    </message>
-    <message>
         <source>Suspend</source>
         <translation>Uspat</translation>
     </message>
@@ -377,7 +377,7 @@
     </message>
     <message>
         <source>Log out</source>
-        <translation>Odhlásit se</translation>
+        <translation>Odhlašování se</translation>
     </message>
     <message>
         <source>Switch account</source>
@@ -412,14 +412,6 @@
     <message>
         <source>Mute</source>
         <translation>Ztlumit</translation>
-    </message>
-    <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">Nastavení zvuku</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">Stávající hlasitost %1</translation>
     </message>
     <message>
         <source>Sound settings</source>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">Neznámý</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">Drátové připojení: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>Drátové připojení</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">Žádná síť</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">Bezdrátové připojení: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">Připojeno, ale bez přístupu k Internetu</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">Bezdrátové připojení: %1</translation>
     </message>
 </context>
 <context>

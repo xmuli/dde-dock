@@ -12,6 +12,10 @@
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Definições bluetooth</translation>
+    </message>
 </context>
 <context>
     <name>BluetoothItem</name>
@@ -25,7 +29,23 @@
     </message>
     <message>
         <source>Bluetooth settings</source>
-        <translation>Definições Bluetooth</translation>
+        <translation>Definições bluetooth</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation>%1 ligado</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>A ligar...</translation>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation>Desligado</translation>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>Data hora</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">Horário de 12 Horas</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">Horário de 24 Horas</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">Definições Horárias</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -145,11 +153,11 @@
     </message>
     <message>
         <source>Top</source>
-        <translation>Topo</translation>
+        <translation>Superior</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation>Fundo</translation>
+        <translation>Inferior</translation>
     </message>
     <message>
         <source>Left</source>
@@ -161,15 +169,15 @@
     </message>
     <message>
         <source>Keep Shown</source>
-        <translation>Manter Visível</translation>
+        <translation>Manter visível</translation>
     </message>
     <message>
         <source>Keep Hidden</source>
-        <translation>Manter Oculta</translation>
+        <translation>Manter oculta</translation>
     </message>
     <message>
         <source>Smart Hide</source>
-        <translation>Ocultar Inteligente</translation>
+        <translation>Ocultar inteligente</translation>
     </message>
     <message>
         <source>Mode</source>
@@ -214,15 +222,15 @@
     </message>
     <message>
         <source>Wired connection</source>
-        <translation>Ligação de rede por cabo</translation>
+        <translation>Ligação por cabo</translation>
     </message>
     <message>
         <source>Disable wired connection</source>
-        <translation>Desativar ligação de rede por cabo</translation>
+        <translation>Desativar ligação por cabo</translation>
     </message>
     <message>
         <source>Enable wired connection</source>
-        <translation>Ativar ligação de rede por cabo</translation>
+        <translation>Ativar ligação por cabo</translation>
     </message>
     <message>
         <source>Disable wireless connection</source>
@@ -258,7 +266,7 @@
     </message>
     <message>
         <source>Not connected</source>
-        <translation>Sem ligação</translation>
+        <translation>Desligado</translation>
     </message>
     <message>
         <source>Connecting</source>
@@ -318,10 +326,6 @@
         <translation>Capacidade %1, %2 hr %3 min restantes</translation>
     </message>
     <message>
-        <source>Charged %1</source>
-        <translation type="vanished">Carregado %1</translation>
-    </message>
-    <message>
         <source>Charging %1, %2 min until full</source>
         <translation>A carregar %1, %2 min até ficar carregada</translation>
     </message>
@@ -330,12 +334,12 @@
         <translation>A carregar %1, %2 hr %3 min até ficar carregada</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>A carregar %1 ....</translation>
-    </message>
-    <message>
         <source>%1 charged</source>
         <translation>%1 carregado</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation>Capacidade %1 ....</translation>
     </message>
 </context>
 <context>
@@ -358,10 +362,6 @@
     <message>
         <source>Shut down</source>
         <translation>Encerrar</translation>
-    </message>
-    <message>
-        <source>Restart</source>
-        <translation type="vanished">Reiniciar</translation>
     </message>
     <message>
         <source>Suspend</source>
@@ -412,14 +412,6 @@
     <message>
         <source>Mute</source>
         <translation>Silenciar</translation>
-    </message>
-    <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">Definições de som</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">Volume atual %1</translation>
     </message>
     <message>
         <source>Sound settings</source>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">Desconhecido</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">Ligação por cabo: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
-        <translation>Ligação de rede por cabo</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">Sem Rede</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">Ligação sem fios: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">Ligado mas sem acesso à Internet</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">Ligação sem fios: %1</translation>
+        <translation>Ligação por cabo</translation>
     </message>
 </context>
 <context>

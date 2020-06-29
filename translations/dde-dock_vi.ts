@@ -12,6 +12,10 @@
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Cài đặt Blurtooth</translation>
+    </message>
 </context>
 <context>
     <name>BluetoothItem</name>
@@ -26,6 +30,22 @@
     <message>
         <source>Bluetooth settings</source>
         <translation>Cài đặt Blurtooth</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation>%1 đã kết nối</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>Đang kết nối...</translation>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation>Đã tắt</translation>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>Ngày giờ</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">Thời gian dạng 12 Giờ</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">Thời gian dạng 24 Giờ</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">Những Thiết lập Thời gian</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -210,27 +218,27 @@
     <name>NetworkItem</name>
     <message>
         <source>Wireless connection</source>
-        <translation type="unfinished"/>
+        <translation>Kết nội wifi</translation>
     </message>
     <message>
         <source>Wired connection</source>
-        <translation type="unfinished"/>
+        <translation>Kết nối có dây</translation>
     </message>
     <message>
         <source>Disable wired connection</source>
-        <translation type="unfinished"/>
+        <translation>Tắt kết nối mạng dây</translation>
     </message>
     <message>
         <source>Enable wired connection</source>
-        <translation type="unfinished"/>
+        <translation>Mở kết nối mạng dây</translation>
     </message>
     <message>
         <source>Disable wireless connection</source>
-        <translation type="unfinished"/>
+        <translation>Tắt kết nối wifi</translation>
     </message>
     <message>
         <source>Enable wireless connection</source>
-        <translation type="unfinished"/>
+        <translation>Bật kết nối wifi</translation>
     </message>
     <message>
         <source>Disable network</source>
@@ -318,10 +326,6 @@
         <translation>Năng lượng %1, %2 giờ %3 phút còn lại</translation>
     </message>
     <message>
-        <source>Charged %1</source>
-        <translation type="vanished">Được nạp %1</translation>
-    </message>
-    <message>
         <source>Charging %1, %2 min until full</source>
         <translation>Đang sạc %1, %2 phút sẽ đầy</translation>
     </message>
@@ -330,12 +334,12 @@
         <translation>Đang sạc %1, %2 giờ %3 phút sẽ đầy</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>Đang sạc %1 ...</translation>
-    </message>
-    <message>
         <source>%1 charged</source>
         <translation>%1 đã sạc</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation>Công suất %1 ...</translation>
     </message>
 </context>
 <context>
@@ -358,10 +362,6 @@
     <message>
         <source>Shut down</source>
         <translation>Tắt máy</translation>
-    </message>
-    <message>
-        <source>Restart</source>
-        <translation type="vanished">Khởi động lại</translation>
     </message>
     <message>
         <source>Suspend</source>
@@ -412,14 +412,6 @@
     <message>
         <source>Mute</source>
         <translation>Câm</translation>
-    </message>
-    <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">Thiết lập Âm thanh</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">Âm lượng Hiện tại %1</translation>
     </message>
     <message>
         <source>Sound settings</source>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">Không rõ</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">Kết nối Có dây: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>Kết nối Có dây</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">Không có Mạng</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">Kết nối Không dây: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">Đã kết nối nhưng không có truy cập Internet</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">Kết nối không dây: %1</translation>
     </message>
 </context>
 <context>

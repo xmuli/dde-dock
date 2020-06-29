@@ -12,6 +12,10 @@
         <source>Bluetooth</source>
         <translation>블루투스</translation>
     </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>블루투스 설정</translation>
+    </message>
 </context>
 <context>
     <name>BluetoothItem</name>
@@ -26,6 +30,22 @@
     <message>
         <source>Bluetooth settings</source>
         <translation>블루투스 설정</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation>%1 연결됨</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>연결하는 중...</translation>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>블루투스</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation>꺼짐</translation>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>날짜시간</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">12 시간</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">24 시간</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">시간 설정</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -210,27 +218,27 @@
     <name>NetworkItem</name>
     <message>
         <source>Wireless connection</source>
-        <translation type="unfinished"/>
+        <translation>무선 연결</translation>
     </message>
     <message>
         <source>Wired connection</source>
-        <translation type="unfinished"/>
+        <translation>유선 연결</translation>
     </message>
     <message>
         <source>Disable wired connection</source>
-        <translation type="unfinished"/>
+        <translation>유선 연결 사용안함</translation>
     </message>
     <message>
         <source>Enable wired connection</source>
-        <translation type="unfinished"/>
+        <translation>유선 연결 사용가능</translation>
     </message>
     <message>
         <source>Disable wireless connection</source>
-        <translation type="unfinished"/>
+        <translation>무선 연결 사용안함</translation>
     </message>
     <message>
         <source>Enable wireless connection</source>
-        <translation type="unfinished"/>
+        <translation>무선 연결 사용가능</translation>
     </message>
     <message>
         <source>Disable network</source>
@@ -318,10 +326,6 @@
         <translation>용량 %1, %2시간 %3분 남음</translation>
     </message>
     <message>
-        <source>Charged %1</source>
-        <translation type="vanished">%1 충전됨</translation>
-    </message>
-    <message>
         <source>Charging %1, %2 min until full</source>
         <translation>%1 충전중, 완전 충전까지 %2분 남음</translation>
     </message>
@@ -330,12 +334,12 @@
         <translation>%1 충전중, 완전 충전까지 %2시간 %3분 남음</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>%1 충전중 ...</translation>
-    </message>
-    <message>
         <source>%1 charged</source>
         <translation>%1 충전됨</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation>용량 %1 ....</translation>
     </message>
 </context>
 <context>
@@ -357,15 +361,11 @@
     </message>
     <message>
         <source>Shut down</source>
-        <translation>종료</translation>
-    </message>
-    <message>
-        <source>Restart</source>
-        <translation type="vanished">재시작</translation>
+        <translation>컴퓨터 끄기</translation>
     </message>
     <message>
         <source>Suspend</source>
-        <translation>일시 중지</translation>
+        <translation>대기모드</translation>
     </message>
     <message>
         <source>Hibernate</source>
@@ -373,7 +373,7 @@
     </message>
     <message>
         <source>Lock</source>
-        <translation>잠그기</translation>
+        <translation>잠금</translation>
     </message>
     <message>
         <source>Log out</source>
@@ -400,7 +400,7 @@
     </message>
     <message>
         <source>Application</source>
-        <translation>응용 프로그램</translation>
+        <translation>응용프로그램</translation>
     </message>
 </context>
 <context>
@@ -412,14 +412,6 @@
     <message>
         <source>Mute</source>
         <translation>음소거</translation>
-    </message>
-    <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">오디오 설정</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">현재 볼륨 %1</translation>
     </message>
     <message>
         <source>Sound settings</source>
@@ -434,7 +426,7 @@
     <name>SoundPlugin</name>
     <message>
         <source>Sound</source>
-        <translation>소리</translation>
+        <translation>사운드</translation>
     </message>
 </context>
 <context>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">알 수 없음</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">유선 연결: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>유선 연결</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">네트워크 없음</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">무선 연결: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">연결됨, 인터넷 없음</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">무선 연결: %1</translation>
     </message>
 </context>
 <context>

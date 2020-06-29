@@ -12,6 +12,10 @@
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Tetapan Bluetooth</translation>
+    </message>
 </context>
 <context>
     <name>BluetoothItem</name>
@@ -26,6 +30,22 @@
     <message>
         <source>Bluetooth settings</source>
         <translation>Tetapan Bluetooth</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>Tarikhwaktu</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">Waktu 12 Jam</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">Waktu 24 Jam</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">Tetapan Waktu</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -318,10 +326,6 @@
         <translation>Kapasiti %1, %2 j %3 min berbaki</translation>
     </message>
     <message>
-        <source>Charged %1</source>
-        <translation type="vanished">%1 dicaskan</translation>
-    </message>
-    <message>
         <source>Charging %1, %2 min until full</source>
         <translation>Mengecas %1, %2 min sehingga penuh</translation>
     </message>
@@ -330,12 +334,12 @@
         <translation>Mengecas %1, %2 j %3 min sehingga penuh</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>Mengecas %1 ....</translation>
-    </message>
-    <message>
         <source>%1 charged</source>
         <translation>%1 dicas</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -358,10 +362,6 @@
     <message>
         <source>Shut down</source>
         <translation>Matikan</translation>
-    </message>
-    <message>
-        <source>Restart</source>
-        <translation type="vanished">Mula semula</translation>
     </message>
     <message>
         <source>Suspend</source>
@@ -412,14 +412,6 @@
     <message>
         <source>Mute</source>
         <translation>Senyap</translation>
-    </message>
-    <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">Tetapan Audio</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">Volum Semasa %1</translation>
     </message>
     <message>
         <source>Sound settings</source>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">Tidak diketahui</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">Sambungan berwayar: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>Sambungan Berwayar</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">Tiada Rangkaian</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">Sambungan Tanpa Wayar: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">Bersambung tetapi tiada capaian Internet</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">Sambungan tanpa wayar: %1</translation>
     </message>
 </context>
 <context>

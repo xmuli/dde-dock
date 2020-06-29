@@ -12,6 +12,10 @@
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Configuració del Bluetooth</translation>
+    </message>
 </context>
 <context>
     <name>BluetoothItem</name>
@@ -26,6 +30,22 @@
     <message>
         <source>Bluetooth settings</source>
         <translation>Configuració del Bluetooth</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation>%1 connectat</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>Es connecta...</translation>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation>Apagat</translation>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>Dia i hora</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">12 hores</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">24 hores</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">Configuració del dia i l&apos;hora</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -318,10 +326,6 @@
         <translation>Capacitat: %1, %2 h %3 min restants</translation>
     </message>
     <message>
-        <source>Charged %1</source>
-        <translation type="vanished">Càrrega: %1</translation>
-    </message>
-    <message>
         <source>Charging %1, %2 min until full</source>
         <translation>Es carrega %1, %2 min per completar-la.</translation>
     </message>
@@ -330,12 +334,12 @@
         <translation>Es carrega %1, %2 h %3 min per completar-la.</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>Es carrega %1...</translation>
-    </message>
-    <message>
         <source>%1 charged</source>
         <translation>%1 carregada</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation>Capacitat %1....</translation>
     </message>
 </context>
 <context>
@@ -360,10 +364,6 @@
         <translation>Atura&apos;t</translation>
     </message>
     <message>
-        <source>Restart</source>
-        <translation type="vanished">Reinicia</translation>
-    </message>
-    <message>
         <source>Suspend</source>
         <translation>Suspèn</translation>
     </message>
@@ -373,7 +373,7 @@
     </message>
     <message>
         <source>Lock</source>
-        <translation>Bloqueja</translation>
+        <translation>Bloca</translation>
     </message>
     <message>
         <source>Log out</source>
@@ -414,14 +414,6 @@
         <translation>Silencia</translation>
     </message>
     <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">Configuració de l&apos;àudio</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">Volum actual: %1</translation>
-    </message>
-    <message>
         <source>Sound settings</source>
         <translation>Configuració del so</translation>
     </message>
@@ -460,7 +452,7 @@
     </message>
     <message>
         <source>Empty</source>
-        <translation>Buida</translation>
+        <translation>Buit</translation>
     </message>
 </context>
 <context>
@@ -473,42 +465,15 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">Desconegut</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">Connexió amb fil: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>Connexió amb fil</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">Sense xarxa</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">Connexió sense fil: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">Connectat però sense accés a Internet</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">Connexió sense fil: %1</translation>
     </message>
 </context>
 <context>
     <name>WirelessList</name>
     <message>
         <source>Wireless Network</source>
-        <translation>Xarxa sense fils</translation>
+        <translation>Xarxa sense fil</translation>
     </message>
     <message>
         <source>Wireless Network %1</source>

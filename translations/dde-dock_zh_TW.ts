@@ -12,6 +12,10 @@
         <source>Bluetooth</source>
         <translation>藍牙</translation>
     </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>藍牙設定</translation>
+    </message>
 </context>
 <context>
     <name>BluetoothItem</name>
@@ -26,6 +30,22 @@
     <message>
         <source>Bluetooth settings</source>
         <translation>藍牙設定</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation>已連接%1</translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation>正在連線...</translation>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>藍牙</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation>藍牙關閉</translation>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>日期時間</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">12 小時制</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">24 小時制</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">時間設定</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -122,11 +130,11 @@
     <name>DiskMountPlugin</name>
     <message>
         <source>Disk</source>
-        <translation>磁碟機</translation>
+        <translation>Disk</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation>開啟</translation>
+        <translation>開放</translation>
     </message>
     <message>
         <source>Unmount all</source>
@@ -137,7 +145,7 @@
     <name>DockSettings</name>
     <message>
         <source>Fashion Mode</source>
-        <translation>流行 (Deepin) 模式</translation>
+        <translation>時尚 (Deepin) 模式</translation>
     </message>
     <message>
         <source>Efficient Mode</source>
@@ -153,11 +161,11 @@
     </message>
     <message>
         <source>Left</source>
-        <translation>左側</translation>
+        <translation>Left</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation>右側</translation>
+        <translation>Right</translation>
     </message>
     <message>
         <source>Keep Shown</source>
@@ -177,7 +185,7 @@
     </message>
     <message>
         <source>Location</source>
-        <translation>位置</translation>
+        <translation>Location</translation>
     </message>
     <message>
         <source>Status</source>
@@ -318,10 +326,6 @@
         <translation>電量 %1，剩餘 %2 小時 %3 分鐘</translation>
     </message>
     <message>
-        <source>Charged %1</source>
-        <translation type="vanished">%1 充電完成</translation>
-    </message>
-    <message>
         <source>Charging %1, %2 min until full</source>
         <translation>正在充電 %1，距離完成尚餘 %2 分鐘</translation>
     </message>
@@ -330,12 +334,12 @@
         <translation>正在充電 %1，距離完成尚餘 %2 小時 %3 分鐘</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>電量%1...</translation>
-    </message>
-    <message>
         <source>%1 charged</source>
         <translation>已充滿%1</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation>電量 %1 ....</translation>
     </message>
 </context>
 <context>
@@ -360,10 +364,6 @@
         <translation>關機</translation>
     </message>
     <message>
-        <source>Restart</source>
-        <translation type="vanished">重新啟動</translation>
-    </message>
-    <message>
         <source>Suspend</source>
         <translation>待機</translation>
     </message>
@@ -385,7 +385,7 @@
     </message>
     <message>
         <source>Power settings</source>
-        <translation>電源管理</translation>
+        <translation>電源設定</translation>
     </message>
     <message>
         <source>Reboot</source>
@@ -412,14 +412,6 @@
     <message>
         <source>Mute</source>
         <translation>靜音</translation>
-    </message>
-    <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">音效設定</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">目前音量 %1</translation>
     </message>
     <message>
         <source>Sound settings</source>
@@ -456,7 +448,7 @@
     <name>TrashWidget</name>
     <message>
         <source>Open</source>
-        <translation>開啟</translation>
+        <translation>開放</translation>
     </message>
     <message>
         <source>Empty</source>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">未知</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">有線網路：%1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>有線網路</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">無網路連線</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">無線網路：%1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">已連線但不能存取網路</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">無線連接：%1</translation>
     </message>
 </context>
 <context>

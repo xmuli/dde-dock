@@ -12,6 +12,10 @@
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Bluetooth-indstillinger</translation>
+    </message>
 </context>
 <context>
     <name>BluetoothItem</name>
@@ -26,6 +30,22 @@
     <message>
         <source>Bluetooth settings</source>
         <translation>Bluetooth-indstillinger</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>Dato og klokkeslæt</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">12-timers klokkeslæt</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">24-timers klokkeslæt</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">Tidsindstillinger</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -303,7 +311,7 @@
     <name>PowerPlugin</name>
     <message>
         <source>Power</source>
-        <translation>Session</translation>
+        <translation>Strøm</translation>
     </message>
     <message>
         <source>Power settings</source>
@@ -318,10 +326,6 @@
         <translation>Kapacitet %1, %2 timer %3 minutter tilbage</translation>
     </message>
     <message>
-        <source>Charged %1</source>
-        <translation type="vanished">Opladet %1</translation>
-    </message>
-    <message>
         <source>Charging %1, %2 min until full</source>
         <translation>Oplader %1, %2 minutter til fuldt</translation>
     </message>
@@ -330,12 +334,12 @@
         <translation>Oplader %1, %2 timer %3 minutter til fuldt</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>Oplader %1 ....</translation>
-    </message>
-    <message>
         <source>%1 charged</source>
         <translation>%1 opladet</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation>Kapacitet %1 ....</translation>
     </message>
 </context>
 <context>
@@ -358,10 +362,6 @@
     <message>
         <source>Shut down</source>
         <translation>Luk ned</translation>
-    </message>
-    <message>
-        <source>Restart</source>
-        <translation type="vanished">Genstart</translation>
     </message>
     <message>
         <source>Suspend</source>
@@ -414,14 +414,6 @@
         <translation>Lydløs</translation>
     </message>
     <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">Lydindstillinger</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">Nuværende lydstyrke %1</translation>
-    </message>
-    <message>
         <source>Sound settings</source>
         <translation>Lydindstillinger</translation>
     </message>
@@ -460,7 +452,7 @@
     </message>
     <message>
         <source>Empty</source>
-        <translation>Tom</translation>
+        <translation>Tomt</translation>
     </message>
 </context>
 <context>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">Ukendt</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">Kablet forbindelse: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>Kablet forbindelse</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">Intet netværk</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">Trådløs forbindelse: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">Tilsluttet men ingen internetadgang</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">Trådløs forbindelse: %1</translation>
     </message>
 </context>
 <context>

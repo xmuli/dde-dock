@@ -12,6 +12,10 @@
         <source>Bluetooth</source>
         <translation>Bluetooth</translation>
     </message>
+    <message>
+        <source>Bluetooth settings</source>
+        <translation>Bluetooth-Einstellungen</translation>
+    </message>
 </context>
 <context>
     <name>BluetoothItem</name>
@@ -26,6 +30,22 @@
     <message>
         <source>Bluetooth settings</source>
         <translation>Bluetooth-Einstellungen</translation>
+    </message>
+    <message>
+        <source>%1 connected</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <message>
+        <source>Turned off</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -47,18 +67,6 @@
     <message>
         <source>Datetime</source>
         <translation>Datum/Zeit</translation>
-    </message>
-    <message>
-        <source>12 Hour Time</source>
-        <translation type="vanished">12-Stunden-Zeit</translation>
-    </message>
-    <message>
-        <source>24 Hour Time</source>
-        <translation type="vanished">24-Stunden-Zeit</translation>
-    </message>
-    <message>
-        <source>Time Settings</source>
-        <translation type="vanished">Zeiteinstellungen</translation>
     </message>
     <message>
         <source>12-hour time</source>
@@ -303,7 +311,7 @@
     <name>PowerPlugin</name>
     <message>
         <source>Power</source>
-        <translation>Ein/Aus</translation>
+        <translation>Energie</translation>
     </message>
     <message>
         <source>Power settings</source>
@@ -318,10 +326,6 @@
         <translation>Kapazität %1, %2 Std. %3 Min. verbleibend</translation>
     </message>
     <message>
-        <source>Charged %1</source>
-        <translation type="vanished">%1 aufgeladen</translation>
-    </message>
-    <message>
         <source>Charging %1, %2 min until full</source>
         <translation>%1 wird aufgeladen, %2 Min. bis vollständig geladen</translation>
     </message>
@@ -330,12 +334,12 @@
         <translation>%1 wird aufgeladen, %2 Std. %3 Min. bis vollständig geladen</translation>
     </message>
     <message>
-        <source>Charging %1 ....</source>
-        <translation>%1 wird aufgeladen ....</translation>
-    </message>
-    <message>
         <source>%1 charged</source>
         <translation>%1 aufgeladen</translation>
+    </message>
+    <message>
+        <source>Capacity %1 ....</source>
+        <translation>Kapazität %1 ....</translation>
     </message>
 </context>
 <context>
@@ -358,10 +362,6 @@
     <message>
         <source>Shut down</source>
         <translation>Herunterfahren</translation>
-    </message>
-    <message>
-        <source>Restart</source>
-        <translation type="vanished">Neu starten</translation>
     </message>
     <message>
         <source>Suspend</source>
@@ -389,7 +389,7 @@
     </message>
     <message>
         <source>Reboot</source>
-        <translation>Neustarten</translation>
+        <translation>Neu starten</translation>
     </message>
 </context>
 <context>
@@ -412,14 +412,6 @@
     <message>
         <source>Mute</source>
         <translation>Stummschalten</translation>
-    </message>
-    <message>
-        <source>Audio Settings</source>
-        <translation type="vanished">Audioeinstellungen</translation>
-    </message>
-    <message>
-        <source>Current Volume %1</source>
-        <translation type="vanished">Aktuelle Lautstärke %1</translation>
     </message>
     <message>
         <source>Sound settings</source>
@@ -473,35 +465,8 @@
 <context>
     <name>WiredItem</name>
     <message>
-        <source>Unknown</source>
-        <translation type="vanished">Unbekannt</translation>
-    </message>
-    <message>
-        <source>Wired connection: %1</source>
-        <translation type="vanished">Kabelgebundene Verbindung: %1</translation>
-    </message>
-    <message>
         <source>Wired Connection</source>
         <translation>Kabelgebundene Verbindung</translation>
-    </message>
-</context>
-<context>
-    <name>WirelessItem</name>
-    <message>
-        <source>No Network</source>
-        <translation type="vanished">Kein Netzwerk</translation>
-    </message>
-    <message>
-        <source>Wireless Connection: %1</source>
-        <translation type="vanished">Drahtlosverbindung: %1</translation>
-    </message>
-    <message>
-        <source>Connected but no Internet access</source>
-        <translation type="vanished">Verbunden, aber kein Internetzugang</translation>
-    </message>
-    <message>
-        <source>Wireless connection: %1</source>
-        <translation type="vanished">Drahtlosverbindung: %1</translation>
     </message>
 </context>
 <context>
