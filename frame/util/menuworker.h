@@ -16,19 +16,18 @@ class MenuWorker : public QObject
 public:
     explicit MenuWorker(DBusDock *dockInter,QWidget *parent = nullptr);
     ~ MenuWorker();
-    //TODO 后面考虑做成单例
-    //    static MenuWorker& Instance();
 
     void initMember();
     void initUI();
     void initConnection();
 
     void showDockSettingsMenu();
+
     inline bool menuEnable() const { return m_menuEnable; }
     inline quint8 Opacity() const { return quint8(m_opacity * 255); }
 
     void onGSettingsChanged(const QString &key);
-    // TODO 是否还有其他的插件未处理其gsettings配置,另外,这里后面可以优化全自动的,而非一个一个单独处理
+    // TODO 是否还有其他的插件未处理其gsettings配置,这里只是移植之前的代码
     void onTrashGSettingsChanged(const QString &key);
 
 signals:
@@ -44,9 +43,6 @@ public slots:
     void setAutoHide(const bool autoHide);
 
 private:
-    MenuWorker(MenuWorker const &) = delete;
-    MenuWorker operator =(MenuWorker const &) = delete;
-
     DockItemManager *m_itemManager;
     DBusDock *m_dockInter;
 

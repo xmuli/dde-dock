@@ -24,7 +24,7 @@
 #include "item/launcheritem.h"
 #include "item/pluginsitem.h"
 #include "item/traypluginitem.h"
-#include "util/docksettings.h"
+//#include "util/docksettings.h"
 
 #include <QDebug>
 #include <QGSettings>

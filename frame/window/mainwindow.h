@@ -167,28 +167,25 @@ private slots:
     void themeTypeChanged(DGuiApplicationHelper::ColorType themeType);
 
 private:
-    bool m_launched;
     MainPanelControl *m_mainPanel;
 
     DPlatformWindowHandle m_platformWindowHandle;
     DWindowManagerHelper *m_wmHelper;
     MultiScreenWorker *m_multiScreenWorker;
+    MenuWorker *m_menuWorker;
     XEventMonitor *m_eventInter;
-    QString m_registerKey;
-    QStringList m_registerKeys;
 
     QTimer *m_shadowMaskOptimizeTimer;
-
-//    DockSettings *m_settings;
-    MenuWorker *m_menuWorker;
 
     QDBusConnectionInterface *m_dbusDaemonInterface;
     org::kde::StatusNotifierWatcher *m_sniWatcher;
     QString m_sniHostService;
     DragWidget *m_dragWidget;
 
-    int m_dockSize = 0;
-
+    bool m_launched;
+    int m_dockSize;
+    QString m_registerKey;
+    QStringList m_registerKeys;
 };
 
 #endif // MAINWINDOW_H

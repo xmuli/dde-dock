@@ -113,7 +113,6 @@ void MenuWorker::initConnection()
     connect(GSettingsByMenu(), &QGSettings::changed, this, &MenuWorker::onGSettingsChanged);
     connect(GSettingsByTrash(), &QGSettings::changed, this, &MenuWorker::onTrashGSettingsChanged);
 
-
     connect(m_itemManager, &DockItemManager::trayVisableCountChanged, this, &MenuWorker::trayVisableCountChanged, Qt::QueuedConnection);
 
     DApplication *app = qobject_cast<DApplication *>(qApp);
@@ -121,12 +120,6 @@ void MenuWorker::initConnection()
         connect(app, &DApplication::iconThemeChanged, this, &MenuWorker::gtkIconThemeChanged);
     }
 }
-
-//MenuWorker &MenuWorker::Instance()
-//{
-//    static MenuWorker worker;
-//    return worker;
-//}
 
 void MenuWorker::showDockSettingsMenu()
 {
@@ -219,7 +212,6 @@ void MenuWorker::menuActionClicked(QAction *action)
     Q_ASSERT(action);
 
     if (action == m_fashionModeAct)
-        //        m_dockInter.
         return m_dockInter->setDisplayMode(DisplayMode::Fashion);
     if (action == m_efficientModeAct)
         return m_dockInter->setDisplayMode(Efficient);
@@ -232,6 +224,7 @@ void MenuWorker::menuActionClicked(QAction *action)
         return m_dockInter->setPosition(Left);
     if (action == m_rightPosAct)
         return m_dockInter->setPosition(Right);
+
     if (action == m_keepShownAct)
         return m_dockInter->setHideMode(KeepShowing);
     if (action == m_keepHiddenAct)
@@ -251,6 +244,8 @@ void MenuWorker::menuActionClicked(QAction *action)
 
 void MenuWorker::trayVisableCountChanged(const int &count)
 {
+    Q_UNUSED(count);
+
     emit trayCountChanged();
 }
 

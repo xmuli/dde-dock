@@ -21,7 +21,7 @@
 
 #include "mainpanelcontrol.h"
 #include "../item/dockitem.h"
-#include "util/docksettings.h"
+//#include "util/docksettings.h"
 #include "../item/placeholderitem.h"
 #include "../item/components/appdrag.h"
 #include "../item/appitem.h"
@@ -1066,7 +1066,6 @@ void MainPanelControl::calcuDockIconSize(int w, int h, PluginsItem *trashPlugin,
 
 void MainPanelControl::getTrayVisableItemCount()
 {
-    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     if (m_trayAreaLayout->count() > 0) {
         TrayPluginItem *w = static_cast<TrayPluginItem *>(m_trayAreaLayout->itemAt(0)->widget());
         m_trayIconCount = w->trayVisableItemCount();

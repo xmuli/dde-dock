@@ -34,7 +34,7 @@ class DockPopupWindow : public Dtk::Widget::DArrowRectangle
     Q_OBJECT
 
 public:
-    explicit DockPopupWindow(QWidget *parent = 0);
+    explicit DockPopupWindow(QWidget *parent = nullptr);
     ~DockPopupWindow();
 
     bool model() const;

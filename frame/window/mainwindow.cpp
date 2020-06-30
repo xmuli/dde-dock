@@ -75,20 +75,18 @@ const QPoint scaledPos(const QPoint &rawXPos)
 
 MainWindow::MainWindow(QWidget *parent)
     : DBlurEffectWidget(parent)
-    , m_launched(false)
     , m_mainPanel(new MainPanelControl(this))
     , m_platformWindowHandle(this)
     , m_wmHelper(DWindowManagerHelper::instance())
     , m_multiScreenWorker(new MultiScreenWorker(this,m_wmHelper))
+    , m_menuWorker(new MenuWorker(m_multiScreenWorker->dockInter(),this))
     , m_eventInter(new XEventMonitor("com.deepin.api.XEventMonitor", "/com/deepin/api/XEventMonitor", QDBusConnection::sessionBus()))
     , m_shadowMaskOptimizeTimer(new QTimer(this))
-    , m_menuWorker(new MenuWorker(new DBusDock("com.deepin.dde.daemon.Dock"
-                                               , "/com/deepin/dde/daemon/Dock"
-                                               , QDBusConnection::sessionBus()
-                                               , this),this))
     , m_dbusDaemonInterface(QDBusConnection::sessionBus().interface())
     , m_sniWatcher(new StatusNotifierWatcher(SNI_WATCHER_SERVICE, SNI_WATCHER_PATH, QDBusConnection::sessionBus(), this))
     , m_dragWidget(new DragWidget(this))
+    , m_launched(false)
+    , m_dockSize(0)
 {
     setAccessibleName("mainwindow");
     m_mainPanel->setAccessibleName("mainpanel");
@@ -103,8 +101,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_platformWindowHandle.setShadowOffset(QPoint(0, 5));
     m_platformWindowHandle.setShadowColor(QColor(0, 0, 0, 0.3 * 255));
 
-//    m_settings = &DockSettings::Instance();
     m_mainPanel->setDisplayMode(m_multiScreenWorker->displayMode());
+
     initSNIHost();
     initComponents();
     initConnections();
@@ -123,25 +121,6 @@ MainWindow::MainWindow(QWidget *parent)
     } else {
         m_dragWidget->setCursor(Qt::SizeHorCursor);
     }
-
-    connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, this, [=]{
-        DisplayMode mode = m_multiScreenWorker->displayMode();
-        m_mainPanel->setDisplayMode(mode);
-    });
-
-    connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, m_shadowMaskOptimizeTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
-
-    //　通知窗管
-    connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateLayout, this,[=](const QString &screenName){
-        m_mainPanel->setFixedSize(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->position(), HideMode::KeepShowing, m_multiScreenWorker->displayMode()).size());
-        m_mainPanel->move(0,0);
-        m_mainPanel->setDisplayMode(m_multiScreenWorker->displayMode());
-        m_mainPanel->setPositonValue(m_multiScreenWorker->position());
-        m_mainPanel->update();
-    });
-
-    //　通知窗管任务栏大小时顺便更新拖拽区域
-    connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateDragArea, this, &MainWindow::resetDragWindow);
 }
 
 MainWindow::~MainWindow()
@@ -302,6 +281,25 @@ void MainWindow::initConnections()
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::themeTypeChanged);
 
     connect(m_menuWorker, &MenuWorker::autoHideChanged, m_multiScreenWorker, &MultiScreenWorker::onAutoHideChanged);
+
+    connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, this, [=]{
+        DisplayMode mode = m_multiScreenWorker->displayMode();
+        m_mainPanel->setDisplayMode(mode);
+    });
+
+    connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, m_shadowMaskOptimizeTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
+
+    //　通知窗管
+    connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateLayout, this,[=](const QString &screenName){
+        m_mainPanel->setFixedSize(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->position(), HideMode::KeepShowing, m_multiScreenWorker->displayMode()).size());
+        m_mainPanel->move(0,0);
+        m_mainPanel->setDisplayMode(m_multiScreenWorker->displayMode());
+        m_mainPanel->setPositonValue(m_multiScreenWorker->position());
+        m_mainPanel->update();
+    });
+
+    //　通知窗管任务栏大小时顺便更新拖拽区域
+    connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateDragArea, this, &MainWindow::resetDragWindow);
 }
 
 void MainWindow::getTrayVisableItemCount()

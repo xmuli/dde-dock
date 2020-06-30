@@ -25,7 +25,7 @@
 #include "monitor.h"
 #include "utils.h"
 #include "item/dockitem.h"
-#include "docksettings.h"
+//#include "docksettings.h"
 
 #include "xcb/xcb_misc.h"
 
@@ -69,6 +69,8 @@ public:
     void initMembers();
     void initConnection();
     void initShow();
+
+    DBusDock *dockInter() {return m_dockInter;}
 
     /**
      * @brief showAni   任务栏显示动画
