@@ -255,9 +255,7 @@ void MainWindow::compositeChanged()
 
 void MainWindow::initConnections()
 {
-    connect(m_menuWorker, &MenuWorker::trayCountChanged, this, &MainWindow::getTrayVisableItemCount, Qt::DirectConnection);
-    connect(m_multiScreenWorker, &MultiScreenWorker::opacityChanged, this, &MainWindow::setMaskAlpha, Qt::QueuedConnection);
-    connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, this, &MainWindow::updateDisplayMode, Qt::QueuedConnection);
+
 
     connect(m_shadowMaskOptimizeTimer, &QTimer::timeout, this, &MainWindow::adjustShadowMask, Qt::QueuedConnection);
 
@@ -280,16 +278,13 @@ void MainWindow::initConnections()
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::themeTypeChanged);
 
+    connect(m_menuWorker, &MenuWorker::trayCountChanged, this, &MainWindow::getTrayVisableItemCount, Qt::DirectConnection);
     connect(m_menuWorker, &MenuWorker::autoHideChanged, m_multiScreenWorker, &MultiScreenWorker::onAutoHideChanged);
 
-    connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, this, [=]{
-        DisplayMode mode = m_multiScreenWorker->displayMode();
-        m_mainPanel->setDisplayMode(mode);
-    });
+    connect(m_multiScreenWorker, &MultiScreenWorker::opacityChanged, this, &MainWindow::setMaskAlpha, Qt::QueuedConnection);
+    connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, this, &MainWindow::updateDisplayMode, Qt::QueuedConnection);
 
-    connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, m_shadowMaskOptimizeTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
-
-    //　通知窗管
+    //　更新任务栏内容展示
     connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateLayout, this,[=](const QString &screenName){
         m_mainPanel->setFixedSize(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->position(), HideMode::KeepShowing, m_multiScreenWorker->displayMode()).size());
         m_mainPanel->move(0,0);
@@ -298,7 +293,7 @@ void MainWindow::initConnections()
         m_mainPanel->update();
     });
 
-    //　通知窗管任务栏大小时顺便更新拖拽区域
+    //　更新拖拽区域
     connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateDragArea, this, &MainWindow::resetDragWindow);
 }
 
@@ -382,7 +377,6 @@ void MainWindow::resetDragWindow()
     } else {
         m_dragWidget->setCursor(Qt::SizeHorCursor);
     }
-
 }
 
 void MainWindow::updateDisplayMode()

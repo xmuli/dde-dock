@@ -25,7 +25,6 @@
 #include "monitor.h"
 #include "utils.h"
 #include "item/dockitem.h"
-//#include "docksettings.h"
 
 #include "xcb/xcb_misc.h"
 
@@ -294,7 +293,7 @@ private:
     QString m_registerKey;
     QString m_leaveRegisterKey;
     bool m_aniStart;                        // changeDockPosition是否正在运行中
-    bool m_draging;
+    bool m_draging;                         // 鼠标是否正在调整任务栏的宽度或高度
     bool m_autoHide;                        // 和DockSettings保持一致,可以直接使用其单例进行获取
     QList<MonitRect> m_monitorRectList;     // 监听唤起任务栏区域
     /*****************************************************************/
