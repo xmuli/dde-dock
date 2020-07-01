@@ -586,6 +586,14 @@ void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
 
     // 任务栏显示状态，但需要切换屏幕
     if (toScreen != m_currentScreen) {
+        // 复制模式．不需要响应切换屏幕
+        if (m_monitorInfo.keys().size() == 2 && m_monitorInfo.keys().first()->rect() == m_monitorInfo.keys().last()->rect()) {
+#ifdef QT_DEBUG
+            qDebug() << "copy mode";
+#endif
+            return;
+        }
+
         Monitor *currentMonitor = monitorByName(m_monitorInfo, toScreen);
         if (!currentMonitor) {
             qDebug() << "cannot find monitor by name: " << toScreen;
