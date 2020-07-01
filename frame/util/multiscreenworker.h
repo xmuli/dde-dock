@@ -191,7 +191,6 @@ private slots:
     void showAniFinished();
     void hideAniFinished();
 
-    void onOpacityChanged(const double value);
     void onWindowSizeChanged(uint value);
     void primaryScreenChanged();
 
@@ -200,6 +199,7 @@ private slots:
     void onDisplayModeChanged();
     void onHideModeChanged();
     void onHideStateChanged();
+    void onOpacityChanged(const double value);
 
     /**
      * @brief onRequestUpdateRegionMonitor  更新监听区域信息

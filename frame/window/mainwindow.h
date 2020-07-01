@@ -41,7 +41,6 @@ DWIDGET_USE_NAMESPACE
 
 using XEventMonitor = ::com::deepin::api::XEventMonitor;
 
-//class DockSettings;
 class MainPanel;
 class MainPanelControl;
 class QTimer;

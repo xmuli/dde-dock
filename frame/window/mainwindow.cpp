@@ -24,7 +24,6 @@
 #include "panel/mainpanelcontrol.h"
 #include "controller/dockitemmanager.h"
 #include "util/utils.h"
-//#include "util/docksettings.h"
 #include "util/menuworker.h"
 
 #include <DStyle>

@@ -174,10 +174,10 @@ void MultiScreenWorker::initConnection()
     connect(m_displayInter, &DisplayInter::ScreenHeightChanged, this, [ = ](ushort  value) {m_screenRawHeight = value;});
     connect(m_displayInter, &DisplayInter::MonitorsChanged, this, &MultiScreenWorker::onMonitorListChanged);
 
-    connect(m_displayInter, &DisplayInter::PrimaryRectChanged, this, &MultiScreenWorker::primaryScreenChanged);
-    connect(m_displayInter, &DisplayInter::ScreenHeightChanged, this, &MultiScreenWorker::primaryScreenChanged);
-    connect(m_displayInter, &DisplayInter::ScreenWidthChanged, this, &MultiScreenWorker::primaryScreenChanged);
-    connect(m_displayInter, &DisplayInter::PrimaryChanged, this, &MultiScreenWorker::primaryScreenChanged);
+    connect(m_displayInter, &DisplayInter::PrimaryRectChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
+    connect(m_displayInter, &DisplayInter::ScreenHeightChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
+    connect(m_displayInter, &DisplayInter::ScreenWidthChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
+    connect(m_displayInter, &DisplayInter::PrimaryChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
 
     connect(m_eventInter, &XEventMonitor::CursorMove, this, &MultiScreenWorker::onRegionMonitorChanged);
 
@@ -216,7 +216,8 @@ void MultiScreenWorker::initShow()
 {
     // 仅在初始化时调用一次
     static bool first = true;
-    Q_ASSERT(first);
+    if (!first)
+        qFatal("this method can only be called once");
     first = false;
 
     // 找到一个可以使用的主屏去停靠任务栏
@@ -394,7 +395,7 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
         connect(ani1, &QVariantAnimation::finished, this, [ = ] {
             // 预设一下大小
             parent()->panel()->setFixedSize(dockRect(m_currentScreen, m_position, HideMode::KeepHidden, m_displayMode).size());
-            //隐藏后需要通知界面更新布局方向
+            // 隐藏后需要通知界面更新布局方向
             emit requestUpdateLayout(m_currentScreen);
         }, Qt::DirectConnection);
 
@@ -402,7 +403,7 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
     connect(group, &QVariantAnimation::finished, this, [ = ] {
         m_aniStart = false;
 
-        //　结束之后需要根据确定需要再隐藏
+        // 结束之后需要根据确定需要再隐藏
         emit showAniFinished();
         emit requestUpdateFrontendGeometry(dockRect(m_currentScreen, m_position, HideMode::KeepShowing, m_displayMode));
         emit requestNotifyWindowManager();
@@ -694,7 +695,7 @@ void MultiScreenWorker::monitorAdded(const QString &path)
     m_monitorInfo.insert(mon, inter);
     inter->setSync(false);
 
-    // 更新位置停靠信息
+    // 屏幕信息发生变化时，更新位置停靠信息
     updateMonitorDockedInfo(m_monitorInfo);
 
     emit requestUpdateRegionMonitor();
@@ -741,15 +742,6 @@ void MultiScreenWorker::hideAniFinished()
     emit requestNotifyWindowManager();
 }
 
-void MultiScreenWorker::onOpacityChanged(const double value)
-{
-    if (int(m_opacity * 100) == int(value * 100)) return;
-
-    m_opacity = value;
-
-    emit opacityChanged(quint8(value * 255));
-}
-
 void MultiScreenWorker::onWindowSizeChanged(uint value)
 {
     Q_UNUSED(value);
@@ -781,7 +773,7 @@ void MultiScreenWorker::onPositionChanged()
 #endif
     m_position = position;
 
-    // 更新鼠标拖拽样式
+    // 更新鼠标拖拽样式，在类内部设置到qApp单例上去
     if ((Top == m_position) || (Bottom == m_position)) {
         parent()->panel()->setCursor(Qt::SizeVerCursor);
     } else {
@@ -860,13 +852,26 @@ void MultiScreenWorker::onHideStateChanged()
     }
 }
 
+void MultiScreenWorker::onOpacityChanged(const double value)
+{
+    if (int(m_opacity * 100) == int(value * 100)) return;
+
+    m_opacity = value;
+
+    emit opacityChanged(quint8(value * 255));
+}
+
 void MultiScreenWorker::onRequestUpdateRegionMonitor()
 {
     if (!m_registerKey.isEmpty()) {
-        bool ret = m_eventInter->UnregisterArea(m_registerKey);
+
 #ifdef QT_DEBUG
+        bool ret = m_eventInter->UnregisterArea(m_registerKey);
         qDebug() << "取消唤起区域监听:" << ret;
+#else
+        m_eventInter->UnregisterArea(m_registerKey);
 #endif
+        m_registerKey.clear();
     }
 
     const static int flags = Motion | Button | Key;
@@ -965,6 +970,7 @@ void MultiScreenWorker::onRequestUpdateDragArea()
 
 void MultiScreenWorker::onMonitorInfoChaged()
 {
+    // 目前只有双屏支持，所以只判断这种情况
     if (m_monitorInfo.keys().size() == 2
             && m_monitorInfo.keys().first()->rect() == m_monitorInfo.keys().last()->rect()) {
         qDebug() << "repeat screen";
@@ -1031,6 +1037,7 @@ void MultiScreenWorker::updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> 
         qFatal("shouldn't be here");
     }
 
+    // 对角拼接，每个边都重置，默认均可停靠
     if (s1->bottomRight() == s2->topLeft()
             || s1->topLeft() == s2->bottomRight()) {
         s1->dockPosition().reset();
@@ -1038,46 +1045,35 @@ void MultiScreenWorker::updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> 
         return;
     }
 
-    // 对齐
-    bool isAligment = false;
-    // 左右拼
-    // s1左 s2右
-    if (s1->right() == s2->left()) {
-        isAligment = (s1->topRight() == s2->topLeft())
-                && (s1->bottomRight() == s2->bottomLeft());
-        if (isAligment) {
-            s1->dockPosition().rightDock = false;
-            s2->dockPosition().leftDock = false;
-        }
+    // 左右拼接，s1左，s2右
+    if (s1->right() == s2->left()
+            && s1->topRight() == s2->topLeft()
+            && s1->bottomRight() == s2->bottomLeft()){
+        s1->dockPosition().rightDock = false;
+        s2->dockPosition().leftDock = false;
     }
-    // s1右 s2左
-    if (s1->left() == s2->right()) {
-        isAligment = (s1->topLeft() == s2->topRight())
-                && (s1->bottomLeft() == s2->bottomRight());
-        if (isAligment) {
-            s1->dockPosition().leftDock = false;
-            s2->dockPosition().rightDock = false;
-        }
+    // 左右拼接，s1右，s2左
+    if (s1->left() == s2->right()
+            && s1->topLeft() == s2->topRight()
+            && s1->bottomLeft() == s2->bottomRight()) {
+        s1->dockPosition().leftDock = false;
+        s2->dockPosition().rightDock = false;
     }
 
-    // 上下拼
-    // s1上 s2下
-    if (s1->bottom() == s2->top()) {
-        isAligment = (s1->bottomLeft() == s2->topLeft())
-                && (s1->bottomRight() == s2->topRight());
-        if (isAligment) {
-            s1->dockPosition().bottomDock = false;
-            s2->dockPosition().topDock = false;
-        }
+    // 上下拼接，s1上，s2下
+    if (s1->bottom() == s2->top()
+            && s1->bottomLeft() == s2->topLeft()
+            && s1->bottomRight() == s2->topRight()) {
+        s1->dockPosition().bottomDock = false;
+        s2->dockPosition().topDock = false;
     }
-    // s1下 s2上
-    if (s1->top() == s2->bottom()) {
-        isAligment = (s1->topLeft() == s2->bottomLeft())
-                && (s1->topRight() == s2->bottomRight());
-        if (isAligment) {
-            s1->dockPosition().topDock = false;
-            s2->dockPosition().bottomDock = false;
-        }
+
+    // 上下拼接，s1下，s2上
+    if (s1->top() == s2->bottom()
+            && s1->topLeft() == s2->bottomLeft()
+            && s1->topRight() == s2->bottomRight()) {
+        s1->dockPosition().topDock = false;
+        s2->dockPosition().bottomDock = false;
     }
 }
 
@@ -1156,7 +1152,7 @@ QRect MultiScreenWorker::getDockShowGeometry(const QString &screenName, const Po
     }
 
 #ifdef QT_DEBUG
-    //    qDebug() << rect;
+        qDebug() << rect;
 #endif
 
     return rect;
@@ -1203,7 +1199,7 @@ QRect MultiScreenWorker::getDockHideGeometry(const QString &screenName, const Po
     }
 
 #ifdef QT_DEBUG
-    //    qDebug() << rect;
+        qDebug() << rect;
 #endif
 
     return rect;
@@ -1223,9 +1219,6 @@ void MultiScreenWorker::updateWindowManagerDock()
     qDebug() << "wm dock area: " << rect;
 
     const QPoint &p = rawXPosition(rect.topLeft());
-
-    qDebug() << p << rawXPosition(rect.topLeft()) << ratio
-             << m_screenRawHeight << m_screenRawWidth << m_dockInter->position();
 
     XcbMisc::Orientation orientation = XcbMisc::OrientationTop;
     uint strut = 0;
