@@ -106,6 +106,8 @@ MainWindow::MainWindow(QWidget *parent)
     initComponents();
     initConnections();
 
+    //TODO 优先更新一下任务栏所在屏幕
+    qDebug() << m_multiScreenWorker->deskScreen();
     resetDragWindow();
 
     m_mainPanel->setDelegate(this);

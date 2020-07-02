@@ -61,6 +61,9 @@ MultiScreenWorker::MultiScreenWorker(QWidget *parent, DWindowManagerHelper *help
     checkDaemonDockService();
     onMonitorListChanged(m_displayInter->monitors());
 
+    // 初始化任务栏停靠屏幕
+    updateDockScreenName();
+
     // 初始化透明度
     QTimer::singleShot(0, this, [ = ] {onOpacityChanged(m_dockInter->opacity());});
 }
@@ -220,9 +223,6 @@ void MultiScreenWorker::initShow()
         qFatal("this method can only be called once");
     first = false;
 
-    // 找到一个可以使用的主屏去停靠任务栏
-    updateDockScreenName();
-
     // 初始化界面布局
     emit requestUpdateLayout(m_currentScreen);
 
@@ -246,6 +246,7 @@ void MultiScreenWorker::initShow()
 
 void MultiScreenWorker::showAni(const QString &screen)
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     if (m_showAni->state() == QVariantAnimation::Running || m_aniStart)
         return;
 
@@ -753,6 +754,7 @@ void MultiScreenWorker::hideAniFinished()
 
 void MultiScreenWorker::onWindowSizeChanged(uint value)
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     Q_UNUSED(value);
 
     m_monitorUpdateTimer->start();
@@ -760,6 +762,7 @@ void MultiScreenWorker::onWindowSizeChanged(uint value)
 
 void MultiScreenWorker::primaryScreenChanged()
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     const int screenRawHeight = m_displayInter->screenHeight();
     const int screenRawWidth = m_displayInter->screenWidth();
 
@@ -989,6 +992,7 @@ void MultiScreenWorker::onRequestUpdateDragArea()
 
 void MultiScreenWorker::onMonitorInfoChaged()
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     // 目前只有双屏支持，所以只判断这种情况
     if (m_monitorInfo.keys().size() == 2
             && m_monitorInfo.keys().first()->rect() == m_monitorInfo.keys().last()->rect()) {
@@ -1056,6 +1060,8 @@ void MultiScreenWorker::updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> 
         qFatal("shouldn't be here");
     }
 
+    qDebug() << "monitor info changed" << s1->rect() << s2->rect();
+
     // 先重置
     s1->dockPosition().reset();
     s2->dockPosition().reset();
@@ -1063,36 +1069,47 @@ void MultiScreenWorker::updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> 
     // 对角拼接，重置，默认均可停靠
     if (s1->bottomRight() == s2->topLeft()
             || s1->topLeft() == s2->bottomRight()) {
+#ifdef QT_DEBUG
+        qDebug() << "diagonal: " << s1->rect() << s2->rect();
+#endif
         return;
     }
 
     // 左右拼接，s1左，s2右
     if (s1->right() == s2->left()
-            && s1->topRight() == s2->topLeft()
-            && s1->bottomRight() == s2->bottomLeft()) {
+            && (s1->topRight() == s2->topLeft() || s1->bottomRight() == s2->bottomLeft())) {
+#ifdef QT_DEBUG
+        qDebug() << "horizontal: " << s1->rect() << s2->rect();
+#endif
         s1->dockPosition().rightDock = false;
         s2->dockPosition().leftDock = false;
     }
     // 左右拼接，s1右，s2左
     if (s1->left() == s2->right()
-            && s1->topLeft() == s2->topRight()
-            && s1->bottomLeft() == s2->bottomRight()) {
+            && (s1->topLeft() == s2->topRight() || s1->bottomLeft() == s2->bottomRight())) {
+#ifdef QT_DEBUG
+        qDebug() << "horizontal: " << s1->rect() << s2->rect();
+#endif
         s1->dockPosition().leftDock = false;
         s2->dockPosition().rightDock = false;
     }
 
     // 上下拼接，s1上，s2下
     if (s1->bottom() == s2->top()
-            && s1->bottomLeft() == s2->topLeft()
-            && s1->bottomRight() == s2->topRight()) {
+            && (s1->bottomLeft() == s2->topLeft() || s1->bottomRight() == s2->topRight())) {
+#ifdef QT_DEBUG
+        qDebug() << "vertical: " << s1->rect() << s2->rect();
+#endif
         s1->dockPosition().bottomDock = false;
         s2->dockPosition().topDock = false;
     }
 
     // 上下拼接，s1下，s2上
     if (s1->top() == s2->bottom()
-            && s1->topLeft() == s2->bottomLeft()
-            && s1->topRight() == s2->bottomRight()) {
+            && (s1->topLeft() == s2->bottomLeft() || s1->topRight() == s2->bottomRight())) {
+#ifdef QT_DEBUG
+        qDebug() << "vertical: " << s1->rect() << s2->rect();
+#endif
         s1->dockPosition().topDock = false;
         s2->dockPosition().bottomDock = false;
     }
@@ -1173,7 +1190,7 @@ QRect MultiScreenWorker::getDockShowGeometry(const QString &screenName, const Po
     }
 
 #ifdef QT_DEBUG
-//        qDebug() << rect;
+        qDebug() << rect;
 #endif
 
     return rect;
@@ -1220,7 +1237,7 @@ QRect MultiScreenWorker::getDockHideGeometry(const QString &screenName, const Po
     }
 
 #ifdef QT_DEBUG
-//        qDebug() << rect;
+        qDebug() << rect;
 #endif
 
     return rect;
