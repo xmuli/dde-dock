@@ -302,6 +302,7 @@ void MultiScreenWorker::hideAni(const QString &screen)
 
 void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen, const Position &fromPos, const Position &toPos)
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     if (fromScreen == toScreen && fromPos == toPos) {
         qDebug() << "shoulen't be here,nothing happend!";
         return;
@@ -1055,11 +1056,13 @@ void MultiScreenWorker::updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> 
         qFatal("shouldn't be here");
     }
 
-    // 对角拼接，每个边都重置，默认均可停靠
+    // 先重置
+    s1->dockPosition().reset();
+    s2->dockPosition().reset();
+
+    // 对角拼接，重置，默认均可停靠
     if (s1->bottomRight() == s2->topLeft()
             || s1->topLeft() == s2->bottomRight()) {
-        s1->dockPosition().reset();
-        s2->dockPosition().reset();
         return;
     }
 
