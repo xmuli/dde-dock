@@ -256,8 +256,6 @@ void MainWindow::compositeChanged()
 
 void MainWindow::initConnections()
 {
-
-
     connect(m_shadowMaskOptimizeTimer, &QTimer::timeout, this, &MainWindow::adjustShadowMask, Qt::QueuedConnection);
 
     connect(m_wmHelper, &DWindowManagerHelper::hasCompositeChanged, this, &MainWindow::compositeChanged, Qt::QueuedConnection);
@@ -411,8 +409,6 @@ void MainWindow::onMainWindowSizeChanged(QPoint offset)
         newRect.setHeight(qBound(MAINWINDOW_MIN_SIZE, rect.height() - offset.y(), MAINWINDOW_MAX_SIZE));
 
         m_dockSize = newRect.height();
-
-        qDebug() << newRect;
     }
         break;
     case Left:
@@ -438,7 +434,6 @@ void MainWindow::onMainWindowSizeChanged(QPoint offset)
     }
 
     // 更新界面大小
-    qDebug() << newRect;
     m_mainPanel->setFixedSize(newRect.size());
     setFixedSize(newRect.size());
     move(newRect.topLeft());

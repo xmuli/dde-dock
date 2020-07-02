@@ -1056,6 +1056,13 @@ void MultiScreenWorker::updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> 
 {
     QList<Monitor *>screens = map.keys();
 
+    if (screens.size() == 1) {
+        //　只剩下一个屏幕了,emmm...
+        screens.first()->dockPosition().reset();
+        updateDockScreenName(screens.first()->name());
+        return;
+    }
+
     // 最多支持双屏,这里只计算双屏,单屏默认四边均可停靠任务栏
     if (screens.size() != 2)
         return;
