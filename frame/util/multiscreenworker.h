@@ -41,7 +41,11 @@
 #define ANIMATIONTIME 300
 
 DGUI_USE_NAMESPACE
-
+/**
+ * 多屏功能这部分看着很复杂，其实只需要把握住一个核心：及时更新数据！
+ * 之前测试出的诸多问题都是在切换任务栏位置，切换屏幕，主屏更改，分辨率更改等情况发生后
+ * 任务栏的鼠标唤醒区域或任务栏的大小没更新或者更新时的大小还是按照原来的屏幕信息计算而来的，
+ */
 using DBusDock = com::deepin::dde::daemon::Dock;
 using DisplayInter = com::deepin::daemon::Display;
 using MonitorInter = com::deepin::daemon::display::Monitor;
@@ -52,29 +56,11 @@ class QVariantAnimation;
 class QWidget;
 class QTimer;
 class MainWindow;
-//class MonitorMap{
-//public:
-//    void insert(Monitor *key, MonitorInter *value) {map.insert(key,value);}
-//    QList<Monitor *> keys() {return map.keys();}
-//    QList<Monitor *> validKeys() {
-//        QList<Monitor *> list;
-//        QMapIterator<Monitor *, MonitorInter *>it(map);
-//        while (it.hasNext()) {
-//            it.next();
-//            if(it.key()->enable())
-//                list << it.key();
-//        }
-//        return list;
-//    }
-
-//private:
-//    QMap<Monitor *, MonitorInter *> map;
-//};
 class MultiScreenWorker : public QObject
 {
     Q_OBJECT
 public:
-    enum Flag{
+    enum Flag {
         Motion = 1 << 0,
         Button = 1 << 1,
         Key    = 1 << 2
@@ -141,7 +127,7 @@ public:
      * @param fromPos               任务栏上次的方向
      * @param toPos                 任务栏打算移动到的方向
      */
-    void changeDockPosition(QString lastScreen,QString deskScreen,const Position &fromPos,const Position &toPos);
+    void changeDockPosition(QString lastScreen, QString deskScreen, const Position &fromPos, const Position &toPos);
     /**
      * @brief updateDockScreenName  将任务栏所在屏幕信息进行更新,在任务栏切换屏幕显示后,这里应该被调用
      * @param screenName            目标屏幕
@@ -159,7 +145,7 @@ public:
      * @param displayMode       状态
      * @return                  按照给定的数据计算出任务栏所在位置
      */
-    QRect dockRect(const QString &screenName, const Position &pos, const HideMode &hideMode,const DisplayMode &displayMode);
+    QRect dockRect(const QString &screenName, const Position &pos, const HideMode &hideMode, const DisplayMode &displayMode);
     /**
      * @brief dockRect
      * @param screenName        屏幕名
@@ -242,8 +228,8 @@ private:
     void checkDaemonDockService();
     MainWindow *parent();
     // 获取任务栏分别显示和隐藏时对应的位置
-    QRect getDockShowGeometry(const QString &screenName,const Position &pos, const DisplayMode &displaymode);
-    QRect getDockHideGeometry(const QString &screenName,const Position &pos, const DisplayMode &displaymode);
+    QRect getDockShowGeometry(const QString &screenName, const Position &pos, const DisplayMode &displaymode);
+    QRect getDockHideGeometry(const QString &screenName, const Position &pos, const DisplayMode &displaymode);
 
     void updateWindowManagerDock();
     /**
@@ -251,10 +237,10 @@ private:
      * @param screenName        屏幕名
      * @return                  屏幕信息对应指针
      */
-    Monitor *monitorByName(const QList<Monitor *> &list,const QString &screenName);
+    Monitor *monitorByName(const QList<Monitor *> &list, const QString &screenName);
     QScreen *screenByName(const QString &screenName);
     qreal scaleByName(const QString &screenName);
-    bool onScreenEdge(const QString &screenName,const QPoint &point);
+    bool onScreenEdge(const QString &screenName, const QPoint &point);
     bool onScreenEdge(const QPoint &point);
     bool contains(const MonitRect &rect, const QPoint &pos);
     bool contains(const QList<MonitRect> &rectList, const QPoint &pos);

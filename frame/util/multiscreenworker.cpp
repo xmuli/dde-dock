@@ -44,7 +44,7 @@ MultiScreenWorker::MultiScreenWorker(QWidget *parent, DWindowManagerHelper *help
     , m_hideAni(new QVariantAnimation(this))
     , m_lastScreen(qApp->primaryScreen()->name())
     , m_currentScreen(qApp->primaryScreen()->name())
-    , m_opacity(m_dockInter->opacity())
+    , m_opacity(0.4)
     , m_position(Dock::Position(m_dockInter->position()))
     , m_hideMode(Dock::HideMode(m_dockInter->hideMode()))
     , m_hideState(Dock::HideState(m_dockInter->hideState()))
@@ -259,7 +259,7 @@ void MultiScreenWorker::showAni(const QString &screen)
         m_hideAni->stop();
 
     //2 任务栏位置已经正确就不需要再重复一次动画了
-    if (getDockShowGeometry(screen, static_cast<Position>(m_dockInter->position()), m_displayMode) == parent()->geometry()) {
+    if (getDockShowGeometry(screen, m_position, m_displayMode) == parent()->geometry()) {
         parent()->panel()->setFixedSize(dockRect(m_currentScreen, m_position, HideMode::KeepShowing, m_displayMode).size());
         parent()->panel()->move(0, 0);
         emit requestNotifyWindowManager();
@@ -268,8 +268,8 @@ void MultiScreenWorker::showAni(const QString &screen)
 
     updateDockScreenName(screen);
 
-    m_showAni->setStartValue(getDockHideGeometry(screen, static_cast<Position>(m_dockInter->position()), m_displayMode));
-    m_showAni->setEndValue(getDockShowGeometry(screen, static_cast<Position>(m_dockInter->position()), m_displayMode));
+    m_showAni->setStartValue(getDockHideGeometry(screen, m_position, m_displayMode));
+    m_showAni->setEndValue(getDockShowGeometry(screen, m_position, m_displayMode));
     m_showAni->start();
 }
 
@@ -286,7 +286,7 @@ void MultiScreenWorker::hideAni(const QString &screen)
         m_showAni->stop();
 
     //2 任务栏位置已经正确就不需要再重复一次动画了
-    if (getDockHideGeometry(screen, static_cast<Position>(m_dockInter->position()), m_displayMode) == parent()->geometry()) {
+    if (getDockHideGeometry(screen, static_cast<Position>(m_position), m_displayMode) == parent()->geometry()) {
         parent()->panel()->setFixedSize(dockRect(m_currentScreen, m_position, HideMode::KeepShowing, m_displayMode).size());
         parent()->panel()->move(0, 0);
         emit requestNotifyWindowManager();
@@ -295,8 +295,8 @@ void MultiScreenWorker::hideAni(const QString &screen)
 
     updateDockScreenName(screen);
 
-    m_hideAni->setStartValue(getDockShowGeometry(screen, static_cast<Position>(m_dockInter->position()), m_displayMode));
-    m_hideAni->setEndValue(getDockHideGeometry(screen, static_cast<Position>(m_dockInter->position()), m_displayMode));
+    m_hideAni->setStartValue(getDockShowGeometry(screen, m_position, m_displayMode));
+    m_hideAni->setEndValue(getDockHideGeometry(screen, m_position, m_displayMode));
     m_hideAni->start();
 }
 
@@ -613,10 +613,8 @@ void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
         }
 
         // 检查边缘是否允许停靠
-        if (currentMonitor->dockPosition().docked(static_cast<Position>(m_dockInter->position())))
-            changeDockPosition(m_currentScreen, screen->name()
-                               , static_cast<Position>(m_dockInter->position())
-                               , static_cast<Position>(m_dockInter->position()));
+        if (currentMonitor->dockPosition().docked(m_position))
+            changeDockPosition(m_currentScreen, screen->name(), m_position, m_position);
     } else {
         // 任务栏隐藏状态，但需要显示
         if (hideMode() == HideMode::KeepShowing) {
@@ -1026,7 +1024,7 @@ void MultiScreenWorker::updateInterRect(const QList<Monitor *> monitorList, QLis
 
     foreach (Monitor *inter, monitorList) {
         MonitRect rect;
-        switch (static_cast<Position>(m_dockInter->position())) {
+        switch (m_position) {
         case Top: {
             rect.x1 = inter->x();
             rect.y1 = inter->y();
@@ -1287,7 +1285,7 @@ void MultiScreenWorker::updateWindowManagerDock()
     uint strutStart = 0;
     uint strutEnd = 0;
 
-    switch (m_dockInter->position()) {
+    switch (m_position) {
     case Position::Top:
         orientation = XcbMisc::OrientationTop;
         strut = p.y() + rect.height() * ratio;
