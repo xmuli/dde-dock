@@ -192,6 +192,7 @@ void MultiScreenWorker::initConnection()
     connect(this, &MultiScreenWorker::monitorInfoChaged, this, &MultiScreenWorker::onMonitorInfoChaged);
 
     connect(m_monitorUpdateTimer, &QTimer::timeout, this, [ = ] {
+        qDebug() << "#######################";
         // 更新屏幕停靠信息
         updateMonitorDockedInfo(m_monitorInfo);
         // 更新所在屏幕
@@ -681,6 +682,26 @@ void MultiScreenWorker::monitorAdded(const QString &path)
     connect(inter, &MonitorInter::ModesChanged, mon, &Monitor::setModeList);
     connect(inter, &MonitorInter::RotationsChanged, mon, &Monitor::setRotateList);
     connect(inter, &MonitorInter::EnabledChanged, mon, &Monitor::setMonitorEnable);
+    connect(inter, &MonitorInter::EnabledChanged, this, [ = ](bool  enable) {
+        // 屏幕可用性发生变化
+        if (!enable) {
+            monitorRemoved(mon->path());
+        } else {
+            Monitor *monitor = nullptr;
+            for (auto it(m_monitorInfo.cbegin()); it != m_monitorInfo.cend(); ++it) {
+                if (it.key()->path() == path) {
+                    monitor = it.key();
+                    break;
+                }
+            }
+
+            // 之前没有存储过，则保存（事实上这里应该不会执行，因为之前没有存储过的就不会这里的匿名槽函数）
+            if (!monitor)
+                monitorAdded(mon->path());
+        }
+
+        qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
+    });
     connect(m_displayInter, static_cast<void (DisplayInter::*)(const QString &) const>(&DisplayInter::PrimaryChanged), mon, &Monitor::setPrimary);
 
     //　屏幕信息发生变化(注意:这里需要放在上面的关联之后,确保上面数据先更新,再走monitorInfoChaged,从而保证后面的一系列操作拿到的都是正确的数据)
@@ -688,6 +709,7 @@ void MultiScreenWorker::monitorAdded(const QString &path)
     connect(inter, &MonitorInter::YChanged, this, &MultiScreenWorker::monitorInfoChaged);
     connect(inter, &MonitorInter::WidthChanged, this, &MultiScreenWorker::monitorInfoChaged);
     connect(inter, &MonitorInter::HeightChanged, this, &MultiScreenWorker::monitorInfoChaged);
+    connect(inter, &MonitorInter::EnabledChanged, this, &MultiScreenWorker::monitorInfoChaged);
 
     // NOTE: DO NOT using async dbus call. because we need to have a unique name to distinguish each monitor
     Q_ASSERT(inter->isValid());
@@ -708,7 +730,10 @@ void MultiScreenWorker::monitorAdded(const QString &path)
     mon->setMmWidth(inter->mmWidth());
     mon->setMmHeight(inter->mmHeight());
 
-    m_monitorInfo.insert(mon, inter);
+    // 当前屏幕可用
+    if (inter->enabled())
+        m_monitorInfo.insert(mon, inter);
+
     inter->setSync(false);
 
     // 屏幕信息发生变化时，更新位置停靠信息
@@ -719,6 +744,7 @@ void MultiScreenWorker::monitorAdded(const QString &path)
 
 void MultiScreenWorker::monitorRemoved(const QString &path)
 {
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
     Monitor *monitor = nullptr;
     for (auto it(m_monitorInfo.cbegin()); it != m_monitorInfo.cend(); ++it) {
         if (it.key()->path() == path) {
@@ -1060,12 +1086,15 @@ void MultiScreenWorker::updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> 
         //　只剩下一个屏幕了,emmm...
         screens.first()->dockPosition().reset();
         updateDockScreenName(screens.first()->name());
+        qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
         return;
     }
 
     // 最多支持双屏,这里只计算双屏,单屏默认四边均可停靠任务栏
     if (screens.size() != 2)
         return;
+
+    qDebug() << __PRETTY_FUNCTION__ << __LINE__ << __FILE__;
 
     Monitor *s1 = screens.at(0);
     Monitor *s2 = screens.at(1);
@@ -1203,7 +1232,7 @@ QRect MultiScreenWorker::getDockShowGeometry(const QString &screenName, const Po
     }
 
 #ifdef QT_DEBUG
-//    qDebug() << rect;
+    //    qDebug() << rect;
 #endif
 
     return rect;
@@ -1250,7 +1279,7 @@ QRect MultiScreenWorker::getDockHideGeometry(const QString &screenName, const Po
     }
 
 #ifdef QT_DEBUG
-//    qDebug() << rect;
+    //    qDebug() << rect;
 #endif
 
     return rect;
@@ -1267,12 +1296,12 @@ void MultiScreenWorker::updateWindowManagerDock()
     const auto ratio = parent()->devicePixelRatioF();
 
     const QRect rect = getDockShowGeometry(m_currentScreen, m_position, m_displayMode);
-//    static QRect lastRect;
-//    if (lastRect == rect) {
-//        return;
-//    }
-//    lastRect = rect;
-//    qDebug() << "wm dock area: " << rect;
+    //    static QRect lastRect;
+    //    if (lastRect == rect) {
+    //        return;
+    //    }
+    //    lastRect = rect;
+    //    qDebug() << "wm dock area: " << rect;
 
     const QPoint &p = rawXPosition(rect.topLeft());
 
