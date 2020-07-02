@@ -73,148 +73,6 @@ MultiScreenWorker::~MultiScreenWorker()
     delete m_xcbMisc;
 }
 
-void MultiScreenWorker::initMembers()
-{
-    DockItem::setDockPosition(m_position);
-    qApp->setProperty(PROP_POSITION, QVariant::fromValue(m_position));
-    DockItem::setDockDisplayMode(m_displayMode);
-    qApp->setProperty(PROP_DISPLAY_MODE, QVariant::fromValue(m_displayMode));
-
-    m_monitorUpdateTimer->setInterval(10);
-    m_monitorUpdateTimer->setSingleShot(true);
-
-    //　设置应用角色为任务栏
-    m_xcbMisc->set_window_type(xcb_window_t(parent()->winId()), XcbMisc::Dock);
-
-    //　初始化动画信息
-    m_showAni->setEasingCurve(QEasingCurve::InOutCubic);
-    m_hideAni->setEasingCurve(QEasingCurve::InOutCubic);
-
-    const bool composite = m_wmHelper->hasComposite();
-
-#ifndef DISABLE_SHOW_ANIMATION
-    const int duration = composite ? ANIMATIONTIME : 0;
-#else
-    const int duration = 10;
-#endif
-
-    m_showAni->setDuration(duration);
-    m_hideAni->setDuration(duration);
-}
-
-void MultiScreenWorker::initConnection()
-{
-    connect(m_showAni, &QVariantAnimation::valueChanged, parent(), [ = ](QVariant value) {
-        QRect rect = value.toRect();
-        parent()->setFixedSize(rect.size());
-        parent()->setGeometry(rect);
-
-        switch (m_position) {
-        case Position::Top: {
-            const int panelSize = parent()->panel()->height();
-            parent()->panel()->move(0, rect.height() - panelSize);
-        }
-        break;
-        case Position::Left: {
-            const int panelSize = parent()->panel()->width();
-            parent()->panel()->move(rect.width() - panelSize, 0);
-        }
-        break;
-        case Position::Bottom:
-        case Position::Right:
-            break;
-        }
-    });
-
-    connect(m_hideAni, &QVariantAnimation::valueChanged, parent(), [ = ](QVariant value) {
-        QRect rect = value.toRect();
-        parent()->setFixedSize(rect.size());
-        parent()->setGeometry(rect);
-
-        switch (m_position) {
-        case Position::Top: {
-            const int panelSize = parent()->panel()->height();
-            parent()->panel()->move(0, rect.height() - panelSize);
-        }
-        break;
-        case Position::Left: {
-            const int panelSize = parent()->panel()->width();
-            parent()->panel()->move(rect.width() - panelSize, 0);
-        }
-        break;
-        case Position::Bottom:
-        case Position::Right:
-            break;
-        }
-    });
-
-    connect(m_showAni, &QVariantAnimation::finished, this, &MultiScreenWorker::showAniFinished);
-    connect(m_hideAni, &QVariantAnimation::finished, this, &MultiScreenWorker::hideAniFinished);
-
-    //FIX: 这里关联信号有时候收不到,未查明原因,handleDbusSignal处理
-#if 0
-    //    connect(m_dockInter, &DBusDock::PositionChanged, this, &MultiScreenWorker::onPositionChanged);
-    //    connect(m_dockInter, &DBusDock::DisplayModeChanged, this, &MultiScreenWorker::onDisplayModeChanged);
-    //    connect(m_dockInter, &DBusDock::HideModeChanged, this, &MultiScreenWorker::hideModeChanged);
-    //    connect(m_dockInter, &DBusDock::HideStateChanged, this, &MultiScreenWorker::hideStateChanged);
-#else
-    QDBusConnection::sessionBus().connect("com.deepin.dde.daemon.Dock",
-                                          "/com/deepin/dde/daemon/Dock",
-                                          "org.freedesktop.DBus.Properties",
-                                          "PropertiesChanged",
-                                          "sa{sv}as",
-                                          this, SLOT(handleDbusSignal(QDBusMessage)));
-#endif
-    connect(m_dockInter, &DBusDock::ServiceRestarted, this, [ = ] {
-        checkDockScreenName();
-        emit requestUpdateFrontendGeometry(dockRect(m_currentScreen));
-    });
-    connect(m_dockInter, &DBusDock::OpacityChanged, this, &MultiScreenWorker::onOpacityChanged);
-    connect(m_dockInter, &DBusDock::WindowSizeEfficientChanged, this, &MultiScreenWorker::onWindowSizeChanged);
-    connect(m_dockInter, &DBusDock::WindowSizeFashionChanged, this, &MultiScreenWorker::onWindowSizeChanged);
-
-    connect(m_displayInter, &DisplayInter::ScreenWidthChanged, this, [ = ](ushort  value) {m_screenRawWidth = value;});
-    connect(m_displayInter, &DisplayInter::ScreenHeightChanged, this, [ = ](ushort  value) {m_screenRawHeight = value;});
-    connect(m_displayInter, &DisplayInter::MonitorsChanged, this, &MultiScreenWorker::onMonitorListChanged);
-
-    connect(m_displayInter, &DisplayInter::PrimaryRectChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
-    connect(m_displayInter, &DisplayInter::ScreenHeightChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
-    connect(m_displayInter, &DisplayInter::ScreenWidthChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
-    connect(m_displayInter, &DisplayInter::PrimaryChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
-
-    connect(m_eventInter, &XEventMonitor::CursorMove, this, &MultiScreenWorker::onRegionMonitorChanged);
-
-    connect(this, &MultiScreenWorker::requestUpdateRegionMonitor, this, &MultiScreenWorker::onRequestUpdateRegionMonitor);
-    connect(this, &MultiScreenWorker::requestUpdateFrontendGeometry, this, &MultiScreenWorker::onRequestUpdateFrontendGeometry);
-    connect(this, &MultiScreenWorker::requestUpdatePosition, this, &MultiScreenWorker::onRequestUpdatePosition);
-    connect(this, &MultiScreenWorker::requestNotifyWindowManager, this, &MultiScreenWorker::onRequestNotifyWindowManager);
-    connect(this, &MultiScreenWorker::requestUpdateDragArea, this, &MultiScreenWorker::onRequestUpdateDragArea);
-    connect(this, &MultiScreenWorker::monitorInfoChaged, this, &MultiScreenWorker::onMonitorInfoChaged);
-
-    connect(m_monitorUpdateTimer, &QTimer::timeout, this, [ = ] {
-        // 更新屏幕停靠信息
-        updateMonitorDockedInfo();
-        // 更新所在屏幕
-        checkDockScreenName();
-        // 更新任务栏自身信息
-        /**
-          *注意这里要先对parent()进行setFixedSize，在分辨率切换过程中，setGeometry可能会导致其大小未改变
-          */
-        parent()->setFixedSize(dockRect(m_currentScreen).size());
-        parent()->setGeometry(dockRect(m_currentScreen));
-        parent()->panel()->setFixedSize(dockRect(m_currentScreen).size());
-        parent()->panel()->move(0, 0);
-        // 通知后端
-        emit requestUpdateFrontendGeometry(dockRect(m_currentScreen, m_position, HideMode::KeepShowing, m_displayMode));
-        // 拖拽区域
-        emit requestUpdateDragArea();
-        // 监控区域
-        emit requestUpdateRegionMonitor();
-        // 通知窗管
-        emit requestNotifyWindowManager();
-    });
-}
-
 void MultiScreenWorker::initShow()
 {
     // 仅在初始化时调用一次
@@ -606,8 +464,10 @@ void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
         QList<Monitor *> monitorList = validMonitor();
         if (monitorList.size() == 2 && monitorList.first()->rect() == monitorList.last()->rect()) {
 #ifdef QT_DEBUG
-            qDebug() << "copy mode";
+            qDebug() << "copy mode　or merge mode";
 #endif
+            parent()->setFixedSize(dockRect(m_currentScreen).size());
+            parent()->setGeometry(dockRect(m_currentScreen));
             return;
         }
 
@@ -1144,6 +1004,148 @@ void MultiScreenWorker::updateMonitorDockedInfo()
         s1->dockPosition().topDock = false;
         s2->dockPosition().bottomDock = false;
     }
+}
+
+void MultiScreenWorker::initMembers()
+{
+    DockItem::setDockPosition(m_position);
+    qApp->setProperty(PROP_POSITION, QVariant::fromValue(m_position));
+    DockItem::setDockDisplayMode(m_displayMode);
+    qApp->setProperty(PROP_DISPLAY_MODE, QVariant::fromValue(m_displayMode));
+
+    m_monitorUpdateTimer->setInterval(10);
+    m_monitorUpdateTimer->setSingleShot(true);
+
+    //　设置应用角色为任务栏
+    m_xcbMisc->set_window_type(xcb_window_t(parent()->winId()), XcbMisc::Dock);
+
+    //　初始化动画信息
+    m_showAni->setEasingCurve(QEasingCurve::InOutCubic);
+    m_hideAni->setEasingCurve(QEasingCurve::InOutCubic);
+
+    const bool composite = m_wmHelper->hasComposite();
+
+#ifndef DISABLE_SHOW_ANIMATION
+    const int duration = composite ? ANIMATIONTIME : 0;
+#else
+    const int duration = 10;
+#endif
+
+    m_showAni->setDuration(duration);
+    m_hideAni->setDuration(duration);
+}
+
+void MultiScreenWorker::initConnection()
+{
+    connect(m_showAni, &QVariantAnimation::valueChanged, parent(), [ = ](QVariant value) {
+        QRect rect = value.toRect();
+        parent()->setFixedSize(rect.size());
+        parent()->setGeometry(rect);
+
+        switch (m_position) {
+        case Position::Top: {
+            const int panelSize = parent()->panel()->height();
+            parent()->panel()->move(0, rect.height() - panelSize);
+        }
+        break;
+        case Position::Left: {
+            const int panelSize = parent()->panel()->width();
+            parent()->panel()->move(rect.width() - panelSize, 0);
+        }
+        break;
+        case Position::Bottom:
+        case Position::Right:
+            break;
+        }
+    });
+
+    connect(m_hideAni, &QVariantAnimation::valueChanged, parent(), [ = ](QVariant value) {
+        QRect rect = value.toRect();
+        parent()->setFixedSize(rect.size());
+        parent()->setGeometry(rect);
+
+        switch (m_position) {
+        case Position::Top: {
+            const int panelSize = parent()->panel()->height();
+            parent()->panel()->move(0, rect.height() - panelSize);
+        }
+        break;
+        case Position::Left: {
+            const int panelSize = parent()->panel()->width();
+            parent()->panel()->move(rect.width() - panelSize, 0);
+        }
+        break;
+        case Position::Bottom:
+        case Position::Right:
+            break;
+        }
+    });
+
+    connect(m_showAni, &QVariantAnimation::finished, this, &MultiScreenWorker::showAniFinished);
+    connect(m_hideAni, &QVariantAnimation::finished, this, &MultiScreenWorker::hideAniFinished);
+
+    //FIX: 这里关联信号有时候收不到,未查明原因,handleDbusSignal处理
+#if 0
+    //    connect(m_dockInter, &DBusDock::PositionChanged, this, &MultiScreenWorker::onPositionChanged);
+    //    connect(m_dockInter, &DBusDock::DisplayModeChanged, this, &MultiScreenWorker::onDisplayModeChanged);
+    //    connect(m_dockInter, &DBusDock::HideModeChanged, this, &MultiScreenWorker::hideModeChanged);
+    //    connect(m_dockInter, &DBusDock::HideStateChanged, this, &MultiScreenWorker::hideStateChanged);
+#else
+    QDBusConnection::sessionBus().connect("com.deepin.dde.daemon.Dock",
+                                          "/com/deepin/dde/daemon/Dock",
+                                          "org.freedesktop.DBus.Properties",
+                                          "PropertiesChanged",
+                                          "sa{sv}as",
+                                          this, SLOT(handleDbusSignal(QDBusMessage)));
+#endif
+    connect(m_dockInter, &DBusDock::ServiceRestarted, this, [ = ] {
+        checkDockScreenName();
+        emit requestUpdateFrontendGeometry(dockRect(m_currentScreen));
+    });
+    connect(m_dockInter, &DBusDock::OpacityChanged, this, &MultiScreenWorker::onOpacityChanged);
+    connect(m_dockInter, &DBusDock::WindowSizeEfficientChanged, this, &MultiScreenWorker::onWindowSizeChanged);
+    connect(m_dockInter, &DBusDock::WindowSizeFashionChanged, this, &MultiScreenWorker::onWindowSizeChanged);
+
+    connect(m_displayInter, &DisplayInter::ScreenWidthChanged, this, [ = ](ushort  value) {m_screenRawWidth = value;});
+    connect(m_displayInter, &DisplayInter::ScreenHeightChanged, this, [ = ](ushort  value) {m_screenRawHeight = value;});
+    connect(m_displayInter, &DisplayInter::MonitorsChanged, this, &MultiScreenWorker::onMonitorListChanged);
+
+    connect(m_displayInter, &DisplayInter::PrimaryRectChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
+    connect(m_displayInter, &DisplayInter::ScreenHeightChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
+    connect(m_displayInter, &DisplayInter::ScreenWidthChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
+    connect(m_displayInter, &DisplayInter::PrimaryChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
+
+    connect(m_eventInter, &XEventMonitor::CursorMove, this, &MultiScreenWorker::onRegionMonitorChanged);
+
+    connect(this, &MultiScreenWorker::requestUpdateRegionMonitor, this, &MultiScreenWorker::onRequestUpdateRegionMonitor);
+    connect(this, &MultiScreenWorker::requestUpdateFrontendGeometry, this, &MultiScreenWorker::onRequestUpdateFrontendGeometry);
+    connect(this, &MultiScreenWorker::requestUpdatePosition, this, &MultiScreenWorker::onRequestUpdatePosition);
+    connect(this, &MultiScreenWorker::requestNotifyWindowManager, this, &MultiScreenWorker::onRequestNotifyWindowManager);
+    connect(this, &MultiScreenWorker::requestUpdateDragArea, this, &MultiScreenWorker::onRequestUpdateDragArea);
+    connect(this, &MultiScreenWorker::monitorInfoChaged, this, &MultiScreenWorker::onMonitorInfoChaged);
+
+    connect(m_monitorUpdateTimer, &QTimer::timeout, this, [ = ] {
+        // 更新屏幕停靠信息
+        updateMonitorDockedInfo();
+        // 更新所在屏幕
+        checkDockScreenName();
+        // 更新任务栏自身信息
+        /**
+          *注意这里要先对parent()进行setFixedSize，在分辨率切换过程中，setGeometry可能会导致其大小未改变
+          */
+        parent()->setFixedSize(dockRect(m_currentScreen).size());
+        parent()->setGeometry(dockRect(m_currentScreen));
+        parent()->panel()->setFixedSize(dockRect(m_currentScreen).size());
+        parent()->panel()->move(0, 0);
+        // 通知后端
+        emit requestUpdateFrontendGeometry(dockRect(m_currentScreen, m_position, HideMode::KeepShowing, m_displayMode));
+        // 拖拽区域
+        emit requestUpdateDragArea();
+        // 监控区域
+        emit requestUpdateRegionMonitor();
+        // 通知窗管
+        emit requestNotifyWindowManager();
+    });
 }
 
 void MultiScreenWorker::checkDaemonDockService()

@@ -69,8 +69,6 @@ public:
     MultiScreenWorker(QWidget *parent, DWindowManagerHelper *helper);
     ~MultiScreenWorker();
 
-    void initMembers();
-    void initConnection();
     void initShow();
 
     DBusDock *dockInter() {return m_dockInter;}
@@ -225,6 +223,9 @@ private slots:
     void updateMonitorDockedInfo();
 
 private:
+    void initMembers();
+    void initConnection();
+
     void checkDaemonDockService();
     MainWindow *parent();
     // 获取任务栏分别显示和隐藏时对应的位置
