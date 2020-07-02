@@ -445,7 +445,12 @@ void MultiScreenWorker::checkDockScreenName()
             foreach (auto monitor, monitorList) {
                 if (monitor->name() != m_currentScreen
                         && monitor->dockPosition().docked(position())) {
-                    updateDockScreenName(monitor->name());
+                    m_lastScreen = m_currentScreen;
+                    m_currentScreen = monitor->name();
+#ifdef QT_DEBUG
+                    qDebug() << "update dock screen: " << monitor->name();
+#endif
+                    emit requestUpdateLayout(m_currentScreen);
                 }
             }
         }
