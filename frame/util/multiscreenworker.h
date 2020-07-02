@@ -130,9 +130,9 @@ public:
      */
     void updateDockScreenName(const QString &screenName);
     /**
-     * @brief updateDockScreenName      找一个可以停靠当前位置任务栏的屏幕当目标屏幕
+     * @brief checkDockScreenName      检查一下当前屏幕所在边缘是够允许任务栏停靠，不允许的情况需要更换下一块屏幕
      */
-    void updateDockScreenName();
+    void checkDockScreenName();
     /**
      * @brief dockRect
      * @param screenName        屏幕名

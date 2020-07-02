@@ -62,7 +62,7 @@ MultiScreenWorker::MultiScreenWorker(QWidget *parent, DWindowManagerHelper *help
     onMonitorListChanged(m_displayInter->monitors());
 
     // 初始化任务栏停靠屏幕
-    updateDockScreenName();
+    checkDockScreenName();
 
     // 初始化透明度
     QTimer::singleShot(0, this, [ = ] {onOpacityChanged(m_dockInter->opacity());});
@@ -166,7 +166,7 @@ void MultiScreenWorker::initConnection()
                                           this, SLOT(handleDbusSignal(QDBusMessage)));
 #endif
     connect(m_dockInter, &DBusDock::ServiceRestarted, this, [ = ] {
-        updateDockScreenName();
+        checkDockScreenName();
         emit requestUpdateFrontendGeometry(dockRect(m_currentScreen));
     });
     connect(m_dockInter, &DBusDock::OpacityChanged, this, &MultiScreenWorker::onOpacityChanged);
@@ -195,7 +195,7 @@ void MultiScreenWorker::initConnection()
         // 更新屏幕停靠信息
         updateMonitorDockedInfo(m_monitorInfo);
         // 更新所在屏幕
-        updateDockScreenName();
+        checkDockScreenName();
         // 更新任务栏自身信息
         /**
           *注意这里要先对parent()进行setFixedSize，在分辨率切换过程中，setGeometry可能会导致其大小未改变
@@ -310,7 +310,10 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
     }
     // TODO: 考虑切换过快的情况,这里需要停止上一次的动画,可增加信息号控制,暂时无需要
     qDebug() << "from: " << fromScreen << "  to: " << toScreen;
+
     updateDockScreenName(toScreen);
+
+    qDebug() << "check screen: " << m_currentScreen;
 
     QSequentialAnimationGroup *group = new QSequentialAnimationGroup(this);
 
@@ -418,8 +421,11 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
 
 void MultiScreenWorker::updateDockScreenName(const QString &screenName)
 {
-    if (m_currentScreen == screenName)
+    if (m_currentScreen == screenName) {
+        // 只切换位置的情况下，需要确认一遍当前屏幕切换的位置是否允许停靠
+        checkDockScreenName();
         return;
+    }
 
     m_lastScreen = m_currentScreen;
     m_currentScreen = screenName;
@@ -429,7 +435,7 @@ void MultiScreenWorker::updateDockScreenName(const QString &screenName)
     emit requestUpdateLayout(m_currentScreen);
 }
 
-void MultiScreenWorker::updateDockScreenName()
+void MultiScreenWorker::checkDockScreenName()
 {
     QList<Monitor *> monitorList = m_monitorInfo.keys();
     if (monitorList.size() == 2) {
@@ -969,7 +975,7 @@ void MultiScreenWorker::onRequestNotifyWindowManager()
 
 void MultiScreenWorker::onRequestUpdatePosition(const Position &fromPos, const Position &toPos)
 {
-    // 切换位置默认切换到主屏
+    // 切换位置默认切换到主屏(这里其实是建议优先切换到当前屏幕的，已建议产品，后面可能会改)
     QString primaryScreen;
     QList<Monitor *> monitorList = m_monitorInfo.keys();
     foreach (auto monitor, monitorList) {
@@ -1190,7 +1196,7 @@ QRect MultiScreenWorker::getDockShowGeometry(const QString &screenName, const Po
     }
 
 #ifdef QT_DEBUG
-        qDebug() << rect;
+//    qDebug() << rect;
 #endif
 
     return rect;
@@ -1237,7 +1243,7 @@ QRect MultiScreenWorker::getDockHideGeometry(const QString &screenName, const Po
     }
 
 #ifdef QT_DEBUG
-        qDebug() << rect;
+//    qDebug() << rect;
 #endif
 
     return rect;
@@ -1254,7 +1260,12 @@ void MultiScreenWorker::updateWindowManagerDock()
     const auto ratio = parent()->devicePixelRatioF();
 
     const QRect rect = getDockShowGeometry(m_currentScreen, m_position, m_displayMode);
-    qDebug() << "wm dock area: " << rect;
+//    static QRect lastRect;
+//    if (lastRect == rect) {
+//        return;
+//    }
+//    lastRect = rect;
+//    qDebug() << "wm dock area: " << rect;
 
     const QPoint &p = rawXPosition(rect.topLeft());
 
