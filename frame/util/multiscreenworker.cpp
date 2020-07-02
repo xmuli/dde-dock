@@ -353,18 +353,19 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
     group->addAnimation(ani2);
 
     connect(ani1, &QVariantAnimation::valueChanged, this, [ = ](QVariant value) {
-        parent()->setFixedSize(value.toRect().size());
-        parent()->setGeometry(value.toRect());
+        const QRect &rect = value.toRect();
+        parent()->setFixedSize(rect.size());
+        parent()->setGeometry(rect);
 
         switch (m_position) {
         case Position::Top: {
             const int panelSize = parent()->panel()->height();
-            parent()->panel()->move(0, dockRect(m_currentScreen).height() - panelSize);
+            parent()->panel()->move(0, rect.height() - panelSize);
         }
         break;
         case Position::Left: {
             const int panelSize = parent()->panel()->width();
-            parent()->panel()->move(dockRect(m_currentScreen).width() - panelSize, 0);
+            parent()->panel()->move(rect.width() - panelSize, 0);
         }
         break;
         case Position::Bottom:
@@ -374,18 +375,19 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
     });
 
     connect(ani2, &QVariantAnimation::valueChanged, this, [ = ](QVariant value) {
-        parent()->setFixedSize(value.toRect().size());
-        parent()->setGeometry(value.toRect());
+        const QRect &rect = value.toRect();
+        parent()->setFixedSize(rect.size());
+        parent()->setGeometry(rect);
 
         switch (m_position) {
         case Position::Top: {
             const int panelSize = parent()->panel()->height();
-            parent()->panel()->move(0, dockRect(m_currentScreen).height() - panelSize);
+            parent()->panel()->move(0, rect.height() - panelSize);
         }
         break;
         case Position::Left: {
             const int panelSize = parent()->panel()->width();
-            parent()->panel()->move(dockRect(m_currentScreen).width() - panelSize, 0);
+            parent()->panel()->move(rect.width() - panelSize, 0);
         }
         break;
         case Position::Bottom:
