@@ -57,9 +57,9 @@ const QPoint rawXPosition(const QPoint &scaledPos)
     QScreen const *screen = Utils::screenAtByScaled(scaledPos);
 
     return screen ? screen->geometry().topLeft() +
-                    (scaledPos - screen->geometry().topLeft()) *
-                    screen->devicePixelRatio()
-                  : scaledPos;
+           (scaledPos - screen->geometry().topLeft()) *
+           screen->devicePixelRatio()
+           : scaledPos;
 }
 
 const QPoint scaledPos(const QPoint &rawXPos)
@@ -67,9 +67,9 @@ const QPoint scaledPos(const QPoint &rawXPos)
     QScreen const *screen = Utils::screenAt(rawXPos);
 
     return screen
-            ? screen->geometry().topLeft() +
-              (rawXPos - screen->geometry().topLeft()) / screen->devicePixelRatio()
-            : rawXPos;
+           ? screen->geometry().topLeft() +
+           (rawXPos - screen->geometry().topLeft()) / screen->devicePixelRatio()
+           : rawXPos;
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -77,8 +77,8 @@ MainWindow::MainWindow(QWidget *parent)
     , m_mainPanel(new MainPanelControl(this))
     , m_platformWindowHandle(this)
     , m_wmHelper(DWindowManagerHelper::instance())
-    , m_multiScreenWorker(new MultiScreenWorker(this,m_wmHelper))
-    , m_menuWorker(new MenuWorker(m_multiScreenWorker->dockInter(),this))
+    , m_multiScreenWorker(new MultiScreenWorker(this, m_wmHelper))
+    , m_menuWorker(new MenuWorker(m_multiScreenWorker->dockInter(), this))
     , m_eventInter(new XEventMonitor("com.deepin.api.XEventMonitor", "/com/deepin/api/XEventMonitor", QDBusConnection::sessionBus()))
     , m_shadowMaskOptimizeTimer(new QTimer(this))
     , m_dbusDaemonInterface(QDBusConnection::sessionBus().interface())
@@ -270,8 +270,8 @@ void MainWindow::initConnections()
     connect(m_mainPanel, &MainPanelControl::itemMoved, DockItemManager::instance(), &DockItemManager::itemMoved, Qt::DirectConnection);
     connect(m_mainPanel, &MainPanelControl::itemAdded, DockItemManager::instance(), &DockItemManager::itemAdded, Qt::DirectConnection);
 
-    connect(m_dragWidget, &DragWidget::dragPointOffset, m_multiScreenWorker, [=]{m_multiScreenWorker->onDragStateChanged(true);});
-    connect(m_dragWidget, &DragWidget::dragFinished, m_multiScreenWorker, [=]{m_multiScreenWorker->onDragStateChanged(false);});
+    connect(m_dragWidget, &DragWidget::dragPointOffset, m_multiScreenWorker, [ = ] {m_multiScreenWorker->onDragStateChanged(true);});
+    connect(m_dragWidget, &DragWidget::dragFinished, m_multiScreenWorker, [ = ] {m_multiScreenWorker->onDragStateChanged(false);});
     connect(m_dragWidget, &DragWidget::dragPointOffset, this, &MainWindow::onMainWindowSizeChanged);
     connect(m_dragWidget, &DragWidget::dragFinished, this, &MainWindow::onDragFinished);
 
@@ -284,9 +284,9 @@ void MainWindow::initConnections()
     connect(m_multiScreenWorker, &MultiScreenWorker::displayModeChanegd, this, &MainWindow::updateDisplayMode, Qt::QueuedConnection);
 
     //　更新任务栏内容展示
-    connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateLayout, this,[=](const QString &screenName){
+    connect(m_multiScreenWorker, &MultiScreenWorker::requestUpdateLayout, this, [ = ](const QString & screenName) {
         m_mainPanel->setFixedSize(m_multiScreenWorker->dockRect(screenName, m_multiScreenWorker->position(), HideMode::KeepShowing, m_multiScreenWorker->displayMode()).size());
-        m_mainPanel->move(0,0);
+        m_mainPanel->move(0, 0);
         m_mainPanel->setDisplayMode(m_multiScreenWorker->displayMode());
         m_mainPanel->setPositonValue(m_multiScreenWorker->position());
         m_mainPanel->update();
@@ -389,10 +389,8 @@ void MainWindow::onMainWindowSizeChanged(QPoint offset)
     const QRect &rect = m_multiScreenWorker->dockRect(m_multiScreenWorker->deskScreen());
 
     QRect newRect;
-    switch(m_multiScreenWorker->position())
-    {
-    case Top:
-    {
+    switch (m_multiScreenWorker->position()) {
+    case Top: {
         newRect.setX(rect.x());
         newRect.setY(rect.y());
         newRect.setWidth(rect.width());
@@ -400,9 +398,8 @@ void MainWindow::onMainWindowSizeChanged(QPoint offset)
 
         m_dockSize = newRect.height();
     }
-        break;
-    case Bottom:
-    {
+    break;
+    case Bottom: {
         newRect.setX(rect.x());
         newRect.setY(rect.y() + rect.height() - qBound(MAINWINDOW_MIN_SIZE, rect.height() - offset.y(), MAINWINDOW_MAX_SIZE));
         newRect.setWidth(rect.width());
@@ -410,9 +407,8 @@ void MainWindow::onMainWindowSizeChanged(QPoint offset)
 
         m_dockSize = newRect.height();
     }
-        break;
-    case Left:
-    {
+    break;
+    case Left: {
         newRect.setX(rect.x());
         newRect.setY(rect.y());
         newRect.setWidth(qBound(MAINWINDOW_MIN_SIZE, rect.width() + offset.x(), MAINWINDOW_MAX_SIZE));
@@ -420,9 +416,8 @@ void MainWindow::onMainWindowSizeChanged(QPoint offset)
 
         m_dockSize = newRect.width();
     }
-        break;
-    case Right:
-    {
+    break;
+    case Right: {
         newRect.setX(rect.x() + rect.width() - qBound(MAINWINDOW_MIN_SIZE, rect.width() - offset.x(), MAINWINDOW_MAX_SIZE));
         newRect.setY(rect.y());
         newRect.setWidth(qBound(MAINWINDOW_MIN_SIZE, rect.width() - offset.x(), MAINWINDOW_MAX_SIZE));
@@ -430,7 +425,7 @@ void MainWindow::onMainWindowSizeChanged(QPoint offset)
 
         m_dockSize = newRect.width();
     }
-        break;
+    break;
     }
 
     // 更新界面大小

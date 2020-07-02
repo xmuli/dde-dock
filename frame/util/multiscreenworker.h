@@ -52,6 +52,24 @@ class QVariantAnimation;
 class QWidget;
 class QTimer;
 class MainWindow;
+//class MonitorMap{
+//public:
+//    void insert(Monitor *key, MonitorInter *value) {map.insert(key,value);}
+//    QList<Monitor *> keys() {return map.keys();}
+//    QList<Monitor *> validKeys() {
+//        QList<Monitor *> list;
+//        QMapIterator<Monitor *, MonitorInter *>it(map);
+//        while (it.hasNext()) {
+//            it.next();
+//            if(it.key()->enable())
+//                list << it.key();
+//        }
+//        return list;
+//    }
+
+//private:
+//    QMap<Monitor *, MonitorInter *> map;
+//};
 class MultiScreenWorker : public QObject
 {
     Q_OBJECT
@@ -218,7 +236,7 @@ private slots:
     void onMonitorInfoChaged();
 
     void updateInterRect(const QList<Monitor *>monitorList, QList<MonitRect> &list);
-    void updateMonitorDockedInfo(QMap<Monitor *, MonitorInter *> &map);
+    void updateMonitorDockedInfo();
 
 private:
     void checkDaemonDockService();
@@ -233,7 +251,7 @@ private:
      * @param screenName        屏幕名
      * @return                  屏幕信息对应指针
      */
-    Monitor *monitorByName(const QMap<Monitor *, MonitorInter *> &map,const QString &screenName);
+    Monitor *monitorByName(const QList<Monitor *> &list,const QString &screenName);
     QScreen *screenByName(const QString &screenName);
     qreal scaleByName(const QString &screenName);
     bool onScreenEdge(const QString &screenName,const QPoint &point);
@@ -242,6 +260,7 @@ private:
     bool contains(const QList<MonitRect> &rectList, const QPoint &pos);
     const QPoint rawXPosition(const QPoint &scaledPos);
     const QPoint scaledPos(const QPoint &rawXPos);
+    QList<Monitor *> validMonitor();
 
 private:
     QWidget *m_parent;
@@ -282,12 +301,12 @@ private:
      * @brief m_displayMode 时尚模式,高效模式
      */
     DisplayMode m_displayMode;
+
+    /***************不和其他流程产生交互,尽量不要动这里的变量***************/
     /**
      * @brief m_monitorInfo 屏幕信息(注意需要保证内容实时更新,且有效)
      */
     QMap<Monitor *, MonitorInter *> m_monitorInfo;
-
-    /***************不和其他流程产生交互,尽量不要动这里的变量***************/
     int m_screenRawHeight;
     int m_screenRawWidth;
     QString m_registerKey;
