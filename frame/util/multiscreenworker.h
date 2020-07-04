@@ -57,25 +57,35 @@ class QWidget;
 class QTimer;
 class MainWindow;
 
-class DockScreen
+class DockScreen : QObject
 {
+    Q_OBJECT
 public:
-    explicit DockScreen(const QString &current, const QString &last)
+    explicit DockScreen(const QString &current, const QString &last, const QString &primary)
         : m_currentScreen(current)
         , m_lastScreen(last)
+        , m_primary(primary)
     {}
 
     inline const QString &current() {return m_currentScreen;}
     inline const QString &last() {return m_lastScreen;}
+    inline const QString &primary() {return m_primary;}
 
     void updateDockedScreen(const QString &screenName)
     {
         m_lastScreen = m_currentScreen;
         m_currentScreen = screenName;
     }
+
+    void updatePrimary(const QString &primary)
+    {
+        m_primary = primary;
+    }
+
 private:
     QString m_currentScreen;
     QString m_lastScreen;
+    QString m_primary;
 };
 
 class MultiScreenWorker : public QObject
@@ -272,7 +282,7 @@ private:
     bool contains(const QList<MonitRect> &rectList, const QPoint &pos);
     const QPoint rawXPosition(const QPoint &scaledPos);
     const QPoint scaledPos(const QPoint &rawXPos);
-    QList<Monitor *> validMonitorList();
+    QList<Monitor *> validMonitorList(const QMap<Monitor *, MonitorInter *> &map);
 
 private:
     QWidget *m_parent;

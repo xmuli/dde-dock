@@ -31,6 +31,9 @@
 
 #include <QDBusConnection>
 
+// 保证以下数据更新顺序(大环节顺序不要变，内部还有一些小的调整，比如任务栏显示区域更新的时候，里面内容的布局方向可能也要更新...)
+// Monitor数据－＞屏幕是否可停靠更新－＞监视唤醒区域更新，任务栏显示区域更新－＞拖拽区域更新－＞通知后端接口，通知窗管
+
 MultiScreenWorker::MultiScreenWorker(QWidget *parent, DWindowManagerHelper *helper)
     : QObject(nullptr)
     , m_parent(parent)
@@ -42,9 +45,7 @@ MultiScreenWorker::MultiScreenWorker(QWidget *parent, DWindowManagerHelper *help
     , m_monitorUpdateTimer(new QTimer(this))
     , m_showAni(new QVariantAnimation(this))
     , m_hideAni(new QVariantAnimation(this))
-    , m_ds(qApp->primaryScreen()->name(), qApp->primaryScreen()->name())
-      //    , m_lastScreen(qApp->primaryScreen()->name())
-      //    , m_ds.current()(qApp->primaryScreen()->name())
+    , m_ds(qApp->primaryScreen()->name(), qApp->primaryScreen()->name(), m_displayInter->primary())
     , m_opacity(0.4)
     , m_position(Dock::Position(m_dockInter->position()))
     , m_hideMode(Dock::HideMode(m_dockInter->hideMode()))
@@ -113,8 +114,6 @@ void MultiScreenWorker::showAni(const QString &screen)
         return;
     }
 
-    updateDockScreenName(screen);
-
     m_showAni->setStartValue(getDockHideGeometry(screen, m_position, m_displayMode));
     m_showAni->setEndValue(getDockShowGeometry(screen, m_position, m_displayMode));
     m_showAni->start();
@@ -140,8 +139,6 @@ void MultiScreenWorker::hideAni(const QString &screen)
         return;
     }
 
-    updateDockScreenName(screen);
-
     m_hideAni->setStartValue(getDockShowGeometry(screen, m_position, m_displayMode));
     m_hideAni->setEndValue(getDockHideGeometry(screen, m_position, m_displayMode));
     m_hideAni->start();
@@ -155,11 +152,7 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
     }
 
     // 更新屏幕信息
-    qDebug() << toScreen;
     m_ds.updateDockedScreen(toScreen);
-    qDebug() << m_ds.current();
-    //    m_lastScreen = m_ds.current();
-    //    m_ds.current() = toScreen;
 
     // TODO: 考虑切换过快的情况,这里需要停止上一次的动画,可增加信息号控制,暂时无需要
     qDebug() << "from: " << fromScreen << "  to: " << toScreen;
@@ -297,9 +290,6 @@ void MultiScreenWorker::updateDockScreenName(const QString &screenName)
 
     m_ds.updateDockedScreen(getValidScreen(m_position));
 
-    //    m_lastScreen = m_ds.current();
-    //    m_ds.current() = getValidScreen();
-
     qDebug() << "update dock screen: " << m_ds.current();
 
     emit requestUpdateLayout(m_ds.current());
@@ -307,7 +297,7 @@ void MultiScreenWorker::updateDockScreenName(const QString &screenName)
 
 QString MultiScreenWorker::getValidScreen(const Position &pos)
 {
-    QList<Monitor *> monitorList = validMonitorList();
+    QList<Monitor *> monitorList = validMonitorList(m_monitorInfo);
     // 查找主屏
     QString primaryName;
     foreach (auto monitor, monitorList) {
@@ -319,7 +309,7 @@ QString MultiScreenWorker::getValidScreen(const Position &pos)
 
     Q_ASSERT(!primaryName.isEmpty());
 
-    Monitor *primaryMonitor = monitorByName(validMonitorList(), primaryName);
+    Monitor *primaryMonitor = monitorByName(validMonitorList(m_monitorInfo), primaryName);
 
     Q_ASSERT(primaryMonitor);
 
@@ -335,21 +325,18 @@ QString MultiScreenWorker::getValidScreen(const Position &pos)
     }
 
     Q_UNREACHABLE();
-//    return QString();
 }
 
 void MultiScreenWorker::autosetDockScreen()
 {
-    QList<Monitor *> monitorList = validMonitorList();
+    QList<Monitor *> monitorList = validMonitorList(m_monitorInfo);
     if (monitorList.size() == 2) {
-        Monitor *primaryMonitor = monitorByName(validMonitorList(), m_ds.current());
+        Monitor *primaryMonitor = monitorByName(validMonitorList(m_monitorInfo), m_ds.primary());
         if (!primaryMonitor->dockPosition().docked(position())) {
             foreach (auto monitor, monitorList) {
                 if (monitor->name() != m_ds.current()
                         && monitor->dockPosition().docked(position())) {
                     m_ds.updateDockedScreen(monitor->name());
-                    //                    m_lastScreen = m_ds.current();
-                    //                    m_ds.current() = monitor->name();
 #ifdef QT_DEBUG
                     qDebug() << "update dock screen: " << monitor->name();
 #endif
@@ -467,7 +454,7 @@ void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
         return;
 
     if (m_draging || m_aniStart) {
-        qDebug() << "dock is draging or animation is running";
+        //        qDebug() << "dock is draging or animation is running";
         return;
     }
 
@@ -493,20 +480,20 @@ void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
     static QPoint lastPos(0, 0);
     if (lastPos == QPoint(x, y)) {
 #ifdef QT_DEBUG
-        qDebug() << "same point,should return";
+        //        qDebug() << "same point,should return";
 #endif
         return;
     }
     lastPos = QPoint(x, y);
 
 #ifdef QT_DEBUG
-    qDebug() << x << y << toScreen << m_ds.current();
+    qDebug() << x << y << m_ds.current() << toScreen;
 #endif
 
     // 任务栏显示状态，但需要切换屏幕
     if (toScreen != m_ds.current()) {
         // 复制模式．不需要响应切换屏幕
-        QList<Monitor *> monitorList = validMonitorList();
+        QList<Monitor *> monitorList = validMonitorList(m_monitorInfo);
         if (monitorList.size() == 2 && monitorList.first()->rect() == monitorList.last()->rect()) {
 #ifdef QT_DEBUG
             qDebug() << "copy mode　or merge mode";
@@ -516,7 +503,9 @@ void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
             return;
         }
 
-        Monitor *currentMonitor = monitorByName(validMonitorList(), toScreen);
+        m_ds.updateDockedScreen(screen->name());
+
+        Monitor *currentMonitor = monitorByName(validMonitorList(m_monitorInfo), toScreen);
         if (!currentMonitor) {
 #ifdef QT_DEBUG
             qDebug() << "cannot find monitor by name: " << toScreen;
@@ -526,7 +515,12 @@ void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
 
         // 检查边缘是否允许停靠
         if (currentMonitor->dockPosition().docked(m_position)) {
-            changeDockPosition(m_ds.current(), screen->name(), m_position, m_position);
+            if (hideMode() == HideMode::KeepHidden
+                    || hideMode() == HideMode::SmartHide) {
+                showAni(m_ds.current());
+            } else if (hideMode() == HideMode::KeepShowing) {
+                changeDockPosition(m_ds.last(), m_ds.current(), m_position, m_position);
+            }
         }
     } else {
         // 任务栏隐藏状态，但需要显示
@@ -588,23 +582,12 @@ void MultiScreenWorker::monitorAdded(const QString &path)
     connect(inter, &MonitorInter::YChanged, mon, &Monitor::setY);
     connect(inter, &MonitorInter::WidthChanged, mon, &Monitor::setW);
     connect(inter, &MonitorInter::HeightChanged, mon, &Monitor::setH);
-    connect(inter, &MonitorInter::MmWidthChanged, mon, &Monitor::setMmWidth);
-    connect(inter, &MonitorInter::MmHeightChanged, mon, &Monitor::setMmHeight);
-    connect(inter, &MonitorInter::RotationChanged, mon, &Monitor::setRotate);
     connect(inter, &MonitorInter::NameChanged, mon, &Monitor::setName);
-    connect(inter, &MonitorInter::CurrentModeChanged, mon, &Monitor::setCurrentMode);
-    connect(inter, &MonitorInter::ModesChanged, mon, &Monitor::setModeList);
-    connect(inter, &MonitorInter::RotationsChanged, mon, &Monitor::setRotateList);
     connect(inter, &MonitorInter::EnabledChanged, mon, &Monitor::setMonitorEnable);
 
-    connect(m_displayInter, static_cast<void (DisplayInter::*)(const QString &) const>(&DisplayInter::PrimaryChanged), mon, &Monitor::setPrimary);
-
-    //　屏幕信息发生变化(注意:这里需要放在上面的关联之后,确保上面数据先更新,再走monitorInfoChaged,从而保证后面的一系列操作拿到的都是正确的数据)
-    connect(inter, &MonitorInter::XChanged, this, &MultiScreenWorker::monitorInfoChaged);
-    connect(inter, &MonitorInter::YChanged, this, &MultiScreenWorker::monitorInfoChaged);
-    connect(inter, &MonitorInter::WidthChanged, this, &MultiScreenWorker::monitorInfoChaged);
-    connect(inter, &MonitorInter::HeightChanged, this, &MultiScreenWorker::monitorInfoChaged);
-    connect(inter, &MonitorInter::EnabledChanged, this, &MultiScreenWorker::monitorInfoChaged);
+    // 这里有可能在使用Monitor中的数据时，但实际上Monitor数据还未准备好．以Monitor中的信号为准，不能以MonitorInter中信号为准，
+    connect(mon, &Monitor::geometryChanged, this, &MultiScreenWorker::monitorInfoChaged);
+    connect(mon, &Monitor::enableChanged, this, &MultiScreenWorker::monitorInfoChaged);
 
     // NOTE: DO NOT using async dbus call. because we need to have a unique name to distinguish each monitor
     Q_ASSERT(inter->isValid());
@@ -616,14 +599,6 @@ void MultiScreenWorker::monitorAdded(const QString &path)
     mon->setY(inter->y());
     mon->setW(inter->width());
     mon->setH(inter->height());
-    mon->setRotate(inter->rotation());
-    mon->setCurrentMode(inter->currentMode());
-    mon->setModeList(inter->modes());
-
-    mon->setRotateList(inter->rotations());
-    mon->setPrimary(m_displayInter->primary());
-    mon->setMmWidth(inter->mmWidth());
-    mon->setMmHeight(inter->mmHeight());
 
     m_monitorInfo.insert(mon, inter);
 
@@ -766,8 +741,7 @@ void MultiScreenWorker::onHideStateChanged()
     m_hideState = state;
 
     // 两种隐藏模式下都可以被唤醒
-    if (m_hideMode == HideMode::SmartHide
-            || m_hideMode == HideMode::KeepHidden) {
+    if (m_hideMode == HideMode::SmartHide || m_hideMode == HideMode::KeepHidden) {
         if (m_hideState == HideState::Show)
             showAni(m_ds.current());
         else if (m_hideState == HideState::Hide)
@@ -803,9 +777,13 @@ void MultiScreenWorker::onRequestUpdateRegionMonitor()
 
     // 任务栏唤起区域
     m_monitorRectList.clear();
-    foreach (Monitor *inter, validMonitorList()) {
+    foreach (Monitor *inter, validMonitorList(m_monitorInfo)) {
+        // 屏幕不可用或此位置不可停靠时，不用监听这块区域
+        if (!inter->enable() || !inter->dockPosition().docked(m_position))
+            continue;
+
         MonitRect rect;
-        switch (static_cast<Position>(m_dockInter->position())) {
+        switch (m_position) {
         case Top: {
             rect.x1 = inter->x();
             rect.y1 = inter->y();
@@ -846,7 +824,7 @@ void MultiScreenWorker::onRequestUpdateRegionMonitor()
 
     // 任务栏事件区域,用于模拟离开事件
     QList<MonitRect> fulleScreenMonitorList;
-    foreach (Monitor *inter, validMonitorList()) {
+    foreach (Monitor *inter, validMonitorList(m_monitorInfo)) {
         MonitRect rect;
         rect.x1 = inter->x();
         rect.y1 = inter->y();
@@ -902,8 +880,8 @@ void MultiScreenWorker::onMonitorInfoChaged()
     }
 #endif
     // 双屏，复制模式，两个屏幕的信息是一样的
-    if (validMonitorList().size() == 2
-            && validMonitorList().first()->rect() == validMonitorList().last()->rect()) {
+    if (validMonitorList(m_monitorInfo).size() == 2
+            && validMonitorList(m_monitorInfo).first()->rect() == validMonitorList(m_monitorInfo).last()->rect()) {
 #ifdef QT_DEBUG
         qDebug() << "repeat screen";
 #endif
@@ -958,7 +936,7 @@ void MultiScreenWorker::updateInterRect(const QList<Monitor *> monitorList, QLis
 
 void MultiScreenWorker::updateMonitorDockedInfo()
 {
-    QList<Monitor *>screens = validMonitorList();
+    QList<Monitor *>screens = validMonitorList(m_monitorInfo);
 
     if (screens.size() == 1) {
         //　只剩下一个可用的屏幕
@@ -1064,13 +1042,16 @@ void MultiScreenWorker::initMembers()
     m_showAni->setDuration(duration);
     m_hideAni->setDuration(duration);
 
-    // 初始化monitor信息
+    //1\初始化monitor信息
     onMonitorListChanged(m_displayInter->monitors());
 
-    // 初始化监视区域
+    //2\初始化屏幕停靠信息
+    updateMonitorDockedInfo();
+
+    //3\初始化监视区域
     onRequestUpdateRegionMonitor();
 
-    // 初始化任务栏停靠屏幕
+    //4\初始化任务栏停靠屏幕
     autosetDockScreen();
 }
 
@@ -1080,7 +1061,6 @@ void MultiScreenWorker::initConnection()
         QRect rect = value.toRect();
         parent()->setFixedSize(rect.size());
         parent()->setGeometry(rect);
-        //        parent()->panel()->setFixedSize(rect.size());
 
         switch (m_position) {
         case Position::Top: {
@@ -1103,7 +1083,6 @@ void MultiScreenWorker::initConnection()
         QRect rect = value.toRect();
         parent()->setFixedSize(rect.size());
         parent()->setGeometry(rect);
-        //        parent()->panel()->setFixedSize(rect.size());
 
         switch (m_position) {
         case Position::Top: {
@@ -1156,6 +1135,9 @@ void MultiScreenWorker::initConnection()
     connect(m_displayInter, &DisplayInter::ScreenHeightChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
     connect(m_displayInter, &DisplayInter::ScreenWidthChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
     connect(m_displayInter, &DisplayInter::PrimaryChanged, this, &MultiScreenWorker::primaryScreenChanged, Qt::QueuedConnection);
+    connect(m_displayInter, &DisplayInter::PrimaryChanged, this, [ = ] {
+        m_ds.updatePrimary(m_displayInter->primary());
+    });
 
     connect(m_eventInter, &XEventMonitor::CursorMove, this, &MultiScreenWorker::onRegionMonitorChanged);
 
@@ -1247,7 +1229,7 @@ MainWindow *MultiScreenWorker::parent()
 QRect MultiScreenWorker::getDockShowGeometry(const QString &screenName, const Position &pos, const DisplayMode &displaymode)
 {
     QRect rect;
-    foreach (Monitor *inter, validMonitorList()) {
+    foreach (Monitor *inter, validMonitorList(m_monitorInfo)) {
         if (inter->name() == screenName) {
             const int dockSize = int(displaymode == DisplayMode::Fashion ? m_dockInter->windowSizeFashion() : m_dockInter->windowSizeEfficient());
 
@@ -1294,7 +1276,7 @@ QRect MultiScreenWorker::getDockShowGeometry(const QString &screenName, const Po
 QRect MultiScreenWorker::getDockHideGeometry(const QString &screenName, const Position &pos, const DisplayMode &displaymode)
 {
     QRect rect;
-    foreach (Monitor *inter, validMonitorList()) {
+    foreach (Monitor *inter, validMonitorList(m_monitorInfo)) {
         if (inter->name() == screenName) {
             const int margin = (displaymode == DisplayMode::Fashion ? WINDOWMARGIN : 0);
 
@@ -1349,6 +1331,7 @@ void MultiScreenWorker::updateWindowManagerDock()
     const auto ratio = parent()->devicePixelRatioF();
 
     const QRect rect = getDockShowGeometry(m_ds.current(), m_position, m_displayMode);
+    qDebug() << "wm dock area:" << rect;
     const QPoint &p = rawXPosition(rect.topLeft());
 
     XcbMisc::Orientation orientation = XcbMisc::OrientationTop;
@@ -1488,10 +1471,10 @@ const QPoint MultiScreenWorker::scaledPos(const QPoint &rawXPos)
            : rawXPos;
 }
 
-QList<Monitor *> MultiScreenWorker::validMonitorList()
+QList<Monitor *> MultiScreenWorker::validMonitorList(const QMap<Monitor *, MonitorInter *> &map)
 {
     QList<Monitor *> list;
-    QMapIterator<Monitor *, MonitorInter *>it(m_monitorInfo);
+    QMapIterator<Monitor *, MonitorInter *>it(map);
     while (it.hasNext()) {
         it.next();
         if (it.key()->enable())
