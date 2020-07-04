@@ -28,6 +28,7 @@
 #include "constants.h"
 
 #include <QObject>
+#include <QDebug>
 
 #include <com_deepin_daemon_display_monitor.h>
 
@@ -43,7 +44,8 @@ public:
         bool topDock = true;
         bool rightDock = true;
         bool bottomDock = true;
-        DockPosition(bool l = true, bool t = true, bool r = true, bool b = true) {
+        DockPosition(bool l = true, bool t = true, bool r = true, bool b = true)
+        {
             leftDock = l;
             topDock = t;
             rightDock = r;
@@ -52,6 +54,7 @@ public:
 
         bool docked(const Position &pos)
         {
+            qDebug() << topDock << rightDock << bottomDock << leftDock;
             switch (pos) {
             case Position::Top:
                 return topDock;
