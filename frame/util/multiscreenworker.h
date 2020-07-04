@@ -106,16 +106,6 @@ public:
     DBusDock *dockInter() {return m_dockInter;}
 
     /**
-     * @brief showAni   任务栏显示动画
-     * @param screen    显示到目标屏幕上
-     */
-    void showAni(const QString &screen);
-    /**
-     * @brief hideAni   任务栏隐藏动画
-     * @param screen    从目标屏幕上隐藏
-     */
-    void hideAni(const QString &screen);
-    /**
      * @brief lastScreen
      * @return                      任务栏上次所在的屏幕
      */
@@ -150,28 +140,6 @@ public:
      * @return                      任务栏透明度
      */
     inline quint8 opacity() {return m_opacity * 255;}
-    /**
-     * @brief changeDockPosition    做一个动画操作
-     * @param lastScreen            上次任务栏所在的屏幕
-     * @param deskScreen            任务栏要移动到的屏幕
-     * @param fromPos               任务栏上次的方向
-     * @param toPos                 任务栏打算移动到的方向
-     */
-    void changeDockPosition(QString lastScreen, QString deskScreen, const Position &fromPos, const Position &toPos);
-    /**
-     * @brief updateDockScreenName  将任务栏所在屏幕信息进行更新,在任务栏切换屏幕显示后,这里应该被调用
-     * @param screenName            目标屏幕
-     */
-    void updateDockScreenName(const QString &screenName);
-    /**
-     * @brief getValidScreen        获取一个当前任务栏可以停靠的屏幕，优先使用主屏
-     * @return
-     */
-    QString getValidScreen(const Position &pos);
-    /**
-     * @brief autosetDockScreen     检查一下当前屏幕所在边缘是够允许任务栏停靠，不允许的情况需要更换下一块屏幕
-     */
-    void autosetDockScreen();
     /**
      * @brief dockRect
      * @param screenName            屏幕名
@@ -264,6 +232,38 @@ private:
     void initMembers();
     void initConnection();
     void initUI();
+    /**
+     * @brief showAni   任务栏显示动画
+     * @param screen    显示到目标屏幕上
+     */
+    void showAni(const QString &screen);
+    /**
+     * @brief hideAni   任务栏隐藏动画
+     * @param screen    从目标屏幕上隐藏
+     */
+    void hideAni(const QString &screen);
+    /**
+     * @brief changeDockPosition    做一个动画操作
+     * @param lastScreen            上次任务栏所在的屏幕
+     * @param deskScreen            任务栏要移动到的屏幕
+     * @param fromPos               任务栏上次的方向
+     * @param toPos                 任务栏打算移动到的方向
+     */
+    void changeDockPosition(QString lastScreen, QString deskScreen, const Position &fromPos, const Position &toPos);
+    /**
+     * @brief updateDockScreenName  将任务栏所在屏幕信息进行更新,在任务栏切换屏幕显示后,这里应该被调用
+     * @param screenName            目标屏幕
+     */
+    void updateDockScreenName(const QString &screenName);
+    /**
+     * @brief getValidScreen        获取一个当前任务栏可以停靠的屏幕，优先使用主屏
+     * @return
+     */
+    QString getValidScreen(const Position &pos);
+    /**
+     * @brief autosetDockScreen     检查一下当前屏幕所在边缘是够允许任务栏停靠，不允许的情况需要更换下一块屏幕
+     */
+    void autosetDockScreen();
 
     void checkDaemonDockService();
 
@@ -305,9 +305,8 @@ private:
 
     // 屏幕名称信息
     DockScreen m_ds;
-//    QString m_lastScreen;
-//    QString m_currentScreen;
 
+    // 任务栏属性
     double m_opacity;
     Position m_position;
     HideMode m_hideMode;
@@ -322,10 +321,10 @@ private:
     int m_screenRawWidth;
     QString m_registerKey;
     QString m_leaveRegisterKey;
-    bool m_aniStart;                        // changeDockPosition是否正在运行中
-    bool m_draging;                         // 鼠标是否正在调整任务栏的宽度或高度
-    bool m_autoHide;                        // 和DockSettings保持一致,可以直接使用其单例进行获取
-    QList<MonitRect> m_monitorRectList;     // 监听唤起任务栏区域
+    bool m_aniStart;                            // changeDockPosition是否正在运行中
+    bool m_draging;                             // 鼠标是否正在调整任务栏的宽度或高度
+    bool m_autoHide;                            // 和DockSettings保持一致,可以直接使用其单例进行获取
+    QList<MonitRect> m_monitorRectList;         // 监听唤起任务栏区域
     /*****************************************************************/
 };
 
