@@ -66,7 +66,11 @@ public:
         , m_lastScreen(last)
         , m_primary(primary)
     {}
-
+    explicit DockScreen(const QString &primary)
+        : m_currentScreen(primary)
+        , m_lastScreen(primary)
+        , m_primary(primary)
+    {}
     inline const QString &current() {return m_currentScreen;}
     inline const QString &last() {return m_lastScreen;}
     inline const QString &primary() {return m_primary;}
@@ -168,15 +172,12 @@ signals:
 
     // 更新监视区域
     void requestUpdateRegionMonitor();
-
     void requestUpdateFrontendGeometry(const QRect &rect);
     void requestNotifyWindowManager();
     void requestUpdatePosition(const Position &fromPos, const Position &toPos);
     void requestUpdateLayout(const QString &screenName);        //　界面需要根据任务栏更新布局的方向
     void requestUpdateDragArea();                               //　更新拖拽区域
-    void monitorInfoChaged();                                   //　屏幕信息发生变化，需要更新任务栏大小，拖拽区域，所在屏幕，监控区域，通知窗管，通知后端，
-
-    void updatePositionDone();
+    void requestUpdateMonitorInfo();                                   //　屏幕信息发生变化，需要更新任务栏大小，拖拽区域，所在屏幕，监控区域，通知窗管，通知后端，
 
 public slots:
     void onAutoHideChanged(bool autoHide);
@@ -222,9 +223,8 @@ private slots:
     void onRequestNotifyWindowManager();
     void onRequestUpdatePosition(const Position &fromPos, const Position &toPos);
     void onRequestUpdateDragArea();
-    void onMonitorInfoChaged();
+    void onRequestUpdateMonitorInfo();
 
-    void updateInterRect(const QList<Monitor *>monitorList, QList<MonitRect> &list);
     void updateMonitorDockedInfo();
 
 private:
@@ -272,7 +272,6 @@ private:
     QRect getDockShowGeometry(const QString &screenName, const Position &pos, const DisplayMode &displaymode);
     QRect getDockHideGeometry(const QString &screenName, const Position &pos, const DisplayMode &displaymode);
 
-    void updateWindowManagerDock();
     Monitor *monitorByName(const QList<Monitor *> &list, const QString &screenName);
     QScreen *screenByName(const QString &screenName);
     qreal scaleByName(const QString &screenName);

@@ -151,7 +151,7 @@ private:
 signals:
     void panelGeometryChanged();
 
-public:
+public slots:
     void resetDragWindow();
 
 private slots:

@@ -45,7 +45,7 @@ MultiScreenWorker::MultiScreenWorker(QWidget *parent, DWindowManagerHelper *help
     , m_monitorUpdateTimer(new QTimer(this))
     , m_showAni(new QVariantAnimation(this))
     , m_hideAni(new QVariantAnimation(this))
-    , m_ds(qApp->primaryScreen()->name(), qApp->primaryScreen()->name(), m_displayInter->primary())
+    , m_ds(m_displayInter->primary())
     , m_opacity(0.4)
     , m_position(Dock::Position(m_dockInter->position()))
     , m_hideMode(Dock::HideMode(m_dockInter->hideMode()))
@@ -134,8 +134,8 @@ void MultiScreenWorker::handleLeaveEvent(QEvent *event)
         case HideMode::KeepHidden:
             hideAni(m_ds.current());
             break;
-        case HideMode::KeepShowing:
-            break;
+        default:
+            return;
         }
     }
 }
@@ -346,8 +346,8 @@ void MultiScreenWorker::monitorAdded(const QString &path)
     connect(inter, &MonitorInter::EnabledChanged, mon, &Monitor::setMonitorEnable);
 
     // 这里有可能在使用Monitor中的数据时，但实际上Monitor数据还未准备好．以Monitor中的信号为准，不能以MonitorInter中信号为准，
-    connect(mon, &Monitor::geometryChanged, this, &MultiScreenWorker::monitorInfoChaged);
-    connect(mon, &Monitor::enableChanged, this, &MultiScreenWorker::monitorInfoChaged);
+    connect(mon, &Monitor::geometryChanged, this, &MultiScreenWorker::requestUpdateMonitorInfo);
+    connect(mon, &Monitor::enableChanged, this, &MultiScreenWorker::requestUpdateMonitorInfo);
 
     // NOTE: DO NOT using async dbus call. because we need to have a unique name to distinguish each monitor
     Q_ASSERT(inter->isValid());
@@ -596,7 +596,54 @@ void MultiScreenWorker::onRequestUpdateFrontendGeometry(const QRect &rect)
 
 void MultiScreenWorker::onRequestNotifyWindowManager()
 {
-    updateWindowManagerDock();
+    // 先清除原先的窗管任务栏区域
+    m_xcbMisc->clear_strut_partial(xcb_window_t(parent()->winId()));
+
+    if (m_hideMode != Dock::KeepShowing)
+        return;
+
+    const auto ratio = parent()->devicePixelRatioF();
+
+    const QRect rect = getDockShowGeometry(m_ds.current(), m_position, m_displayMode);
+    qDebug() << "wm dock area:" << rect;
+    const QPoint &p = rawXPosition(rect.topLeft());
+
+    XcbMisc::Orientation orientation = XcbMisc::OrientationTop;
+    uint strut = 0;
+    uint strutStart = 0;
+    uint strutEnd = 0;
+
+    switch (m_position) {
+    case Position::Top:
+        orientation = XcbMisc::OrientationTop;
+        strut = p.y() + rect.height() * ratio;
+        strutStart = p.x();
+        strutEnd = qMin(qRound(p.x() + rect.width() * ratio), rect.right());
+        break;
+    case Position::Bottom:
+        orientation = XcbMisc::OrientationBottom;
+        strut = m_screenRawHeight - p.y();
+        strutStart = p.x();
+        strutEnd = qMin(qRound(p.x() + rect.width() * ratio), rect.right());
+        break;
+    case Position::Left:
+        orientation = XcbMisc::OrientationLeft;
+        strut = p.x() + rect.width() * ratio;
+        strutStart = p.y();
+        strutEnd = qMin(qRound(p.y() + rect.height() * ratio), rect.bottom());
+        break;
+    case Position::Right:
+        orientation = XcbMisc::OrientationRight;
+        strut = m_screenRawWidth - p.x();
+        strutStart = p.y();
+        strutEnd = qMin(qRound(p.y() + rect.height() * ratio), rect.bottom());
+        break;
+    }
+
+#ifdef QT_DEBUG
+    qDebug() << strut << strutStart << strutEnd;
+#endif
+    m_xcbMisc->set_strut_partial(parent()->winId(), orientation, strut + WINDOWMARGIN * ratio, strutStart, strutEnd);
 }
 
 void MultiScreenWorker::onRequestUpdatePosition(const Position &fromPos, const Position &toPos)
@@ -616,7 +663,7 @@ void MultiScreenWorker::onRequestUpdateDragArea()
     parent()->resetDragWindow();
 }
 
-void MultiScreenWorker::onMonitorInfoChaged()
+void MultiScreenWorker::onRequestUpdateMonitorInfo()
 {
 #ifdef QT_DEBUG
     foreach (auto monitor, m_monitorInfo.keys()) {
@@ -633,49 +680,6 @@ void MultiScreenWorker::onMonitorInfoChaged()
     }
 
     m_monitorUpdateTimer->start();
-}
-
-void MultiScreenWorker::updateInterRect(const QList<Monitor *> monitorList, QList<MonitRect> &list)
-{
-    list.clear();
-
-    const int dockSize = int(displayMode() == DisplayMode::Fashion ? m_dockInter->windowSizeFashion() : m_dockInter->windowSizeEfficient());
-
-    foreach (Monitor *inter, monitorList) {
-        MonitRect rect;
-        switch (m_position) {
-        case Top: {
-            rect.x1 = inter->x();
-            rect.y1 = inter->y();
-            rect.x2 = inter->x() + inter->w();
-            rect.y2 = inter->y() + dockSize + WINDOWMARGIN;
-        }
-        break;
-        case Bottom: {
-            rect.x1 = inter->x();
-            rect.y1 = inter->y() + inter->h() - dockSize - WINDOWMARGIN;
-            rect.x2 = inter->x() + inter->w();
-            rect.y2 = inter->y() + inter->h();
-        }
-        break;
-        case Left: {
-            rect.x1 = inter->x();
-            rect.y1 = inter->y();
-            rect.x2 = inter->x() + dockSize + WINDOWMARGIN;
-            rect.y2 = inter->y() + inter->h();
-        }
-        break;
-        case Right: {
-            rect.x1 = inter->x() + inter->w() - dockSize - WINDOWMARGIN;
-            rect.y1 = inter->y();
-            rect.x2 = inter->x() + inter->w();
-            rect.y2 = inter->y() + inter->h();
-        }
-        break;
-        }
-
-        list << rect;
-    }
 }
 
 void MultiScreenWorker::updateMonitorDockedInfo()
@@ -780,7 +784,7 @@ void MultiScreenWorker::initMembers()
 #ifndef DISABLE_SHOW_ANIMATION
     const int duration = composite ? ANIMATIONTIME : 0;
 #else
-    const int duration = 10;
+    const int duration = 0;
 #endif
 
     m_showAni->setDuration(duration);
@@ -890,7 +894,7 @@ void MultiScreenWorker::initConnection()
     connect(this, &MultiScreenWorker::requestUpdatePosition, this, &MultiScreenWorker::onRequestUpdatePosition);
     connect(this, &MultiScreenWorker::requestNotifyWindowManager, this, &MultiScreenWorker::onRequestNotifyWindowManager);
     connect(this, &MultiScreenWorker::requestUpdateDragArea, this, &MultiScreenWorker::onRequestUpdateDragArea);
-    connect(this, &MultiScreenWorker::monitorInfoChaged, this, &MultiScreenWorker::onMonitorInfoChaged);
+    connect(this, &MultiScreenWorker::requestUpdateMonitorInfo, this, &MultiScreenWorker::onRequestUpdateMonitorInfo);
 
     connect(m_monitorUpdateTimer, &QTimer::timeout, this, [ = ] {
         // 更新屏幕停靠信息
@@ -993,7 +997,7 @@ void MultiScreenWorker::hideAni(const QString &screen)
 void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen, const Position &fromPos, const Position &toPos)
 {
     if (fromScreen == toScreen && fromPos == toPos) {
-        qDebug() << "shoulen't be here,nothing happend!";
+        qDebug() << "shouldn't be here,nothing happend!";
         return;
     }
 
@@ -1016,7 +1020,7 @@ void MultiScreenWorker::changeDockPosition(QString fromScreen, QString toScreen,
 #ifndef DISABLE_SHOW_ANIMATION
     const int duration = composite ? ANIMATIONTIME : 0;
 #else
-    const int duration = 10;
+    const int duration = 0;
 #endif
 
     ani1->setDuration(duration);
@@ -1324,58 +1328,6 @@ QRect MultiScreenWorker::getDockHideGeometry(const QString &screenName, const Po
 #endif
 
     return rect;
-}
-
-void MultiScreenWorker::updateWindowManagerDock()
-{
-    // 先清除原先的窗管任务栏区域
-    m_xcbMisc->clear_strut_partial(xcb_window_t(parent()->winId()));
-
-    if (m_hideMode != Dock::KeepShowing)
-        return;
-
-    const auto ratio = parent()->devicePixelRatioF();
-
-    const QRect rect = getDockShowGeometry(m_ds.current(), m_position, m_displayMode);
-    qDebug() << "wm dock area:" << rect;
-    const QPoint &p = rawXPosition(rect.topLeft());
-
-    XcbMisc::Orientation orientation = XcbMisc::OrientationTop;
-    uint strut = 0;
-    uint strutStart = 0;
-    uint strutEnd = 0;
-
-    switch (m_position) {
-    case Position::Top:
-        orientation = XcbMisc::OrientationTop;
-        strut = p.y() + rect.height() * ratio;
-        strutStart = p.x();
-        strutEnd = qMin(qRound(p.x() + rect.width() * ratio), rect.right());
-        break;
-    case Position::Bottom:
-        orientation = XcbMisc::OrientationBottom;
-        strut = m_screenRawHeight - p.y();
-        strutStart = p.x();
-        strutEnd = qMin(qRound(p.x() + rect.width() * ratio), rect.right());
-        break;
-    case Position::Left:
-        orientation = XcbMisc::OrientationLeft;
-        strut = p.x() + rect.width() * ratio;
-        strutStart = p.y();
-        strutEnd = qMin(qRound(p.y() + rect.height() * ratio), rect.bottom());
-        break;
-    case Position::Right:
-        orientation = XcbMisc::OrientationRight;
-        strut = m_screenRawWidth - p.x();
-        strutStart = p.y();
-        strutEnd = qMin(qRound(p.y() + rect.height() * ratio), rect.bottom());
-        break;
-    }
-
-#ifdef QT_DEBUG
-    qDebug() << strut << strutStart << strutEnd;
-#endif
-    m_xcbMisc->set_strut_partial(parent()->winId(), orientation, strut + WINDOWMARGIN * ratio, strutStart, strutEnd);
 }
 
 Monitor *MultiScreenWorker::monitorByName(const QList<Monitor *> &list, const QString &screenName)
