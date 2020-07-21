@@ -56,6 +56,7 @@ MultiScreenWorker::MultiScreenWorker(QWidget *parent, DWindowManagerHelper *help
     , m_aniStart(false)
     , m_draging(false)
     , m_autoHide(true)
+    , m_btnPress(false)
 {
     qDebug() << "init dock screen: " << m_ds.current();
     initMembers();
@@ -212,6 +213,10 @@ void MultiScreenWorker::handleDbusSignal(QDBusMessage msg)
 void MultiScreenWorker::onRegionMonitorChanged(int x, int y, const QString &key)
 {
     if (m_registerKey != key)
+        return;
+
+    // 鼠标按下状态不响应唤醒
+    if (m_btnPress)
         return;
 
     if (m_draging || m_aniStart) {
@@ -888,6 +893,8 @@ void MultiScreenWorker::initConnection()
     });
 
     connect(m_eventInter, &XEventMonitor::CursorMove, this, &MultiScreenWorker::onRegionMonitorChanged);
+    connect(m_eventInter, &XEventMonitor::ButtonPress, this, [=]{m_btnPress = true;});
+    connect(m_eventInter, &XEventMonitor::ButtonRelease, this, [=]{m_btnPress = false;});
 
     connect(this, &MultiScreenWorker::requestUpdateRegionMonitor, this, &MultiScreenWorker::onRequestUpdateRegionMonitor);
     connect(this, &MultiScreenWorker::requestUpdateFrontendGeometry, this, &MultiScreenWorker::onRequestUpdateFrontendGeometry);
