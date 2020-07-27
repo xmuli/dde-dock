@@ -28,7 +28,10 @@
 #include <QBoxLayout>
 #include <QLabel>
 
+#include <com_deepin_daemon_gesture.h>
+
 using namespace Dock;
+using Gesture = com::deepin::daemon::Gesture;
 
 class TrayPluginItem;
 class PluginsItem;
@@ -141,6 +144,10 @@ private:
     TrayPluginItem *m_tray = nullptr;
     bool m_isHover;//判断鼠标是否移到desktop区域
     bool m_isEnableLaunch;//判断是否使能了com.deepin.dde.dock.module.launcher
+
+    // 保存触控屏长按状态
+    bool m_longPressed;
+    Gesture* m_gestureInter;
 };
 
 #endif // MAINPANELCONTROL_H
