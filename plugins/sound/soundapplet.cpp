@@ -44,6 +44,13 @@ using namespace Dock;
 
 Q_DECLARE_METATYPE(const Port *)
 
+Port::Port(QObject *parent)
+    : QObject(parent)
+    , m_isActive(false)
+{
+
+}
+
 void Port::setId(const QString &id)
 {
     if (id != m_id) {
@@ -112,6 +119,7 @@ SoundApplet::SoundApplet(QWidget *parent)
     m_listView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     m_listView->setViewportMargins(QMargins(0, 0, 12, 0));
     m_listView->setSpacing(1);
+    m_listView->setFixedHeight(0);
 
     m_centralWidget->setAccessibleName("volumn-centralwidget");
     m_volumeBtn->setAccessibleName("volume-button");
@@ -235,7 +243,10 @@ VolumeSlider *SoundApplet::mainSlider()
 
 void SoundApplet::defaultSinkChanged()
 {
-    delete m_defSinkInter;
+    if (m_defSinkInter) {
+        delete m_defSinkInter;
+        m_defSinkInter = nullptr;
+    }
 
     const QDBusObjectPath defSinkPath = m_audioInter->defaultSink();
     m_defSinkInter = new DBusSink("com.deepin.daemon.Audio", defSinkPath.path(), QDBusConnection::sessionBus(), this);
@@ -323,6 +334,7 @@ void SoundApplet::cardsChanged(const QString &cards)
         }
         tmpCardIds.insert(cardId, tmpPorts);
     }
+    defaultSinkChanged();//重新获取切换的设备信息
 
     for (Port *port : m_ports) {
         //判断端口是否在最新的设备列表中

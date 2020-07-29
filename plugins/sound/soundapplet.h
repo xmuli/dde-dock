@@ -52,7 +52,7 @@ public:
         In = 2
     };
 
-    explicit Port(QObject * parent) : QObject(parent) {}
+    explicit Port(QObject *parent = nullptr);
     virtual ~Port() {}
 
     inline QString id() const { return m_id; }
