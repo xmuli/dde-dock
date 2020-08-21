@@ -104,9 +104,9 @@ SinkInputWidget::SinkInputWidget(const QString &inputPath, QWidget *parent)
     connect(m_volumeSlider, &VolumeSlider::valueChanged, this, &SinkInputWidget::setVolume);
     connect(m_volumeSlider, &VolumeSlider::valueChanged, this, &SinkInputWidget::onVolumeChanged);
 //    connect(m_volumeSlider, &VolumeSlider::requestPlaySoundEffect, this, &SinkInputWidget::onPlaySoundEffect);
-    connect(m_appBtn, &DImageButton::clicked, this, &SinkInputWidget::setMute);
+//    connect(m_appBtn, &DImageButton::clicked, this, &SinkInputWidget::setMute);
     connect(m_volumeBtnMin, &DImageButton::clicked, this, &SinkInputWidget::setMute);
-    connect(m_inputInter, &DBusSinkInput::MuteChanged, this, &SinkInputWidget::setMuteIcon);
+    connect(m_inputInter, &DBusSinkInput::MuteChanged, this, &SinkInputWidget::refreshIcon);
     connect(m_inputInter, &DBusSinkInput::VolumeChanged, this, [ = ] {
         m_volumeSlider->setValue(m_inputInter->volume() * 1000);
         QString str = QString::number(int(m_inputInter->volume() * 100)) + '%';
@@ -120,7 +120,6 @@ SinkInputWidget::SinkInputWidget(const QString &inputPath, QWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setFixedHeight(60);
 
-    setMuteIcon();
     refreshIcon();
     onVolumeChanged();
 
@@ -136,40 +135,6 @@ void SinkInputWidget::setVolume(const int value)
 void SinkInputWidget::setMute()
 {
     m_inputInter->SetMuteQueued(!m_inputInter->mute());
-}
-
-void SinkInputWidget::setMuteIcon()
-{
-    if (m_inputInter->mute()) {
-        const auto ratio = devicePixelRatioF();
-        QString iconString = "audio-volume-muted-symbolic";
-        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType) {
-            iconString.append("-dark");
-        }
-        QPixmap muteIcon = QIcon::fromTheme(iconString).pixmap(ICON_SIZE * ratio, ICON_SIZE * ratio);
-        muteIcon.setDevicePixelRatio(ratio);
-        QPixmap appIconSource(getIconFromTheme(m_inputInter->icon(), QSize(ICON_SIZE, ICON_SIZE), devicePixelRatioF()));
-
-        QPixmap temp(appIconSource.size());
-        temp.fill(Qt::transparent);
-        temp.setDevicePixelRatio(ratio);
-        QPainter p1(&temp);
-        p1.drawPixmap(0, 0, appIconSource);
-        p1.setCompositionMode(QPainter::CompositionMode_DestinationIn);
-        p1.fillRect(temp.rect(), QColor(0, 0, 0, 40));
-        p1.end();
-        appIconSource = temp;
-
-        QPainter p(&appIconSource);
-        p.drawPixmap(0, 0, muteIcon);
-
-        appIconSource.setDevicePixelRatio(ratio);
-        m_appBtn->setPixmap(appIconSource);
-    } else {
-        m_appBtn->setPixmap(getIconFromTheme(m_inputInter->icon(), QSize(ICON_SIZE, ICON_SIZE), devicePixelRatioF()));
-    }
-
-    refreshIcon();
 }
 
 void SinkInputWidget::onPlaySoundEffect()
