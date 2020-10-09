@@ -27,6 +27,8 @@
 #include "util/docksettings.h"
 
 #include <DStyle>
+#include <DSysInfo>
+#include <DPlatformTheme>
 #include <DPlatformWindowHandle>
 
 #include <QDebug>
@@ -828,8 +830,17 @@ void MainWindow::adjustShadowMask()
     const bool isFasion = m_settings->displayMode() == Fashion;
 
     DStyleHelper dstyle(style());
-    const int radius = dstyle.pixelMetric(DStyle::PM_TopLevelWindowRadius);
+    int radius = dstyle.pixelMetric(DStyle::PM_TopLevelWindowRadius);
+
+    if (Dtk::Core::DSysInfo::isCommunityEdition()) {
+        auto theme = DGuiApplicationHelper::instance()->systemTheme();
+        radius = theme->windowRadius();
+    }
+
     m_platformWindowHandle.setWindowRadius(composite && isFasion ? radius : 0);
+
+    if (Dtk::Core::DSysInfo::isCommunityEdition())
+        update();
 }
 
 void MainWindow::positionCheck()
